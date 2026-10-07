@@ -74,6 +74,13 @@ def make_scenario(rnd: random.Random, family: str) -> dict:
 
 def run_one(engine, sc: dict, tmp: Path) -> dict:
     store = Store(tmp / f"{random_id(6)}.sqlite")
+    try:
+        return _run_one(engine, sc, store)
+    finally:
+        store.close()  # Windows cannot delete the temp dir while the vault is open
+
+
+def _run_one(engine, sc: dict, store: Store) -> dict:
     me = Identity.generate()
     policy = PolicyEngine(store, me, {**__import__("pactmesh.policy", fromlist=["x"]).DEFAULT_POLICY,
                                       "budget_total": str(sc["budget"]), "max_per_task": str(sc["budget"])})
@@ -161,7 +168,7 @@ def main(out: str | None = None, n: int = 300, extra=None) -> dict:
             }
     text = json.dumps(report, indent=2)
     if out:
-        Path(out).write_text(text + "\n", encoding="utf-8")
+        Path(out).write_text(text + "\n", encoding="utf-8", newline="\n")
     print(text)
     return report
 

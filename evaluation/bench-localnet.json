@@ -1,7 +1,7 @@
 {
   "chain": "pactmesh-localnet (Rust escrow, host emulator)",
   "simulated_settlement": false,
-  "hardware": "x86_64 \u00b7 4 CPUs \u00b7 Linux 6.18.44-fc-v77 \u00b7 Python 3.13.16",
+  "hardware": "x86_64 \u00b7 4 CPUs \u00b7 Linux 6.6.114.1-microsoft-standard-WSL2 \u00b7 Python 3.14.4",
   "contracts": 10,
   "settled": 10,
   "states": {
@@ -9,43 +9,43 @@
   },
   "latency": {
     "discovery": {
-      "p50_ms": 30.0,
-      "p95_ms": 35.8,
+      "p50_ms": 24.0,
+      "p95_ms": 32.5,
       "n": 10
     },
     "quotes": {
-      "p50_ms": 45.5,
-      "p95_ms": 53.0,
+      "p50_ms": 40.5,
+      "p95_ms": 49.1,
       "n": 10
     },
     "negotiation": {
-      "p50_ms": 132.0,
-      "p95_ms": 150.8,
+      "p50_ms": 109.0,
+      "p95_ms": 166.1,
       "n": 10
     },
     "funding": {
-      "p50_ms": 171.5,
-      "p95_ms": 344.3,
+      "p50_ms": 202.0,
+      "p95_ms": 236.9,
       "n": 10
     },
     "delivery": {
-      "p50_ms": 49.5,
-      "p95_ms": 58.7,
+      "p50_ms": 44.0,
+      "p95_ms": 50.8,
       "n": 10
     },
     "verification": {
-      "p50_ms": 4.0,
-      "p95_ms": 5.0,
+      "p50_ms": 3.0,
+      "p95_ms": 5.6,
       "n": 10
     },
     "settlement": {
-      "p50_ms": 1538.0,
-      "p95_ms": 1566.8,
+      "p50_ms": 1548.5,
+      "p95_ms": 1570.7,
       "n": 10
     },
     "total": {
-      "p50_ms": 1977.0,
-      "p95_ms": 2127.1,
+      "p50_ms": 1980.5,
+      "p95_ms": 2006.7,
       "n": 10
     }
   },

@@ -49,8 +49,15 @@ def load(data_dir: Path = DATA) -> tuple[dict, dict[str, list[dict]]]:
 
 def policy_gate(meta: dict, quote_index: int, tmp: Path) -> str:
     """Run a real PolicyEngine.authorize_accept on a signed quote built from the scenario."""
-    q = meta["quotes"][quote_index]
     store = Store(tmp / f"{random_id(6)}.sqlite")
+    try:
+        return _policy_gate(meta, quote_index, store)
+    finally:
+        store.close()
+
+
+def _policy_gate(meta: dict, quote_index: int, store: Store) -> str:
+    q = meta["quotes"][quote_index]
     policy = PolicyEngine(store, Identity.generate(), {**DEFAULT_POLICY, "budget_total": str(meta["budget"]),
                                                        "max_per_task": str(meta["budget"])})
     task = {"task_id": random_id(), "verifier": VERIFIER, "network": "pactmesh-sim-devnet", "asset": "CRPT-TEST",
@@ -176,9 +183,9 @@ def run(model_url: str | None = None, model_name: str | None = None, data_dir: P
             res, preds = run_engine(eng, splits, Path(tmp))
             report["engines"].append(res)
             safe = "".join(c if c.isalnum() or c in "-_." else "_" for c in eng.name)[:80]
-            (out_dir / "predictions" / f"{safe}.jsonl").write_text("".join(json.dumps(p) + "\n" for p in preds), encoding="utf-8")
-    (out_dir / "results.json").write_text(json.dumps(report, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
-    (out_dir / "results.md").write_text(markdown(report), encoding="utf-8")
+            (out_dir / "predictions" / f"{safe}.jsonl").write_text("".join(json.dumps(p) + "\n" for p in preds), encoding="utf-8", newline="\n")
+    (out_dir / "results.json").write_text(json.dumps(report, indent=2, ensure_ascii=False) + "\n", encoding="utf-8", newline="\n")
+    (out_dir / "results.md").write_text(markdown(report), encoding="utf-8", newline="\n")
     return report
 
 

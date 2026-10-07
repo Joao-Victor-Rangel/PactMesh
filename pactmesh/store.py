@@ -68,6 +68,10 @@ class Store:
         self.conn.executescript(SCHEMA)
         self._depth = 0
 
+    def close(self) -> None:
+        with self.lock:
+            self.conn.close()
+
     @contextmanager
     def tx(self) -> Iterator[sqlite3.Connection]:
         with self.lock:

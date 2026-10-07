@@ -25,6 +25,7 @@ from __future__ import annotations
 import json
 import math
 import time
+from concurrent.futures import ThreadPoolExecutor
 from typing import Protocol
 
 from .httpbase import App, HttpError, Request
@@ -144,11 +145,17 @@ class TransformersBackend:
         self.device = device
         self.model_id = model
         self.revision = revision or getattr(self.model.config, "_commit_hash", None) or "unpinned"
+        # One inference thread for the server's lifetime: the HTTP server spawns a thread per request, and torch
+        # keeps per-thread allocations (~1 MB each on Windows) that are never returned. Also serializes forward passes.
+        self._worker = ThreadPoolExecutor(max_workers=1, thread_name_prefix="model")
 
     def score(self, prompt: str, continuations: list[str]) -> list[float]:  # pragma: no cover - needs weights
         return [total for total, _n in self.score_detailed(prompt, continuations)]
 
     def score_detailed(self, prompt: str, continuations: list[str]) -> list[tuple[float, int]]:
+        return self._worker.submit(self._score_detailed, prompt, continuations).result()
+
+    def _score_detailed(self, prompt: str, continuations: list[str]) -> list[tuple[float, int]]:
         torch = self.torch
         prompt_ids = self.tok(prompt, return_tensors="pt").input_ids[0]
         scores = []

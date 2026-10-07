@@ -45,16 +45,17 @@ def main() -> int:
         out.extend(["", f"## {title}", ""])
 
     rc, txt, dt = run([PY, "examples/make_dataset.py"])
-    rc, py_tests, dt_py = run([PY, "-m", "pytest", "-q"])
-    ok_all &= rc == 0
-    py_summary = last_line(py_tests, r"passed|failed")
     rust_summary, dt_rust = "skipped (cargo not installed)", 0.0
     if cargo:
         rc, rust, dt_rust = run(["cargo", "test", "-q"], cwd=ROOT / "contracts" / "escrow")
         ok_all &= rc == 0
         rust_summary = last_line(rust, r"test result: \w+\. [1-9]")
+        # before pytest, so the localnet end-to-end tests run instead of skipping
         run(["cargo", "build", "-q", "--features", "localnet", "--bin", "pactmesh-localnet"],
             cwd=ROOT / "contracts" / "escrow")
+    rc, py_tests, dt_py = run([PY, "-m", "pytest", "-q"])
+    ok_all &= rc == 0
+    py_summary = last_line(py_tests, r"passed|failed")
     rc, lic, _ = run([PY, "scripts/license_inventory.py"] + ([] if cargo else ["--python"]))
     ok_all &= rc == 0
 

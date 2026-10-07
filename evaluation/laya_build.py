@@ -196,13 +196,13 @@ def build(out_dir: Path | None = None) -> dict:
                 items += items_for(scenario(rnd, fam, t), t, f"{split}-{fam}-{k:03d}")
         path = out_dir / f"{split}.jsonl"
         text = "".join(json.dumps(it, ensure_ascii=False, sort_keys=True) + "\n" for it in items)
-        path.write_text(text, encoding="utf-8")
+        path.write_bytes(text.encode("utf-8"))  # exact bytes: the manifest hashes them
         counts: dict[str, int] = {}
         for it in items:
             counts[it["type"]] = counts.get(it["type"], 0) + 1
-        manifest["splits"][split] = {"file": path.name, "sha256": hashlib.sha256(text.encode()).hexdigest(),
+        manifest["splits"][split] = {"file": path.name, "sha256": hashlib.sha256(text.encode("utf-8")).hexdigest(),
                                      "items": len(items), "by_type": counts, "template": t}
-    (out_dir / "manifest.json").write_text(json.dumps(manifest, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    (out_dir / "manifest.json").write_text(json.dumps(manifest, indent=2, ensure_ascii=False) + "\n", encoding="utf-8", newline="\n")
     return manifest
 
 
