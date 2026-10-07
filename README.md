@@ -20,7 +20,7 @@ pip install -r requirements.txt -r requirements-dev.txt
 python -m cripito demo            # 5 independent processes, full flow, narrated
 python -m cripito demo --keep     # same, then keep running and print the dashboard URL
 python -m cripito demo --chain localnet   # same flow on the Rust escrow program (needs cargo)
-pytest                            # 62 tests, including the spec's mandatory failure cases
+pytest                            # 74 tests, including the spec's mandatory failure cases
 cargo test --manifest-path contracts/escrow/Cargo.toml   # 8 tests of the Solana escrow program
 python -m cripito eval            # 300 seeded synthetic negotiations -> evaluation/results.json
 ```
@@ -50,6 +50,8 @@ payment; the evidence package verifies, a tampered copy fails, and the relay log
 | Solana client (escrow + Memo anchoring), `--chain solana` | PDA and instruction bytes cross-checked with Rust; works against `cripito-localnet`; **not yet run against Devnet** (unreachable from the build environment) |
 | Private transport (Nym mixnet): relay as a mixnet service, anonymous sends + reply SURBs, explicit failure with no downgrade | **Implemented**, tested against a `nym-client` test double built from Nym's message format; **not yet run on the live Nym network** (see [docs/PRIVATE_MODE.md](docs/PRIVATE_MODE.md)) |
 | Admin API + dashboard (localhost, bearer token, idempotency keys) | **Implemented** |
+| MCP server for external AI agents (stdio, stdlib only) | **Implemented**, tested over stdio end to end |
+| Transport conformance suite (same semantics for direct and mixnet) | **Implemented** |
 
 ## Architecture
 
@@ -82,6 +84,12 @@ mixnet stub), `runtime.py`, `buyer.py`, `supplier.py`, `policy.py`, `decision.py
 `evidence.py`, `audit.py`, `ledger/` (simulated ledger, Solana memo), `api.py` + `dashboard.html`,
 `examples/`, `evaluation/`, `tests/`, `docs/`. See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the
 state machine, message flow and threat model.
+
+## Use it from your AI agent (MCP)
+
+Any MCP-capable agent can hire services through a running buyer: `python -m cripito mcp` exposes tools to
+create tasks, read proposals and decisions, verify evidence and hit the emergency stop. The agent never
+gets keys and every action still passes the local policy. See [docs/AGENTS.md](docs/AGENTS.md).
 
 ## Running the processes by hand
 

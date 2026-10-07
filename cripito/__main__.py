@@ -213,6 +213,15 @@ def cmd_solana_keygen(args):
             print(f"[solana] airdrop failed ({e}); use https://faucet.solana.com with the address above")
 
 
+def cmd_mcp(args):
+    from .mcp import CripitoMCP
+
+    token = Path(args.token_file).read_text().strip() if args.token_file else os.environ.get("CRIPITO_TOKEN", "")
+    if not token:
+        sys.exit("[mcp] provide --token-file or CRIPITO_TOKEN")
+    CripitoMCP(args.api, token).serve_stdio()
+
+
 def cmd_bench(args):
     sys.path.insert(0, str(ROOT))
     from evaluation.bench import run
@@ -264,6 +273,9 @@ def main(argv=None):
     p = sub.add_parser("verify"); p.add_argument("package"); p.add_argument("--ledger"); chain(p); p.set_defaults(fn=cmd_verify)
     p = sub.add_parser("eval", help="compare engines on 300 synthetic scenarios (add yours with --engine)")
     p.add_argument("--out", default=str(ROOT / "evaluation" / "results.json")); model_args(p); p.set_defaults(fn=cmd_eval)
+    p = sub.add_parser("mcp", help="MCP server (stdio) exposing a running buyer to any MCP-capable AI agent")
+    p.add_argument("--api", default="http://127.0.0.1:8700"); p.add_argument("--token-file", default=".cripito/buyer/admin_token")
+    p.set_defaults(fn=cmd_mcp)
     p = sub.add_parser("bench", help="measure latency per stage and cost per contract")
     p.add_argument("--n", type=int, default=10); p.add_argument("--chain", choices=["sim", "localnet"], default="sim")
     p.add_argument("--out"); p.set_defaults(fn=cmd_bench)
