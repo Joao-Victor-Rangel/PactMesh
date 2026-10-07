@@ -137,6 +137,32 @@ def cmd_solana_anchor(args):
     print(f"[solana] signature {sig}\nhttps://explorer.solana.com/tx/{sig}?cluster=devnet")
 
 
+def cmd_solana_keygen(args):
+    from nacl.signing import SigningKey
+
+    from .ledger.solana import DEVNET_RPC, SolanaMemoAnchor
+
+    path = Path(args.out)
+    if path.exists():
+        key = SigningKey(bytes(json.loads(path.read_text()))[:32])
+        print(f"[solana] using existing {path}")
+    else:
+        key = SigningKey.generate()
+        secret = list(bytes(key) + key.verify_key.encode())  # solana-keygen JSON format (64 bytes)
+        fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+        with os.fdopen(fd, "w") as f:
+            json.dump(secret, f)
+        print(f"[solana] new Devnet-only keypair written to {path} (never commit it; no real funds)")
+    anchor = SolanaMemoAnchor(key, args.rpc or DEVNET_RPC)
+    print(f"[solana] address {anchor.address}")
+    if args.airdrop:
+        try:
+            sig = anchor._rpc("requestAirdrop", [anchor.address, 1_000_000_000])
+            print(f"[solana] airdrop of 1 SOL (Devnet) requested: {sig}")
+        except Exception as e:  # rate-limited or blocked network
+            print(f"[solana] airdrop failed ({e}); use https://faucet.solana.com with the address above")
+
+
 def cmd_demo(args):
     from .demo import run_demo
 
@@ -170,6 +196,9 @@ def main(argv=None):
     p.add_argument("--dataset", default=str(ROOT / "examples" / "dataset.csv")); p.set_defaults(fn=cmd_buyer)
     p = sub.add_parser("verify"); p.add_argument("package"); p.add_argument("--ledger"); p.set_defaults(fn=cmd_verify)
     p = sub.add_parser("eval"); p.add_argument("--out", default=str(ROOT / "evaluation" / "results.json")); p.set_defaults(fn=cmd_eval)
+    p = sub.add_parser("solana-keygen", help="create a Devnet-only keypair (and optionally request an airdrop)")
+    p.add_argument("--out", default="devnet.json"); p.add_argument("--airdrop", action="store_true"); p.add_argument("--rpc")
+    p.set_defaults(fn=cmd_solana_keygen)
     p = sub.add_parser("solana-anchor", help="anchor an evidence batch root on Solana Devnet (memo)")
     p.add_argument("package"); p.add_argument("--keypair", required=True); p.add_argument("--rpc")
     p.set_defaults(fn=cmd_solana_anchor)

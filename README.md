@@ -83,6 +83,19 @@ python -m cripito supplier --name beta  --price 150 --min-price 140 --descriptio
 python -m cripito buyer --engine simulated-llm   # prints http://127.0.0.1:8700/#token=...
 ```
 
+### Anchoring on Solana Devnet (no wallet app needed)
+
+A Devnet "wallet" is just a keypair file. Devnet SOL is free test money with no value.
+
+```bash
+python -m cripito solana-keygen --airdrop          # creates devnet.json (git-ignored) and asks for 1 test SOL
+# if the airdrop is rate-limited: paste the printed address at https://faucet.solana.com
+python -m cripito demo                             # produces .cripito-demo/evidence.json
+python -m cripito solana-anchor .cripito-demo/evidence.json --keypair devnet.json
+```
+
+The last command prints a Solana Explorer link to the memo transaction holding the evidence root.
+
 Local API (all mutating calls need `Authorization: Bearer <token>` and `Idempotency-Key`):
 `POST /tasks`, `GET /tasks/{id}`, `POST /tasks/{id}/cancel`, `GET /negotiations/{id}/evidence`,
 `POST /verify`, `POST /policy/pause`, `GET /metrics`, `GET /public`, `GET /health`.
