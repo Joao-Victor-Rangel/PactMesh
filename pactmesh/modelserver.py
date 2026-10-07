@@ -192,7 +192,7 @@ def _detailed(backend, prompt: str, conts: list[str]) -> list[tuple[float, int]]
 
 
 def build_app(backend: Backend, abstain_below: float = 0.0) -> App:
-    from .jev import FORMAT, binary_prompt, choice_prompt, softmax
+    from .laya import FORMAT, binary_prompt, choice_prompt, softmax
 
     app = App()
 
@@ -202,8 +202,8 @@ def build_app(backend: Backend, abstain_below: float = 0.0) -> App:
             raise HttpError(400, "BAD_REQUEST")
         return ctx, opts
 
-    @app.route("POST", "/jev/choice")
-    def jev_choice(req: Request):
+    @app.route("POST", "/laya/choice")
+    def laya_choice(req: Request):
         ctx, opts = _options(req.json() or {})
         t0 = time.perf_counter()
         det = _detailed(backend, choice_prompt(ctx, opts), [FORMAT["choice_continuation"].format(option=o) for o in opts])
@@ -211,12 +211,12 @@ def build_app(backend: Backend, abstain_below: float = 0.0) -> App:
         return {"logits": logits, "probs": softmax(logits), "format": FORMAT["version"],
                 "inference_ms": int((time.perf_counter() - t0) * 1000)}
 
-    @app.route("POST", "/jev/score")
-    def jev_score(req: Request):
-        return jev_choice(req)  # same likelihoods; the client reads them as scores
+    @app.route("POST", "/laya/score")
+    def laya_score(req: Request):
+        return laya_choice(req)  # same likelihoods; the client reads them as scores
 
-    @app.route("POST", "/jev/binary")
-    def jev_binary(req: Request):
+    @app.route("POST", "/laya/binary")
+    def laya_binary(req: Request):
         body = req.json() or {}
         ctx, q = body.get("context"), body.get("question")
         if not isinstance(ctx, str) or not isinstance(q, str):
@@ -228,7 +228,7 @@ def build_app(backend: Backend, abstain_below: float = 0.0) -> App:
     @app.route("GET", "/health")
     def health(req):
         return {"ok": True, "model_id": backend.model_id, "revision": backend.revision, "mode": "choice-scoring",
-                "jev": FORMAT["version"]}
+                "laya": FORMAT["version"]}
 
     @app.route("POST", "/decide")
     def dec(req: Request):

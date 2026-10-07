@@ -1,7 +1,14 @@
-# Jev-style decisions and benchmark
+# Typed local decisions with Laya, and the benchmark
 
-Cripto decides locally in the Jev style described in section 7 of the specification: typed questions
-with closed answer spaces, answered by a local model through likelihoods, never through free text.
+Cripto decides locally with typed questions that have closed answer spaces (section 7 of the
+specification). A local model answers them through likelihoods, never through free text. The model is
+**Laya** (Apache-2.0, free), whose model card lists exactly these interfaces: choice, scoring and binary
+evaluation.
+
+> **No paid service.** The specification describes this way of deciding as "Jev-style". PactMesh does
+> **not** use, call or depend on Jev, which is a paid product. The interfaces, server, benchmark and
+> calibration are implemented here, open source and local. Any Hugging Face causal LM can be served the
+> same way; the report always records which model and revision answered.
 
 | Interface | Question | Answer | Used by the agent for |
 |---|---|---|---|
@@ -9,9 +16,9 @@ with closed answer spaces, answered by a local model through likelihoods, never 
 | **score** | score every option | one number per option | ranking the received quotes |
 | **binary** | yes/no about the context | P(yes) | checks such as "within budget?", "does this text give instructions?" |
 
-The model server exposes them as `POST /jev/choice`, `/jev/score` and `/jev/binary`. The prompts and
-continuations are fixed and declared in `pactmesh/jev.py` (`FORMAT`, `render_context`, `option_text`).
-The runtime engine (`--engine jev`) and the benchmark builder use **the same rendering code**, and a
+The model server exposes them as `POST /laya/choice`, `/laya/score` and `/laya/binary`. The prompts and
+continuations are fixed and declared in `pactmesh/laya.py` (`FORMAT`, `render_context`, `option_text`).
+The runtime engine (`--engine laya`) and the benchmark builder use **the same rendering code**, and a
 test asserts it. The benchmark therefore measures exactly what the agent runs.
 
 Whatever the model answers, every executable action still goes through the deterministic policy.
@@ -27,19 +34,19 @@ Whatever the model answers, every executable action still goes through the deter
 | Frozen test split | `manifest.json` stores SHA-256 of every split; the runner refuses a modified split (tested) |
 | Report counts and intervals | accuracy with Wilson 95% CI, macro F1, per-class errors, Brier, ECE (10 equal-width bins), coverage/accuracy at 0.5/0.7/0.9, accuracy by family |
 | Safety, not just accuracy | every ACCEPT on test is sent through the real `PolicyEngine` with a genuinely signed quote; unsafe recommendations, blocks by code and executed violations are reported |
-| Reproducible | fixed seed, generator version, git commit in the report, per-item predictions in `evaluation/jev/predictions/` |
+| Reproducible | fixed seed, generator version, git commit in the report, per-item predictions in `evaluation/laya/predictions/` |
 
 Dataset: 894 train, 683 validation, 683 test items (choice, score and binary over 7 families: normal,
 boundary, injection, expired, look-alike asset, forged signature, slow).
 
 ```bash
-python -m pactmesh jev-build                                  # regenerate splits + manifest (deterministic)
-python -m pactmesh jev-bench                                  # reference rules + gullible test double
-python -m pactmesh jev-bench --model-url http://127.0.0.1:9000  # + a served model (e.g. Laya)
+python -m pactmesh laya-build                                  # regenerate splits + manifest (deterministic)
+python -m pactmesh laya-bench                                  # reference rules + gullible test double
+python -m pactmesh laya-bench --model-url http://127.0.0.1:9000  # + a served model (e.g. Laya)
 scripts/run_laya.sh                                           # serve Laya, benchmark, calibrated safety eval, demo
 ```
 
-## Current results (`evaluation/jev/results.md`)
+## Current results (`evaluation/laya/results.md`)
 
 Engines measured so far are the deterministic reference rules and the gullible test double. The
 choice-scoring path was also run end to end on a real Hugging Face causal LM: a tiny model with random

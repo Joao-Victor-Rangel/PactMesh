@@ -1,4 +1,4 @@
-"""Local decision engines ("Jev-style" typed decisions).
+"""Local decision engines ("Laya-style" typed decisions).
 
 Contract: input is a structured negotiation state plus a closed list of
 options; output is one of ACCEPT, COUNTEROFFER, REQUEST_INFO, REJECT,
@@ -242,8 +242,8 @@ class OpenAICompatEngine:
         return validate_output(out, options, d)
 
 
-class JevEngine:
-    """Cripto's runtime decision in Jev style: one ``/jev/choice`` call over the
+class LayaEngine:
+    """Cripto's runtime decision in Laya style: one ``/laya/choice`` call over the
     closed list of actions the policy grid allows, rendered exactly like the
     benchmark (template 0). Temperature and abstention threshold come from the
     benchmark's validation split."""
@@ -251,7 +251,7 @@ class JevEngine:
     def __init__(self, base_url: str, temperature: float = 1.0, abstain_below: float = 0.0, timeout: float = 120.0):
         self.base = base_url.rstrip("/").removesuffix("/decide")
         self.temperature, self.abstain_below, self.timeout = temperature, abstain_below, timeout
-        self.model_id, self.model_revision = "jev:unknown", "unpinned"
+        self.model_id, self.model_revision = "laya:unknown", "unpinned"
 
     def _post(self, path: str, body: dict | None = None) -> dict:
         req = urllib.request.Request(self.base + path, data=json.dumps(body).encode() if body is not None else None,
@@ -261,7 +261,7 @@ class JevEngine:
             return json.loads(r.read())
 
     def decide(self, state: dict, options: list[dict]) -> Decision:
-        from .jev import option_text, render_context, softmax
+        from .laya import option_text, render_context, softmax
 
         t0 = time.perf_counter()
         d = Decision("ABSTAIN", model_id=self.model_id, model_revision=self.model_revision)
@@ -281,11 +281,11 @@ class JevEngine:
         keys.append(("REJECT", None, None))
         texts.append(option_text("REJECT"))
         try:
-            if self.model_id == "jev:unknown":
+            if self.model_id == "laya:unknown":
                 h = self._post("/health")
-                self.model_id, self.model_revision = f"jev:{h.get('model_id')}"[:120], str(h.get("revision"))[:64]
+                self.model_id, self.model_revision = f"laya:{h.get('model_id')}"[:120], str(h.get("revision"))[:64]
                 d.model_id, d.model_revision = self.model_id, self.model_revision
-            out = self._post("/jev/choice", {"context": ctx, "options": texts})
+            out = self._post("/laya/choice", {"context": ctx, "options": texts})
             probs = softmax(out["logits"], self.temperature)
         except (urllib.error.URLError, OSError, ValueError, KeyError, TypeError):
             d.status = "unavailable"
@@ -302,7 +302,7 @@ class JevEngine:
             if q:
                 per_quote[q] = per_quote.get(q, 0.0) + p
         d.scores = {k: _fmt(v) for k, v in per_quote.items()}
-        d.generated_rationale = f"jev choice: {texts[best]} (p={probs[best]:.2f})"
+        d.generated_rationale = f"laya choice: {texts[best]} (p={probs[best]:.2f})"
         d.status = "valid"
         if probs[best] < self.abstain_below:
             d.generated_rationale = f"confidence {probs[best]:.2f} below {self.abstain_below}: abstain"
@@ -329,7 +329,7 @@ class FallbackEngine:
         return d
 
 
-ENGINES = ("reference", "simulated-llm", "jev", "jev+fallback", "http", "http+fallback", "openai-compat",
+ENGINES = ("reference", "simulated-llm", "laya", "laya+fallback", "http", "http+fallback", "openai-compat",
            "openai-compat+fallback")
 
 
@@ -341,10 +341,10 @@ def make_engine(name: str, model_url: str | None = None, model_name: str | None 
     if name == "simulated-llm":
         return SimulatedLLMEngine()
     base, fallback = name.removesuffix("+fallback"), name.endswith("+fallback")
-    if base == "jev":
+    if base == "laya":
         if not model_url:
-            raise ValueError("--model-url is required for the jev engine (model server base URL)")
-        eng = JevEngine(model_url, temperature, abstain_below)
+            raise ValueError("--model-url is required for the laya engine (model server base URL)")
+        eng = LayaEngine(model_url, temperature, abstain_below)
         return FallbackEngine(eng, ReferenceEngine()) if fallback else eng
     if base in ("http", "openai-compat"):
         if not model_url:

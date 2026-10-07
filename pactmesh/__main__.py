@@ -155,7 +155,7 @@ def _engine(args):
     from .decision import make_engine
 
     return make_engine(args.engine, args.model_url, args.model_name, args.model_revision,
-                       os.environ.get("PACTMESH_MODEL_API_KEY"), args.jev_temperature, args.jev_abstain_below)
+                       os.environ.get("PACTMESH_MODEL_API_KEY"), args.laya_temperature, args.laya_abstain_below)
 
 
 def model_args(p, default="reference"):
@@ -165,8 +165,8 @@ def model_args(p, default="reference"):
     p.add_argument("--model-url", help="http: full URL; openai-compat: base URL, e.g. http://127.0.0.1:11434/v1")
     p.add_argument("--model-name", help="openai-compat model name, e.g. laya or llama3.2")
     p.add_argument("--model-revision", default="unpinned", help="pin the checkpoint revision you evaluated")
-    p.add_argument("--jev-temperature", type=float, default=1.0, help="temperature fitted by jev-bench (validation)")
-    p.add_argument("--jev-abstain-below", type=float, default=0.0, help="abstain when choice probability is lower")
+    p.add_argument("--laya-temperature", type=float, default=1.0, help="temperature fitted by laya-bench (validation)")
+    p.add_argument("--laya-abstain-below", type=float, default=0.0, help="abstain when choice probability is lower")
 
 
 def cmd_eval(args):
@@ -241,18 +241,18 @@ def cmd_model_server(args):
     srv.serve_forever()
 
 
-def cmd_jev_build(args):
+def cmd_laya_build(args):
     sys.path.insert(0, str(ROOT))
-    from evaluation.jev_build import build
+    from evaluation.laya_build import build
 
     m = build()
     print(json.dumps({k: {"items": v["items"], "by_type": v["by_type"], "sha256": v["sha256"][:16]}
                       for k, v in m["splits"].items()}, indent=1))
 
 
-def cmd_jev_bench(args):
+def cmd_laya_bench(args):
     sys.path.insert(0, str(ROOT))
-    from evaluation.jev_run import DATA, run
+    from evaluation.laya_run import DATA, run
 
     run(args.model_url, args.model_name)
     print((DATA / "results.md").read_text())
@@ -321,11 +321,11 @@ def main(argv=None):
     p.add_argument("--abstain-below", type=float, default=0.0, help="ABSTAIN when best-option probability is lower")
     p.add_argument("--host", default="127.0.0.1"); p.add_argument("--port", type=int, default=9000)
     p.set_defaults(fn=cmd_model_server)
-    p = sub.add_parser("jev-build", help="build the Jev-style benchmark splits (choice/score/binary)")
-    p.set_defaults(fn=cmd_jev_build)
-    p = sub.add_parser("jev-bench", help="run the Jev-style benchmark (add a served model with --model-url)")
+    p = sub.add_parser("laya-build", help="build the Laya-style benchmark splits (choice/score/binary)")
+    p.set_defaults(fn=cmd_laya_build)
+    p = sub.add_parser("laya-bench", help="run the Laya-style benchmark (add a served model with --model-url)")
     p.add_argument("--model-url", help="model server base URL, e.g. http://127.0.0.1:9000")
-    p.add_argument("--model-name"); p.set_defaults(fn=cmd_jev_bench)
+    p.add_argument("--model-name"); p.set_defaults(fn=cmd_laya_bench)
     p = sub.add_parser("bench", help="measure latency per stage and cost per contract")
     p.add_argument("--n", type=int, default=10); p.add_argument("--chain", choices=["sim", "localnet"], default="sim")
     p.add_argument("--out"); p.set_defaults(fn=cmd_bench)

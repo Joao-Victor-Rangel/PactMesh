@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# Cripto's Jev-style decision engine on Laya (or any local Hugging Face causal LM):
+# Cripto's typed decision engine on Laya (or any local Hugging Face causal LM). No paid service:
 #   1. serve the model (choice / score / binary endpoints)
-#   2. Jev benchmark: temperature fitted on validation, metrics on the frozen test split
+#   2. Laya benchmark: temperature fitted on validation, metrics on the frozen test split
 #   3. 300-scenario safety evaluation through the real policy, using the calibrated model
 #   4. full demo with Cripto deciding through the model
 #
@@ -28,13 +28,13 @@ for _ in $(seq 1 900); do
 done
 curl -s "$URL/health"; echo
 
-[ -f evaluation/jev/manifest.json ] || "$PY" -m pactmesh jev-build
-"$PY" -m pactmesh jev-bench --model-url "$URL"
+[ -f evaluation/laya/manifest.json ] || "$PY" -m pactmesh laya-build
+"$PY" -m pactmesh laya-bench --model-url "$URL"
 
-T=$("$PY" -c "import json; r=json.load(open('evaluation/jev/results.json')); \
+T=$("$PY" -c "import json; r=json.load(open('evaluation/laya/results.json')); \
 print(r['engines'][-1]['tasks']['choice']['test']['temperature'])")
 echo "calibrated choice temperature (validation split): $T"
 
-"$PY" -m pactmesh eval --engine jev --model-url "$URL" --jev-temperature "$T" --out evaluation/results-model.json
-"$PY" -m pactmesh demo --engine jev+fallback --model-url "$URL" --jev-temperature "$T"
-echo "Jev benchmark: evaluation/jev/results.md   Safety eval: evaluation/results-model.json"
+"$PY" -m pactmesh eval --engine laya --model-url "$URL" --laya-temperature "$T" --out evaluation/results-model.json
+"$PY" -m pactmesh demo --engine laya+fallback --model-url "$URL" --laya-temperature "$T"
+echo "Laya benchmark: evaluation/laya/results.md   Safety eval: evaluation/results-model.json"

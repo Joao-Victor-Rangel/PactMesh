@@ -1,7 +1,7 @@
-"""Run the Jev-style benchmark and write evaluation/jev/results.{json,md} + predictions.
+"""Run the Laya-style benchmark and write evaluation/laya/results.{json,md} + predictions.
 
-    python -m pactmesh jev-bench                                   # reference + gullible double
-    python -m pactmesh jev-bench --model-url http://127.0.0.1:9000 # + a served model (e.g. Laya)
+    python -m pactmesh laya-bench                                   # reference + gullible double
+    python -m pactmesh laya-bench --model-url http://127.0.0.1:9000 # + a served model (e.g. Laya)
 
 Protocol: verify the manifest hashes (a modified test split is refused);
 fit one temperature per task type on VALIDATION only (models only);
@@ -22,13 +22,13 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 from pactmesh.crypto import Identity, random_id  # noqa: E402
-from pactmesh.jev import TASK_TYPES, GullibleJev, ModelJev, ReferenceJev, evaluate, fit_temperature  # noqa: E402
+from pactmesh.laya import TASK_TYPES, GullibleDouble, ServedModel, ReferenceRules, evaluate, fit_temperature  # noqa: E402
 from pactmesh.policy import DEFAULT_POLICY, PolicyEngine  # noqa: E402
 from pactmesh.protocol import build_advert, build_message, terms_hash  # noqa: E402
 from pactmesh.store import Store  # noqa: E402
 from pactmesh.util import iso, now  # noqa: E402
 
-DATA = ROOT / "evaluation" / "jev"
+DATA = ROOT / "evaluation" / "laya"
 VERIFIER = {"name": "pactmesh.stats", "version": "1.0"}
 
 
@@ -42,7 +42,7 @@ def load(data_dir: Path = DATA) -> tuple[dict, dict[str, list[dict]]]:
     for name, info in manifest["splits"].items():
         raw = (data_dir / info["file"]).read_bytes()
         if hashlib.sha256(raw).hexdigest() != info["sha256"]:
-            raise SplitModified(f"{name} split does not match manifest.json; rebuild with `python -m pactmesh jev-build`")
+            raise SplitModified(f"{name} split does not match manifest.json; rebuild with `python -m pactmesh laya-build`")
         splits[name] = [json.loads(line) for line in raw.decode().splitlines() if line.strip()]
     return manifest, splits
 
@@ -122,7 +122,7 @@ def git_commit() -> str:
 
 def markdown(report: dict) -> str:
     m = report["manifest"]
-    L = ["# Jev-style decision benchmark", "",
+    L = ["# Typed decision benchmark for Laya (choice / score / binary)", "",
          f"Generator `{m['generator']}`, seed {m['seed']}, code `{report['git_commit']}`. "
          f"Test split SHA-256 `{m['splits']['test']['sha256'][:16]}…` (verified before running).",
          f"Splits: " + ", ".join(f"{k} {v['items']} items (template {v['template']})" for k, v in m["splits"].items()) + ".",
@@ -166,9 +166,9 @@ def run(model_url: str | None = None, model_name: str | None = None, data_dir: P
 
     out_dir = out_dir or data_dir
     manifest, splits = load(data_dir)
-    engines = [ReferenceJev(), GullibleJev()]
+    engines = [ReferenceRules(), GullibleDouble()]
     if model_url:
-        engines.append(ModelJev(model_url, model_name))
+        engines.append(ServedModel(model_url, model_name))
     report = {"manifest": manifest, "git_commit": git_commit(), "engines": []}
     (out_dir / "predictions").mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory() as tmp:

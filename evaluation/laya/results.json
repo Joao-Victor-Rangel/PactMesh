@@ -1,9 +1,9 @@
 {
   "manifest": {
-    "generator": "pactmesh-jev-bench/1",
+    "generator": "pactmesh-laya-bench/1",
     "seed": 20261007,
     "format": {
-      "version": "pactmesh-jev/1",
+      "version": "pactmesh-laya/1",
       "choice_prompt": "{context}\nOptions:\n{options}\nAnswer: I choose to",
       "choice_continuation": " {option}",
       "binary_prompt": "{context}\nQuestion: {question}\nAnswer (yes or no):",
@@ -55,7 +55,7 @@
     "label_provenance": "generator ground truth: price/budget, delivery, exact asset string, signature and validity flags, injected flag; choice gold = reference rules applied only to quotes that are actually safe",
     "test_frozen": true
   },
-  "git_commit": "20c15d0",
+  "git_commit": "b900f65",
   "engines": [
     {
       "engine": "pactmesh-reference-rules",

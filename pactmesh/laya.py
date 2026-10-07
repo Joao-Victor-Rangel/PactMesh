@@ -1,4 +1,8 @@
-"""Jev-style local decisions (specification, section 7).
+"""Typed local decisions for Laya (specification, section 7).
+
+The model is Laya (Apache-2.0, free), served locally. No paid service is
+involved: this module does not use or call Jev; the interfaces, metrics and
+calibration below are implemented here.
 
 Three typed interfaces, each with a closed answer space:
 
@@ -8,7 +12,7 @@ Three typed interfaces, each with a closed answer space:
 
 A model never produces free text here, so every answer is valid by
 construction. Model backends answer through the local model server
-(``/jev/choice``, ``/jev/score``, ``/jev/binary``) by comparing the
+(``/laya/choice``, ``/laya/score``, ``/laya/binary``) by comparing the
 likelihood of each closed answer. The same prompt formats are used for
 serving and for benchmarking, and they are declared in ``FORMAT``.
 
@@ -28,7 +32,7 @@ import urllib.request
 
 TASK_TYPES = ("choice", "score", "binary")
 FORMAT = {
-    "version": "pactmesh-jev/1",
+    "version": "pactmesh-laya/1",
     "choice_prompt": "{context}\nOptions:\n{options}\nAnswer: I choose to",
     "choice_continuation": " {option}",
     "binary_prompt": "{context}\nQuestion: {question}\nAnswer (yes or no):",
@@ -108,7 +112,7 @@ def sigmoid(x: float) -> float:
     return 1 / (1 + math.exp(-x)) if x >= 0 else math.exp(x) / (1 + math.exp(x))
 
 
-class ReferenceJev:
+class ReferenceRules:
     """Deterministic rules over the structured facts a rule engine can read
     (prices, budget, delivery, exact asset string, injection patterns). It
     does not see signatures or validity: those are the policy's job."""
@@ -126,7 +130,7 @@ class ReferenceJev:
         return [float(x) for x in m["reference_scores"]]
 
 
-class GullibleJev(ReferenceJev):
+class GullibleDouble(ReferenceRules):
     """Test double for an unspecialized model that follows instructions found
     in supplier text. Same rules as the reference otherwise."""
 
@@ -150,8 +154,8 @@ class GullibleJev(ReferenceJev):
         return super().logits(item)
 
 
-class ModelJev:
-    """A model behind the local model server's Jev endpoints."""
+class ServedModel:
+    """A model behind the local model server's Laya endpoints."""
 
     calibrate = True
 
@@ -170,8 +174,8 @@ class ModelJev:
 
     def logits(self, item: dict) -> list[float]:
         if item["type"] == "binary":
-            return [self._post_get("/jev/binary", {"context": item["context"], "question": item["question"]})["logit"]]
-        out = self._post_get(f"/jev/{item['type']}", {"context": item["context"], "options": item["options"]})
+            return [self._post_get("/laya/binary", {"context": item["context"], "question": item["question"]})["logit"]]
+        out = self._post_get(f"/laya/{item['type']}", {"context": item["context"], "options": item["options"]})
         return out["logits"]
 
 
@@ -321,7 +325,7 @@ def evaluate(items: list[dict], logits: list[list[float]], t: float, thresholds=
     return out
 
 
-__all__ = ["TASK_TYPES", "FORMAT", "ReferenceJev", "GullibleJev", "ModelJev", "evaluate", "fit_temperature",
+__all__ = ["TASK_TYPES", "FORMAT", "ReferenceRules", "GullibleDouble", "ServedModel", "evaluate", "fit_temperature",
            "wilson", "macro_f1", "brier", "ece", "choice_prompt", "binary_prompt", "probabilities"]
 
 

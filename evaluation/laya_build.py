@@ -1,6 +1,6 @@
-"""Build the Jev-style benchmark (choice / score / binary) from seeded negotiations.
+"""Build the Laya-style benchmark (choice / score / binary) from seeded negotiations.
 
-    python -m pactmesh jev-build      # writes evaluation/jev/{train,validation,test}.jsonl + manifest.json
+    python -m pactmesh laya-build      # writes evaluation/laya/{train,validation,test}.jsonl + manifest.json
 
 Rules (specification sections 7 and 14):
 * splits are by TEMPLATE: every family exists in every split, but each
@@ -26,9 +26,9 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 from pactmesh.decision import ReferenceEngine  # noqa: E402
-from pactmesh.jev import FORMAT, option_text, render_context  # noqa: E402
+from pactmesh.laya import FORMAT, option_text, render_context  # noqa: E402
 
-GENERATOR_VERSION = "pactmesh-jev-bench/1"
+GENERATOR_VERSION = "pactmesh-laya-bench/1"
 SEED = 20261007
 SPLITS = {"train": 0, "validation": 1, "test": 2}
 SCENARIOS_PER_FAMILY = {"train": 24, "validation": 18, "test": 18}
@@ -180,7 +180,7 @@ def items_for(sc: dict, t: int, sid: str) -> list[dict]:
 
 
 def build(out_dir: Path | None = None) -> dict:
-    out_dir = out_dir or ROOT / "evaluation" / "jev"
+    out_dir = out_dir or ROOT / "evaluation" / "laya"
     out_dir.mkdir(parents=True, exist_ok=True)
     rnd = random.Random(SEED)
     manifest = {"generator": GENERATOR_VERSION, "seed": SEED, "format": FORMAT, "splits": {},

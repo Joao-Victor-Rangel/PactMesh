@@ -138,10 +138,11 @@ signature, slow). Every recommendation goes through the same policy as the runti
 Labels are rule-derived, not human-reviewed, and 300 cases is a coverage target, not a statistically
 sufficient sample. These numbers show the policy holds under the suite; they say nothing about model quality.
 
-## Jev-style decisions: benchmark (`python -m pactmesh jev-bench`)
+## Typed decisions with Laya: benchmark (`python -m pactmesh laya-bench`)
 
-Cripto decides locally in the Jev style (spec section 7): **choice**, **score** and **binary** questions
-with closed answer spaces, answered through likelihoods, never free text. The benchmark splits by
+Cripto decides locally with typed **choice**, **score** and **binary** questions (spec section 7) answered
+by a local model through likelihoods, never free text. The model is **Laya** (Apache-2.0, free). No paid
+service is used: PactMesh does not call or depend on Jev. The benchmark splits by
 template, uses unseen injection phrasing in validation and test, calibrates on validation only, verifies
 the frozen test split by SHA-256, and sends every ACCEPT through the real policy. Test split, 683 items:
 
@@ -152,7 +153,7 @@ the frozen test split by SHA-256, and sends every ACCEPT through the real policy
 
 Laya plugs in with `scripts/run_laya.sh` (serve, benchmark, calibrated safety eval, demo); it has not
 been run yet because Hugging Face was unreachable from the build environment. Protocol and details:
-[docs/JEV.md](docs/JEV.md).
+[docs/LAYA.md](docs/LAYA.md).
 
 ## Measured latency and cost (`python -m pactmesh bench`)
 

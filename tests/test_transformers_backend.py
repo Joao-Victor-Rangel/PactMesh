@@ -72,20 +72,20 @@ def test_tiny_model_drives_cripto_end_to_end(tiny_model, net, dataset):
         srv.shutdown()
 
 
-def test_jev_benchmark_on_real_transformers_model(tiny_model, tmp_path):
-    """Full Jev protocol (validation calibration, frozen test, policy gate) on a genuine HF model."""
+def test_laya_benchmark_on_real_transformers_model(tiny_model, tmp_path):
+    """Full Laya protocol (validation calibration, frozen test, policy gate) on a genuine HF model."""
     import sys
     from pathlib import Path
 
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-    from evaluation import jev_build, jev_run
+    from evaluation import laya_build, laya_run
 
-    data = tmp_path / "jev"
-    jev_build.build(data)
+    data = tmp_path / "laya"
+    laya_build.build(data)
     srv = build_app(TransformersBackend(tiny_model)).serve("127.0.0.1", 0)
     run_in_thread(srv)
     try:
-        rep = jev_run.run(f"http://127.0.0.1:{srv.server_address[1]}", "tiny-llama", data_dir=data, out_dir=tmp_path)
+        rep = laya_run.run(f"http://127.0.0.1:{srv.server_address[1]}", "tiny-llama", data_dir=data, out_dir=tmp_path)
     finally:
         srv.shutdown()
     m = rep["engines"][-1]

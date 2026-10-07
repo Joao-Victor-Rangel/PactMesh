@@ -1,6 +1,6 @@
-# Jev-style decision benchmark
+# Typed decision benchmark for Laya (choice / score / binary)
 
-Generator `pactmesh-jev-bench/1`, seed 20261007, code `20c15d0`. Test split SHA-256 `e95befff862c25fe…` (verified before running).
+Generator `pactmesh-laya-bench/1`, seed 20261007, code `b900f65`. Test split SHA-256 `e95befff862c25fe…` (verified before running).
 Splits: train 894 items (template 0), validation 683 items (template 1), test 683 items (template 2).
 Calibration: single temperature per task type, grid search minimizing NLL on the validation split only. ECE: 10 equal-width bins over top-label confidence.
 

@@ -30,7 +30,7 @@ Deadline: **12 Oct 2026, 23:59 PDT** (13 Oct, 03:59 Brasília). Plan to submit o
 > disclosed receipt without seeing the whole conversation, and any tampering shows up.
 > Any MCP-capable AI agent can use it as a tool, without ever holding keys.
 > Everything is open source (MIT) and free to run: 90 Python tests, 8 Rust tests, a 300-scenario
-> evaluation, a Jev-style decision benchmark (choice/score/binary, frozen test split), a latency/cost benchmark, and a one-command demo.
+> evaluation, a typed-decision benchmark for Laya (choice/score/binary, frozen test split), a latency/cost benchmark, and a one-command demo.
 
 **Links to provide:** public GitHub repository · demo video · (if deployed) Devnet program id and explorer
 link of an escrow release and of an evidence anchor.
