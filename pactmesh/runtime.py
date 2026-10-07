@@ -220,6 +220,12 @@ class Agent:
             return
         try:
             st = self.ledger.anchor(batch_id, b["root"], b["version"])
+            if st["ok"]:
+                # the receipt cites this anchor: let it land before anyone verifies it against the chain
+                try:
+                    st = {**st, **self.ledger.wait(st["signature"], "confirmed")}
+                except LedgerError as e:
+                    log.warning("%s: anchor %s not confirmed yet (%s)", self.name, st["signature"], e)
             anchor = {"network": self.ledger.network, "simulated": self.ledger.simulated,
                       "tx": st["signature"], "ok": st["ok"], "slot": st["slot"]}
             self.store.q("UPDATE batches SET anchor=? WHERE batch_id=?", (json.dumps(anchor), batch_id))

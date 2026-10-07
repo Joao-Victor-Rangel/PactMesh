@@ -8,9 +8,10 @@ Two Solana pieces live in this repository:
 | Python client (`SolanaEscrowClient`, `SolanaMemoAnchor`) | `pactmesh/ledger/solana.py` | PDA and instruction bytes cross-checked against the Rust code (`fixtures.json`); end-to-end agent flows against `pactmesh-localnet` |
 | `pactmesh-localnet` | `contracts/escrow/src/bin/localnet.rs` | JSON-RPC emulator that executes the program's processor on the host |
 
-**Not yet done:** compiling to SBF (`cargo build-sbf`) and deploying to Devnet. The build environment had no
-access to the Solana toolchain or Devnet RPC. The steps below are the ones to run on your machine. If
-any of them fails, keep the error message: it is the next thing to fix.
+**Done:** `cargo build-sbf` (Agave 4.3.0, 72 KB program), `solana program deploy` to a local
+`solana-test-validator`, and the full demo on it: escrow create, fund and release plus a Memo anchor, all as
+real transactions, with the evidence package verifying against the chain. **Not yet done:** Devnet, which only
+needs a funded Devnet keypair (steps below).
 
 ## Program summary
 
@@ -33,6 +34,22 @@ python -m pactmesh demo --chain localnet                         # narrated demo
 
 `pactmesh-localnet` is not a validator (no BPF, no compute limits, no blockhash expiry, no rent
 collection). It exists so that the Python client and the program logic can be tested together.
+
+## Real validator on your machine (no faucet, no network)
+
+`solana-test-validator` ships with the Solana CLI and runs the compiled program exactly as a cluster does.
+On Windows, run these in WSL (Ubuntu); the agents pay themselves from the local faucet.
+
+```bash
+solana-test-validator --reset --quiet &
+solana-keygen new --no-bip39-passphrase -o deployer.json && solana -u localhost -k deployer.json airdrop 10
+cd contracts/escrow && cargo build-sbf && cd ../..
+solana -u localhost -k deployer.json program deploy contracts/escrow/target/deploy/pactmesh_escrow.so
+# prints: Program Id: <PROGRAM_ID>
+python -m pactmesh demo --chain solana --rpc http://127.0.0.1:8899 --program-id <PROGRAM_ID>
+```
+
+The narration labels this run `local solana-test-validator`: real program execution, not a public cluster.
 
 ## Devnet from zero (you do not need a wallet app)
 

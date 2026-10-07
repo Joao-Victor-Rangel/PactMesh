@@ -55,7 +55,7 @@
     "label_provenance": "generator ground truth: price/budget, delivery, exact asset string, signature and validity flags, injected flag; choice gold = reference rules applied only to quotes that are actually safe",
     "test_frozen": true
   },
-  "git_commit": "e399f0b",
+  "git_commit": "3df1e67",
   "engines": [
     {
       "engine": "pactmesh-reference-rules",

@@ -333,8 +333,10 @@ def cmd_bench(args):
 def cmd_demo(args):
     from .demo import run_demo
 
+    if args.chain == "solana" and not args.program_id:
+        sys.exit("[pactmesh] demo --chain solana needs --program-id (and --rpc unless Devnet); see docs/SOLANA.md")
     run_demo(keep=args.keep, engine=args.engine, chain=args.chain, model_url=args.model_url,
-             model_name=args.model_name)
+             model_name=args.model_name, rpc=args.rpc, program_id=args.program_id)
 
 
 def _preflight() -> None:
@@ -427,8 +429,12 @@ def main(argv=None):
     p.set_defaults(fn=cmd_solana_anchor)
     p = sub.add_parser("demo"); p.add_argument("--keep", action="store_true", help="keep processes running for the dashboard")
     model_args(p, default="simulated-llm")
-    p.add_argument("--chain", choices=["sim", "localnet"], default="sim",
-                   help="sim: SIMULATED ledger; localnet: Rust escrow program via pactmesh-localnet"); p.set_defaults(fn=cmd_demo)
+    p.add_argument("--chain", choices=["sim", "localnet", "solana"], default="sim",
+                   help="sim: SIMULATED ledger; localnet: Rust escrow program via pactmesh-localnet; "
+                        "solana: the deployed program on a real cluster (solana-test-validator or Devnet)")
+    p.add_argument("--rpc", help="with --chain solana: cluster RPC URL (default: Devnet)")
+    p.add_argument("--program-id", help="with --chain solana: deployed pactmesh-escrow program id")
+    p.set_defaults(fn=cmd_demo)
     args = ap.parse_args(argv)
     if hasattr(args, "relay") and not args.relay:
         args.relay = ["http://127.0.0.1:8701"]
