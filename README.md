@@ -20,7 +20,7 @@ pip install -r requirements.txt -r requirements-dev.txt
 python -m cripito demo            # 5 independent processes, full flow, narrated
 python -m cripito demo --keep     # same, then keep running and print the dashboard URL
 python -m cripito demo --chain localnet   # same flow on the Rust escrow program (needs cargo)
-pytest                            # 56 tests, including the spec's mandatory failure cases
+pytest                            # 58 tests, including the spec's mandatory failure cases
 cargo test --manifest-path contracts/escrow/Cargo.toml   # 8 tests of the Solana escrow program
 python -m cripito eval            # 300 seeded synthetic negotiations -> evaluation/results.json
 ```
@@ -53,6 +53,10 @@ payment; the evidence package verifies, a tampered copy fails, and the relay log
 
 ## Architecture
 
+![architecture](docs/architecture.png)
+
+<details><summary>Text version</summary>
+
 ```
             ┌───────────── buyer process ─────────────┐
  dashboard ─┤ API ─ Negotiator ─ Policy ─ Executor ───┼──► ledger (SIMULATED; Solana adapter)
@@ -68,6 +72,10 @@ payment; the evidence package verifies, a tampered copy fails, and the relay log
    supplier alpha process          supplier beta process
    (own vault, keys, wallet)       (own vault, keys, wallet)
 ```
+
+</details>
+
+Submission material (form text, video script, checklist): [docs/SUBMISSION.md](docs/SUBMISSION.md).
 
 Repository layout: `cripito/protocol.py` (schemas), `crypto.py`, `canonical.py`, `transport/` (direct relay,
 mixnet stub), `runtime.py`, `buyer.py`, `supplier.py`, `policy.py`, `decision.py`, `verifier.py`,
@@ -137,5 +145,11 @@ acordo assinado, escrow (ledger **simulado** ou o programa Rust de escrow via `-
 cifrada, verificação, liberação, recibo e detecção de adulteração. O escrow para Solana, o transporte pela
 mixnet Nym e o motor para modelos locais estão implementados e testados localmente. O deploy na Devnet, a
 rede Nym real e a avaliação do Laya ainda precisam ser executados (ver `docs/`).
+
+## Open source and free
+
+Cripito is MIT-licensed. All 206 dependencies have permissive licenses, checked automatically by
+`scripts/license_inventory.py` (see [docs/LICENSES.md](docs/LICENSES.md)). Building, testing and running the
+demo cost nothing: no paid APIs, no real money, no hosting. See [docs/OPEN_AND_FREE.md](docs/OPEN_AND_FREE.md).
 
 License: MIT (see `LICENSE`).
