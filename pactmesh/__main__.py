@@ -79,7 +79,12 @@ def _ledger(args):
 
         if not args.program_id:
             sys.exit("[pactmesh] --program-id is required with --chain solana (see docs/SOLANA.md)")
-        return SolanaEscrowClient(args.rpc or DEVNET_RPC, args.program_id)
+        funder = None
+        if getattr(args, "funder", None):
+            from .ledger import Wallet
+
+            funder = Wallet.from_solana_keypair(Path(args.funder)).key
+        return SolanaEscrowClient(args.rpc or DEVNET_RPC, args.program_id, funder=funder)
     from .ledger import SimLedgerClient
 
     return SimLedgerClient(args.ledger)
@@ -336,7 +341,7 @@ def cmd_demo(args):
     if args.chain == "solana" and not args.program_id:
         sys.exit("[pactmesh] demo --chain solana needs --program-id (and --rpc unless Devnet); see docs/SOLANA.md")
     run_demo(keep=args.keep, engine=args.engine, chain=args.chain, model_url=args.model_url,
-             model_name=args.model_name, rpc=args.rpc, program_id=args.program_id)
+             model_name=args.model_name, rpc=args.rpc, program_id=args.program_id, funder=args.funder)
 
 
 def _preflight() -> None:
@@ -374,6 +379,7 @@ def main(argv=None):
         p.add_argument("--ledger", default="http://127.0.0.1:8702", help="SIMULATED ledger URL (--chain sim)")
         chain(p)
         p.add_argument("--keypair", help="solana-keygen JSON to use as this agent's payment key")
+        p.add_argument("--funder", help="funded solana-keygen JSON that tops up an empty wallet (Devnet: no airdrops)")
         p.add_argument("--transport", choices=["direct", "mixnet"], default="direct")
         p.add_argument("--nym-client", default=None, help="local nym-client websocket, e.g. ws://127.0.0.1:1977")
         p.add_argument("--relay-nym", default=None, help="the relay's Nym address (mixnet mode)")
@@ -434,6 +440,8 @@ def main(argv=None):
                         "solana: the deployed program on a real cluster (solana-test-validator or Devnet)")
     p.add_argument("--rpc", help="with --chain solana: cluster RPC URL (default: Devnet)")
     p.add_argument("--program-id", help="with --chain solana: deployed pactmesh-escrow program id")
+    p.add_argument("--funder", help="with --chain solana: funded solana-keygen JSON that tops up each agent "
+                                    "(needed on Devnet, where airdrops are rate-limited)")
     p.set_defaults(fn=cmd_demo)
     args = ap.parse_args(argv)
     if hasattr(args, "relay") and not args.relay:

@@ -20,6 +20,7 @@ import base64
 import hashlib
 import json
 import re
+import struct
 import time
 import urllib.error
 import urllib.request
@@ -34,6 +35,8 @@ SYSTEM_PROGRAM = "11111111111111111111111111111111"
 ESCROW_SEED = b"pactmesh-escrow"
 NETWORK = "solana-devnet"
 ASSET = "SOL"
+# Top-up from a funder key: a rent-exempt system account plus fees for a demo run (0.01 SOL).
+FUND_LAMPORTS = 10_000_000
 ESCROW_LEN = 115
 STATES = ["CREATED", "FUNDED", "RELEASED", "REFUNDED", "DISPUTED"]
 ERRORS = {1: "WRONG_AUTHORITY", 2: "BAD_STATE", 3: "PAYEE_MISMATCH", 4: "AMOUNT_OR_MINT_MISMATCH",
@@ -208,10 +211,11 @@ class SolanaEscrowClient:
     network = NETWORK
     test_mint = ASSET
 
-    def __init__(self, rpc: str, program_id: str, wallet=None):
+    def __init__(self, rpc: str, program_id: str, wallet=None, funder: SigningKey | None = None):
         self.rpc = _Rpc(rpc)
         self.program_id = b58decode(program_id)
         self.wallet = wallet
+        self.funder = funder
         self._failed: dict[str, str] = {}
 
     @property
@@ -235,7 +239,18 @@ class SolanaEscrowClient:
         return {ASSET: str(lamports)}
 
     def faucet(self) -> dict:
-        return {"airdrop": self.rpc("requestAirdrop", [self.address, 1_000_000_000])}
+        if self.funder is None:
+            return {"airdrop": self.rpc("requestAirdrop", [self.address, 1_000_000_000])}
+        # Public clusters rate-limit airdrops, and a payee account must be rent-exempt to receive a
+        # payment at all: top the wallet up from a funded Devnet key instead (system transfer).
+        ix = (b58decode(SYSTEM_PROGRAM), [(self.funder.verify_key.encode(), True, True),
+                                          (self.wallet.key.verify_key.encode(), False, True)],
+              struct.pack("<IQ", 2, FUND_LAMPORTS))
+        bh = self.rpc("getLatestBlockhash", [{"commitment": "confirmed"}])["value"]["blockhash"]
+        raw, sig = build_tx(self.funder, [ix], bh)
+        self.rpc("sendTransaction", [base64.b64encode(raw).decode(), {"encoding": "base64",
+                                                                      "preflightCommitment": "confirmed"}])
+        return {"transfer": self.wait(sig, "confirmed")}
 
     def ensure_funds(self) -> None:
         if int(self.balance()[ASSET]) == 0:

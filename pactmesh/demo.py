@@ -65,12 +65,13 @@ def wait_http(url: str, timeout: float = 30) -> None:
     raise SystemExit(f"[demo] timeout waiting for {url}. " + (_child_failure() or "Check the logs in .pactmesh-demo/logs"))
 
 
-LOCALNET_BIN = ROOT / "contracts" / "escrow" / "target" / "debug" / "pactmesh-localnet"
+LOCALNET_BIN = ROOT / "contracts" / "escrow" / "target" / "debug" / ("pactmesh-localnet" + (".exe" if os.name == "nt" else ""))
 LOCALNET_PROGRAM = "7DYCAhqwQSKqqL1h8V1XmY1BTcMWxrASQYKNMy87jeg3"  # bytes [0x5c]*32, matches fixtures.json
 
 
 def run_demo(keep: bool = False, engine: str = "simulated-llm", chain: str = "sim", model_url: str | None = None,
-             model_name: str | None = None, rpc: str | None = None, program_id: str | None = None) -> None:
+             model_name: str | None = None, rpc: str | None = None, program_id: str | None = None,
+             funder: str | None = None) -> None:
     home = ROOT / ".pactmesh-demo"
     shutil.rmtree(home, ignore_errors=True)
     home.mkdir()
@@ -87,6 +88,8 @@ def run_demo(keep: bool = False, engine: str = "simulated-llm", chain: str = "si
 
         rpc = rpc or DEVNET_RPC
         net += ["--chain", "solana", "--rpc", rpc, "--program-id", program_id]
+        if funder:
+            net += ["--funder", str(Path(funder).resolve())]
     rpc = rpc or f"http://127.0.0.1:{BASE + 3}"
     if chain == "localnet":
         if not LOCALNET_BIN.exists():

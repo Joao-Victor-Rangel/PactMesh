@@ -4,6 +4,7 @@ Build first:  cargo build --manifest-path contracts/escrow/Cargo.toml --features
 (skipped automatically when the binary is missing).
 """
 
+import os
 import socket
 import subprocess
 import time
@@ -19,7 +20,7 @@ from pactmesh.policy import DEFAULT_POLICY
 from pactmesh.supplier import Supplier
 
 ROOT = Path(__file__).resolve().parents[1]
-BIN = ROOT / "contracts" / "escrow" / "target" / "debug" / "pactmesh-localnet"
+BIN = ROOT / "contracts" / "escrow" / "target" / "debug" / ("pactmesh-localnet" + (".exe" if os.name == "nt" else ""))
 PROGRAM_ID = b58encode(bytes([0x5C]) * 32)
 POLICY = {**DEFAULT_POLICY, "allowed_settlement": [{"network": "solana-devnet", "asset": "SOL"}]}
 

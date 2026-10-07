@@ -71,7 +71,13 @@ The narration labels this run `local solana-test-validator`: real program execut
    # prints: Program Id: <PROGRAM_ID>
    cd ../..
    ```
-4. Run the agents on Devnet (amounts are lamports; the buyer pays rent of about 0.0017 SOL per escrow):
+4. Run the narrated demo on Devnet. Airdrops are rate-limited there, and a payee account must be
+   rent-exempt to receive a payment at all, so `--funder` tops up each agent with 0.01 SOL from your
+   Devnet keypair (about 0.03 SOL per run):
+   ```bash
+   python -m pactmesh demo --chain solana --program-id <PROGRAM_ID> --funder devnet.json
+   ```
+   Or run the agents yourself (amounts are lamports; the buyer pays rent of about 0.0017 SOL per escrow):
    ```bash
    python -m pactmesh relay --port 8701
    python -m pactmesh supplier --name alpha --price 90 --min-price 78 --chain solana --program-id <PROGRAM_ID>

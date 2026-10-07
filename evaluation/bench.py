@@ -50,7 +50,7 @@ STAGES = [
     ("settlement", "VERIFIED", "SETTLED"),
     ("total", "CREATED", "SETTLED"),
 ]
-LOCALNET_BIN = ROOT / "contracts" / "escrow" / "target" / "debug" / "pactmesh-localnet"
+LOCALNET_BIN = ROOT / "contracts" / "escrow" / "target" / "debug" / ("pactmesh-localnet" + (".exe" if os.name == "nt" else ""))
 
 
 def pct(xs: list[float], p: float) -> float:
