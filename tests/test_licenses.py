@@ -10,7 +10,7 @@ from license_inventory import permitted  # noqa: E402
 
 def test_spdx_evaluation():
     for ok in ("MIT", "Apache-2.0", "MIT OR Apache-2.0", "MIT/Apache-2.0", "(MIT OR Apache-2.0) AND Unicode-3.0",
-               "Apache-2.0 WITH LLVM-exception OR Apache-2.0 OR MIT", "MIT OR GPL-3.0"):
+               "Apache-2.0 WITH LLVM-exception OR Apache-2.0 OR MIT", "MIT OR GPL-3.0", "Apache 2.0 License"):
         assert permitted(ok), ok
     for bad in ("GPL-3.0", "AGPL-3.0-only", "MIT AND GPL-3.0", "Proprietary", "", "LicenseRef-Commercial", "SSPL-1.0"):
         assert not permitted(bad), bad

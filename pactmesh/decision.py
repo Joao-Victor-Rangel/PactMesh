@@ -168,6 +168,10 @@ class HttpModelEngine:
             return d
         finally:
             d.latency_ms = int((time.perf_counter() - t0) * 1000)
+        if isinstance(out, dict) and isinstance(out.get("model_id"), str):
+            # Record which checkpoint actually answered (e.g. the Laya revision served locally).
+            self.model_id = d.model_id = f"http:{out['model_id']}"[:120]
+            self.model_revision = d.model_revision = str(out.get("model_revision", self.model_revision))[:64]
         return validate_output(out, options, d)
 
 

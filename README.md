@@ -23,7 +23,7 @@ pip install -r requirements.txt -r requirements-dev.txt
 python -m pactmesh demo            # 5 independent processes, full flow, narrated
 python -m pactmesh demo --keep     # same, then keep running and print the dashboard URL
 python -m pactmesh demo --chain localnet   # same flow on the Rust escrow program (needs cargo)
-pytest                            # 74 tests, including the spec's mandatory failure cases
+pytest                            # 79 tests (+2 with requirements-model.txt), including the spec's mandatory failure cases
 cargo test --manifest-path contracts/escrow/Cargo.toml   # 8 tests of the Solana escrow program
 python -m pactmesh eval            # 300 seeded synthetic negotiations -> evaluation/results.json
 ```
@@ -45,7 +45,7 @@ payment; the evidence package verifies, a tampered copy fails, and the relay log
 | Three+ independent processes, own SQLite vault, keys and runtime each | **Implemented** |
 | Persisted inbox (dedup) / outbox (bounded retries, backoff + jitter), atomic transition + event + outbox, crash recovery | **Implemented** |
 | Deterministic policy engine: budget with atomic reservation, allow-listed network/asset, payee, quote signature/validity, verifier, idempotency, kill switch, signed short-lived authorizations re-validated before execution | **Implemented** |
-| Decision engines: reference rules; simulated gullible LM (test double); any local OpenAI-compatible model server (Ollama, llama.cpp, vLLM) or custom HTTP, with strict output validation and declared fallback/abstention; `eval` compares them on the same scenarios | **Implemented**, tested against a fake model server. Laya itself **not yet evaluated** (see [docs/MODELS.md](docs/MODELS.md)) |
+| Decision engines: reference rules; simulated gullible LM (test double); local model server with choice scoring for any Hugging Face causal LM (the Laya path); OpenAI-compatible servers (Ollama, llama.cpp, vLLM); strict validation, declared fallback/abstention; `eval` compares them on the same scenarios | **Implemented.** The Transformers backend was tested on a real (tiny, locally built) model end to end. **Laya's weights not yet run**: Hugging Face was unreachable from the build environment; `scripts/run_laya.sh` does it in one command (see [docs/MODELS.md](docs/MODELS.md)) |
 | Verifier `pactmesh.stats 1.0` (count, mean, median, sample stdev, linear percentiles, 6-dp decimal strings) | **Implemented** |
 | Signed hash-chained event log, hiding commitments, Merkle batches with domain separation, inclusion proofs, selective disclosure, auditor verification | **Implemented** |
 | Escrow + anchoring, default demo | **SIMULATED** local ledger process (signed txs, fees, slot expiry, confirmation levels, escrow state machine). It is *not* a blockchain and is labelled as such everywhere |

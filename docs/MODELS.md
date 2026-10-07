@@ -35,10 +35,33 @@ model, and writes `evaluation/results.json` with:
 - output validity (`valid` / `invalid_output` / `unavailable`) and coverage (non-abstain rate)
 - macro F1 against rule-derived labels, and latency p50/p95
 
-## Laya
+## Laya (the specification's candidate) — one command
 
-Laya is the candidate named in the specification. Serve the checkpoint behind any OpenAI-compatible
-server that supports its architecture, then run the commands above with its model name and pinned
-revision. This was **not** verified from the build environment (Hugging Face was unreachable), so check
-the model card for license, language and input limits first. Report results exactly as measured; if
-Laya does not beat the reference rules, the specification says to present the AI as an experiment.
+```bash
+scripts/run_laya.sh            # downloads convaiinnovations/laya on first run, serves it, evaluates, demos
+# or step by step:
+pip install -r requirements-model.txt
+python -m pactmesh model-server --hf convaiinnovations/laya --revision <commit> --port 9000
+python -m pactmesh eval --engine http --model-url http://127.0.0.1:9000/decide --out evaluation/results-laya.json
+python -m pactmesh demo --engine http+fallback --model-url http://127.0.0.1:9000/decide
+```
+
+`model-server` uses **choice scoring**: it lists every action the policy grid allows (accept quote q,
+counteroffer q at each grid price, reject), asks the model for the log-likelihood of each, and returns the
+best one with normalized scores and a confidence value (`--abstain-below` turns low confidence into
+ABSTAIN). The output is always a valid typed decision, with no free-text parsing involved.
+
+### What is verified and what is not
+
+| | Status |
+|---|---|
+| Choice-scoring server, engine contract, abstention, eval integration | tested (`tests/test_modelserver.py`) |
+| Real `TransformersBackend` on a genuine Hugging Face causal LM (tiny Llama built locally, random weights) | tested (`tests/test_transformers_backend.py`, needs torch) |
+| `scripts/run_laya.sh` end to end (serve, 300-scenario eval, full demo) with that local model | run in the build environment: 0 executed violations; the policy blocked all 40 unsafe recommendations of the random model |
+| **Laya's actual weights** | **not yet run**: the build environment cannot reach huggingface.co. Allow that host (and its CDN) in the environment's network settings, or run the script on your machine |
+
+Before you quote Laya numbers: check its model card (license, languages, input size, intended
+interface) and pin the revision. If the card prescribes its own choice/scoring API, adapt
+`TransformersBackend.score`. Only pass `--trust-remote-code` after reviewing the model's code. If Laya
+does not beat the reference rules on `evaluation/results-laya.json`, the specification says to present the
+AI as an experiment, and the reference rules remain the default.

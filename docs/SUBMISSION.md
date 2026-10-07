@@ -29,7 +29,7 @@ Deadline: **12 Oct 2026, 23:59 PDT** (13 Oct, 03:59 Brasília). Plan to submit o
 > hidden randomness into Merkle batches anchored on chain, so an auditor can verify a selectively
 > disclosed receipt without seeing the whole conversation, and any tampering shows up.
 > Any MCP-capable AI agent can use it as a tool, without ever holding keys.
-> Everything is open source (MIT) and free to run: 74 Python tests, 8 Rust tests, a 300-scenario
+> Everything is open source (MIT) and free to run: 79 Python tests, 8 Rust tests, a 300-scenario
 > evaluation, a latency/cost benchmark, and a one-command demo.
 
 **Links to provide:** public GitHub repository · demo video · (if deployed) Devnet program id and explorer

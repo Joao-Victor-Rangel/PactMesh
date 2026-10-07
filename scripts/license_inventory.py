@@ -24,8 +24,14 @@ CLASSIFIERS = {"MIT License": "MIT", "Apache Software License": "Apache-2.0", "B
                "Python Software Foundation License": "PSF-2.0", "ISC License (ISCL)": "ISC"}
 
 
+ALIASES = {"Apache 2.0 License": "Apache-2.0", "Apache License 2.0": "Apache-2.0", "Apache 2.0": "Apache-2.0",
+           "Apache License, Version 2.0": "Apache-2.0", "MIT License": "MIT", "BSD 3-Clause": "BSD-3-Clause",
+           "BSD-3": "BSD-3-Clause", "3-Clause BSD License": "BSD-3-Clause"}
+
+
 def permitted(expr: str) -> bool:
     """Tiny SPDX evaluator: OR = any side allowed, AND = all sides allowed."""
+    expr = ALIASES.get(expr.strip(), expr)
     expr = expr.replace("/", " OR ").strip()
     if not expr:
         return False
@@ -55,7 +61,8 @@ def permitted(expr: str) -> bool:
 
 def python_deps() -> list[tuple[str, str, str, str]]:
     rows = []
-    for req_file, scope in (("requirements.txt", "runtime"), ("requirements-dev.txt", "dev/test")):
+    for req_file, scope in (("requirements.txt", "runtime"), ("requirements-dev.txt", "dev/test"),
+                            ("requirements-model.txt", "optional model")):
         for line in (ROOT / req_file).read_text().splitlines():
             name = line.split("==")[0].strip()
             if not name or name.startswith("#"):
@@ -63,6 +70,8 @@ def python_deps() -> list[tuple[str, str, str, str]]:
             try:
                 m = distribution(name).metadata
             except PackageNotFoundError:
+                if scope == "optional model":
+                    continue  # optional extras are checked only where they are installed
                 rows.append((name, "?", "NOT INSTALLED", scope))
                 continue
             lic = m.get("License-Expression") or ""

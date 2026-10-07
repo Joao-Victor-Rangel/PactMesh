@@ -222,6 +222,21 @@ def cmd_mcp(args):
     PactMeshMCP(args.api, token).serve_stdio()
 
 
+def cmd_model_server(args):
+    from .modelserver import RuleBackend, TransformersBackend, build_app
+
+    if args.backend == "rule":
+        backend = RuleBackend()
+    else:
+        if not args.hf:
+            sys.exit("[model-server] --hf <model id or local path> is required (e.g. convaiinnovations/laya)")
+        backend = TransformersBackend(args.hf, args.revision, args.trust_remote_code)
+    srv = build_app(backend, args.abstain_below).serve(args.host, args.port)
+    print(f"[model-server] {backend.model_id}@{backend.revision} choice-scoring on "
+          f"http://{args.host}:{args.port}/decide", flush=True)
+    srv.serve_forever()
+
+
 def cmd_bench(args):
     sys.path.insert(0, str(ROOT))
     from evaluation.bench import run
@@ -233,7 +248,8 @@ def cmd_bench(args):
 def cmd_demo(args):
     from .demo import run_demo
 
-    run_demo(keep=args.keep, engine=args.engine, chain=args.chain)
+    run_demo(keep=args.keep, engine=args.engine, chain=args.chain, model_url=args.model_url,
+             model_name=args.model_name)
 
 
 def main(argv=None):
@@ -276,6 +292,13 @@ def main(argv=None):
     p = sub.add_parser("mcp", help="MCP server (stdio) exposing a running buyer to any MCP-capable AI agent")
     p.add_argument("--api", default="http://127.0.0.1:8700"); p.add_argument("--token-file", default=".pactmesh/buyer/admin_token")
     p.set_defaults(fn=cmd_mcp)
+    p = sub.add_parser("model-server", help="serve a local model (e.g. Laya) as Cripto's decision engine")
+    p.add_argument("--hf", help="Hugging Face model id or local path"); p.add_argument("--revision")
+    p.add_argument("--backend", choices=["transformers", "rule"], default="transformers")
+    p.add_argument("--trust-remote-code", action="store_true", help="only if you reviewed the model's code")
+    p.add_argument("--abstain-below", type=float, default=0.0, help="ABSTAIN when best-option probability is lower")
+    p.add_argument("--host", default="127.0.0.1"); p.add_argument("--port", type=int, default=9000)
+    p.set_defaults(fn=cmd_model_server)
     p = sub.add_parser("bench", help="measure latency per stage and cost per contract")
     p.add_argument("--n", type=int, default=10); p.add_argument("--chain", choices=["sim", "localnet"], default="sim")
     p.add_argument("--out"); p.set_defaults(fn=cmd_bench)
@@ -286,7 +309,7 @@ def main(argv=None):
     p.add_argument("package"); p.add_argument("--keypair", required=True); p.add_argument("--rpc")
     p.set_defaults(fn=cmd_solana_anchor)
     p = sub.add_parser("demo"); p.add_argument("--keep", action="store_true", help="keep processes running for the dashboard")
-    p.add_argument("--engine", choices=["reference", "simulated-llm"], default="simulated-llm")
+    model_args(p, default="simulated-llm")
     p.add_argument("--chain", choices=["sim", "localnet"], default="sim",
                    help="sim: SIMULATED ledger; localnet: Rust escrow program via pactmesh-localnet"); p.set_defaults(fn=cmd_demo)
     args = ap.parse_args(argv)
