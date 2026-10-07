@@ -9,43 +9,43 @@
   },
   "latency": {
     "discovery": {
-      "p50_ms": 30.0,
-      "p95_ms": 35.8,
+      "p50_ms": 31.5,
+      "p95_ms": 37.5,
       "n": 10
     },
     "quotes": {
-      "p50_ms": 45.5,
-      "p95_ms": 53.0,
+      "p50_ms": 47.5,
+      "p95_ms": 56.2,
       "n": 10
     },
     "negotiation": {
-      "p50_ms": 132.0,
-      "p95_ms": 150.8,
+      "p50_ms": 133.0,
+      "p95_ms": 145.3,
       "n": 10
     },
     "funding": {
-      "p50_ms": 171.5,
-      "p95_ms": 344.3,
+      "p50_ms": 159.0,
+      "p95_ms": 195.7,
       "n": 10
     },
     "delivery": {
-      "p50_ms": 49.5,
-      "p95_ms": 58.7,
+      "p50_ms": 51.0,
+      "p95_ms": 58.2,
       "n": 10
     },
     "verification": {
       "p50_ms": 4.0,
-      "p95_ms": 5.0,
+      "p95_ms": 6.0,
       "n": 10
     },
     "settlement": {
-      "p50_ms": 1538.0,
-      "p95_ms": 1566.8,
+      "p50_ms": 1543.5,
+      "p95_ms": 1555.7,
       "n": 10
     },
     "total": {
-      "p50_ms": 1977.0,
-      "p95_ms": 2127.1,
+      "p50_ms": 1977.5,
+      "p95_ms": 1996.8,
       "n": 10
     }
   },
@@ -57,6 +57,6 @@
     "relay_envelope_bytes": 34816,
     "relay_blob_bytes": 7303,
     "relay_operations": 11.0,
-    "buyer_vault_bytes": 462396
+    "buyer_vault_bytes": 463218
   }
 }

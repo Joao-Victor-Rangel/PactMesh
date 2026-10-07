@@ -170,8 +170,11 @@ class Agent:
 
     def process_inbox(self) -> None:
         rows = self.store.q("SELECT message_id, msg FROM inbox WHERE processed=0 ORDER BY received_at, rowid")
+        deferred: set[str] = set()  # sessions with a postponed message: keep their order
         for r in rows:
             msg = json.loads(r["msg"])
+            if msg["session_id"] in deferred:
+                continue
             if parse_iso(msg["expires_at"]) < now():
                 self._finish(r["message_id"], "EXPIRED")
                 continue
@@ -181,7 +184,10 @@ class Agent:
                     self.handle(msg)
                     self._advance_sequence(msg)
                     self.store.q("UPDATE inbox SET processed=1, result='OK' WHERE message_id=?", (r["message_id"],))
-            except Retry:
+            except (Retry, LedgerError):
+                # Transient (e.g. ledger RPC down): leave it in the inbox, retry next round,
+                # and hold back later messages of the same session so ordering is preserved.
+                deferred.add(msg["session_id"])
                 continue
             except ProtocolError as e:
                 self.metrics["rejected_messages"] += 1

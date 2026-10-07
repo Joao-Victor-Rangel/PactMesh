@@ -26,6 +26,11 @@ DEFAULT_POLICY = {
     "authorization_ttl_seconds": 30,
     # Counteroffer prices come from a bounded grid (fractions of the quote).
     "counter_grid_percent": [90, 85, 80],
+    # Exclude a supplier after this many failed verifications / missing deliveries
+    # recorded in this buyer's own evidence (0 disables).
+    "exclude_after_failures": 1,
+    # At most this many open (funded but not yet verified) contracts with one supplier.
+    "max_open_contracts_per_supplier": 1,
 }
 
 # Block codes are part of the documented protocol surface.
@@ -50,7 +55,10 @@ CODES = {
     "ROUNDS_EXCEEDED": "maximum counteroffer rounds reached",
     "AUTH_EXPIRED": "authorization no longer valid",
     "AUTH_PARAMS_MISMATCH": "effective parameters differ from authorization",
+    "EXPOSURE_LIMIT": "too many open, unverified contracts with this supplier",
 }
+
+OPEN_STATES = ("AGREED", "FUNDING_PENDING", "FUNDED", "DELIVERED", "VERIFIED", "SETTLEMENT_PENDING")
 
 
 class PolicyEngine:
@@ -165,6 +173,13 @@ class PolicyEngine:
             return r("PAYEE_MISMATCH", "recipient")
         if terms["delivery_seconds"] > task["requirements"]["max_delivery_seconds"]:
             return r("DEADLINE_NOT_MET", "requirements")
+        limit = int(self.config.get("max_open_contracts_per_supplier", 0))
+        if limit > 0:
+            open_with_supplier = sum(
+                1 for n in self.store.list_negotiations(OPEN_STATES)
+                if n["id"] != nid and (n["data"].get("agreement") or {}).get("supplier_key_id") == terms["supplier_key_id"])
+            if open_with_supplier >= limit:
+                return r("EXPOSURE_LIMIT", "max_open_contracts_per_supplier")
         task_budget = min(int(task["budget"]), int(self.config["max_per_task"]))
         if price > task_budget:
             return r("BUDGET_EXCEEDED", "budget")

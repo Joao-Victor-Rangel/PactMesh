@@ -26,7 +26,7 @@ pip install -r requirements.txt -r requirements-dev.txt
 python -m pactmesh demo            # 5 independent processes, full flow, narrated
 python -m pactmesh demo --keep     # same, then keep running and print the dashboard URL
 python -m pactmesh demo --chain localnet   # same flow on the Rust escrow program (needs cargo)
-pytest                            # 90 tests (+3 with requirements-model.txt), including the spec's mandatory failure cases
+pytest                            # 94 tests (+3 with requirements-model.txt), including the spec's mandatory failure cases
 cargo test --manifest-path contracts/escrow/Cargo.toml   # 8 tests of the Solana escrow program
 python -m pactmesh eval            # 300 seeded synthetic negotiations -> evaluation/results.json
 ```
@@ -140,6 +140,26 @@ signature, slow). Every recommendation goes through the same policy as the runti
 
 Labels are rule-derived, not human-reviewed, and 300 cases is a coverage target, not a statistically
 sufficient sample. These numbers show the policy holds under the suite; they say nothing about model quality.
+
+## Market simulation (`python -m pactmesh simulate`)
+
+A whole market on the real stack: 6 Cripto buyers (36 tasks, budgets that cannot cover everything) and 8
+suppliers. Two are honest and cheap, one honest premium, one greedy, one prompt injector, one that never
+delivers, one out-of-format, one with wrong numbers. All under scheduled chaos: a relay replica outage,
+a buyer crash and restart from disk, a ledger outage, and a replay attacker. 14 global invariants are
+checked at the end, among them money conservation, budgets, no double payment, disputes, refunds,
+evidence, privacy, learning and liveness.
+
+| Seed | Tasks | Settled | Disputed | Expired (refunded) | Cancelled | Invariants | Wall time |
+|---|---|---|---|---|---|---|---|
+| 7 | 36 | 12 | 12 | 6 | 6 | 14/14 | 40.6 s |
+| 11 | 36 | 12 | 12 | 6 | 6 | 14/14 | 38.1 s |
+| 23 | 36 | 18 | 12 | 6 | 0 | 14/14 | 37.5 s |
+| 42 | 36 | 12 | 12 | 6 | 6 | 14/14 | 45.4 s |
+
+Each buyer is fooled at most once per dishonest supplier, then excludes it using its own verified
+history and pays the honest ones. A 12 × 12 market (72 tasks) also holds all invariants. Details and
+what the simulation forced us to fix: [docs/SIMULATION.md](docs/SIMULATION.md).
 
 ## Typed decisions with Laya: benchmark (`python -m pactmesh laya-bench`)
 

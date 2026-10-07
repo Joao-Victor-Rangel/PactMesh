@@ -67,6 +67,8 @@ def main() -> int:
         ok_all &= rc == 0
     shutil.rmtree(ROOT / ".pactmesh-demo", ignore_errors=True)
 
+    rc, _sim, _ = run([PY, "-m", "pactmesh", "simulate", "--seeds", "7,11,23,42"])
+    ok_all &= rc == 0
     run([PY, "-m", "pactmesh", "laya-build"])
     rc, laya_txt, _ = run([PY, "-m", "pactmesh", "laya-bench"])
     ok_all &= rc == 0
@@ -100,6 +102,10 @@ def main() -> int:
         section("Same flow on the Rust escrow program (pactmesh-localnet)")
         keep = [ln for ln in demo_local.splitlines() if re.match(r"\[(chain|policy|exec|settle|audit|verify)\]", ln)]
         out += [f"`python -m pactmesh demo --chain localnet` ({dt_local:.0f}s):", "", "```text", *keep, "```"]
+
+    section("Market simulation (many agents, adversaries, chaos, global invariants)")
+    out += [(ROOT / "evaluation" / "market" / "seeds.md").read_text(encoding="utf-8").split("\n", 2)[2].strip(),
+            "", "Full run and invariant details: `evaluation/market/results.md`."]
 
     section("Typed decision benchmark for Laya (choice / score / binary)")
     laya_md = (ROOT / "evaluation" / "laya" / "results.md").read_text(encoding="utf-8").split("\n", 2)[2]
