@@ -398,3 +398,48 @@ def test_decision_reference_never_invents_price():
              "counter_prices": [81, 76, 72], "final": False}]
     d: Decision = eng.decide({"round": 0, "max_rounds": 3, "budget": "100", "max_delivery_seconds": 120}, opts)
     assert d.action == "COUNTEROFFER" and d.counter_price in opts[0]["counter_prices"]
+
+
+def test_exposure_limit_one_open_contract_per_supplier(net, dataset):
+    net.supplier("silent", price=80, min_price=80, behavior="silent", delivery=30)
+    b = net.buyer()
+    t1 = b.create_task(csv_bytes=dataset, column="latency_ms", budget=100, quote_window_seconds=2)
+    assert net.run(lambda: st(b, t1) == "FUNDED", advance=0.3)
+    t2 = b.create_task(csv_bytes=dataset, column="latency_ms", budget=100, quote_window_seconds=2)
+    assert net.run(lambda: st(b, t2) in ("CANCELLED",) or b.store.records("timeline", t2), advance=0.3)
+    codes = [r["code"] for r in b.store.records("policy_result", t2)]
+    assert "EXPOSURE_LIMIT" in codes and "OK" not in [r["code"] for r in b.store.records("policy_result", t2)
+                                                       if r["action"] == "ACCEPT_QUOTE"]
+
+
+def test_buyer_excludes_supplier_after_failed_verification(net, dataset):
+    from pactmesh.policy import DEFAULT_POLICY
+
+    net.supplier("cheat", price=70, min_price=70, behavior="wrong_values")
+    net.supplier("honest", price=80, min_price=80)
+    b = net.buyer(policy={**DEFAULT_POLICY, "budget_total": "300"})  # disputed funds stay locked in escrow
+    t1 = b.create_task(csv_bytes=dataset, column="latency_ms", budget=100, quote_window_seconds=2)
+    assert net.run(lambda: done(b, t1), advance=0.5)
+    assert st(b, t1) == "DISPUTED"
+    t2 = b.create_task(csv_bytes=dataset, column="latency_ms", budget=100, quote_window_seconds=2)
+    assert net.run(lambda: done(b, t2), advance=0.5)
+    n2 = b.store.get_negotiation(t2)
+    assert n2["state"] == "SETTLED" and n2["data"]["excluded_by_history"] == ["cheat"]
+    h = b.supplier_history()
+    assert sorted(v["failed_verification"] for v in h.values()) == [0, 1]
+
+
+def test_ledger_outage_while_handling_a_message_is_retried_in_order(net, dataset):
+    s = net.supplier("alpha", price=80, min_price=80)
+    b = net.buyer()
+    tid = b.create_task(csv_bytes=dataset, column="latency_ms", budget=100, quote_window_seconds=2)
+    assert net.run(lambda: st(b, tid) == "FUNDED", advance=0.3)
+    good = s.ledger.url
+    s.ledger.url = "http://127.0.0.1:9"  # supplier cannot check the escrow while handling FUNDING_NOTICE
+    for _ in range(5):
+        for a in net.agents:
+            a.step()  # must not raise
+    assert st(b, tid) == "FUNDED"
+    s.ledger.url = good
+    assert net.run(lambda: done(b, tid), advance=0.5)
+    assert st(b, tid) == "SETTLED"

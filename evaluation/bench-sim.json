@@ -1,7 +1,7 @@
 {
   "chain": "sim",
   "simulated_settlement": true,
-  "hardware": "x86_64 \u00b7 4 CPUs \u00b7 Linux 6.6.114.1-microsoft-standard-WSL2 \u00b7 Python 3.14.4",
+  "hardware": "x86_64 \u00b7 4 CPUs \u00b7 Linux 6.18.44-fc-v77 \u00b7 Python 3.13.16",
   "contracts": 10,
   "settled": 10,
   "states": {
@@ -9,43 +9,43 @@
   },
   "latency": {
     "discovery": {
-      "p50_ms": 1027.0,
-      "p95_ms": 1036.5,
+      "p50_ms": 22.0,
+      "p95_ms": 32.8,
       "n": 10
     },
     "quotes": {
-      "p50_ms": 37.5,
-      "p95_ms": 57.7,
+      "p50_ms": 48.5,
+      "p95_ms": 55.7,
       "n": 10
     },
     "negotiation": {
-      "p50_ms": 103.0,
-      "p95_ms": 162.9,
+      "p50_ms": 135.5,
+      "p95_ms": 144.7,
       "n": 10
     },
     "funding": {
-      "p50_ms": 807.5,
-      "p95_ms": 840.5,
+      "p50_ms": 778.0,
+      "p95_ms": 800.0,
       "n": 10
     },
     "delivery": {
-      "p50_ms": 38.0,
-      "p95_ms": 44.2,
+      "p50_ms": 47.0,
+      "p95_ms": 53.5,
       "n": 10
     },
     "verification": {
-      "p50_ms": 2.0,
-      "p95_ms": 3.0,
+      "p50_ms": 4.0,
+      "p95_ms": 6.0,
       "n": 10
     },
     "settlement": {
-      "p50_ms": 2958.5,
-      "p95_ms": 2975.8,
+      "p50_ms": 2944.0,
+      "p95_ms": 3503.9,
       "n": 10
     },
     "total": {
-      "p50_ms": 4978.5,
-      "p95_ms": 5005.6,
+      "p50_ms": 3984.5,
+      "p95_ms": 4439.7,
       "n": 10
     }
   },
@@ -57,6 +57,6 @@
     "relay_envelope_bytes": 34816,
     "relay_blob_bytes": 7303,
     "relay_operations": 11.0,
-    "buyer_vault_bytes": 460336
+    "buyer_vault_bytes": 461982
   }
 }

@@ -327,6 +327,21 @@ def cmd_laya_run(args):
             server.kill()
 
 
+def cmd_simulate(args):
+    from .simulation import simulate
+
+    if args.seeds:
+        from .simulation import simulate_seeds
+
+        rows = simulate_seeds([int(x) for x in args.seeds.split(",")], args.buyers, args.suppliers)
+        print((ROOT / "evaluation" / "market" / "seeds.md").read_text(encoding="utf-8"))
+        sys.exit(0 if all(not r["failed"] for r in rows) else 1)
+    r = simulate(args.seed, args.buyers, args.suppliers, args.tasks, budget=args.budget, spacing=args.spacing)
+    print((ROOT / "evaluation" / "market" / "results.md").read_text(encoding="utf-8").split("## Suppliers")[0])
+    if not r["all_invariants_hold"]:
+        sys.exit(1)
+
+
 def cmd_bench(args):
     sys.path.insert(0, str(ROOT))
     from evaluation.bench import run
@@ -424,6 +439,13 @@ def main(argv=None):
     p.add_argument("--backend", choices=["transformers", "rule", "hash"], help=argparse.SUPPRESS)
     p.add_argument("--timeout", type=int, default=3600, help="seconds to wait for download + load")
     p.add_argument("--skip-demo", action="store_true"); p.set_defaults(fn=cmd_laya_run)
+    p = sub.add_parser("simulate", help="market simulation: many agents, adversaries, chaos, global invariants")
+    p.add_argument("--seed", type=int, default=7); p.add_argument("--buyers", type=int, default=6)
+    p.add_argument("--suppliers", type=int, default=8); p.add_argument("--tasks", type=int, default=6)
+    p.add_argument("--budget", type=int, default=400, help="total budget per buyer")
+    p.add_argument("--seeds", help="comma-separated seeds, e.g. 7,11,23,42 (writes evaluation/market/seeds.md)")
+    p.add_argument("--spacing", type=int, default=45, help="simulated seconds between a buyer's tasks")
+    p.set_defaults(fn=cmd_simulate)
     p = sub.add_parser("bench", help="measure latency per stage and cost per contract")
     p.add_argument("--n", type=int, default=10); p.add_argument("--chain", choices=["sim", "localnet"], default="sim")
     p.add_argument("--out"); p.set_defaults(fn=cmd_bench)

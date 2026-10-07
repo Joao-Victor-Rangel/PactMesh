@@ -249,6 +249,11 @@ class Buyer(Agent):
                 continue
             if self.allowlist is not None and adv["agent_key_id"] not in self.allowlist:
                 continue
+            if self.excluded_by_history(adv["agent_key_id"]):
+                d.setdefault("excluded_by_history", [])
+                if adv["name"] not in d["excluded_by_history"]:
+                    d["excluded_by_history"].append(adv["name"])
+                continue
             found[adv["agent_key_id"]] = adv
         if not found:
             if now() > parse_iso(task["quote_deadline"]):
@@ -290,6 +295,8 @@ class Buyer(Agent):
                 continue
             q = d["quotes"][qid]["msg"]["payload"]
             terms = q["terms"]
+            if self.excluded_by_history(terms["supplier_key_id"]):
+                continue  # this buyer's own evidence shows a failed or missing delivery
             # Mandatory requirements are checked before preferences. The
             # budget is NOT filtered here: it is enforced by the policy.
             if terms["verifier"] != task["verifier"] or terms["delivery_seconds"] > req["max_delivery_seconds"]:
@@ -521,6 +528,31 @@ class Buyer(Agent):
                 self.send(neg["id"], self._peer(neg, sid), sid, "CANCEL",
                           {"ref": neg["data"]["task"]["task_id"], "reason_code": "DELIVERY_TIMEOUT"})
                 self._transition(neg, "EXPIRED", reason="DELIVERY_TIMEOUT")
+                self._record_outcome(neg, "no_delivery")
+
+    # ------------------------------------------------- verifiable history
+    # Spec section 6: compare suppliers using previous *verifiable* results
+    # available locally. Only this buyer's own evidence counts (no global
+    # reputation, which the spec leaves out of the MVP because of Sybil attacks).
+
+    def supplier_history(self) -> dict:
+        return self.store.get_kv("supplier_history", {})
+
+    def _record_outcome(self, neg: dict, outcome: str) -> None:
+        d = neg["data"]
+        key = d["agreement"]["supplier_key_id"]
+        hist = self.supplier_history()
+        h = hist.setdefault(key, {"verified": 0, "failed_verification": 0, "no_delivery": 0, "evidence": []})
+        h[outcome] += 1
+        h["evidence"] = (h["evidence"] + [{"task_id": d["task"]["task_id"], "agreement_hash": d["agreement_hash"],
+                                           "outcome": outcome}])[-20:]
+        self.store.set_kv("supplier_history", hist)
+        self.event(neg["id"], "SUPPLIER_OUTCOME", supplier_key_id=key, outcome=outcome)
+
+    def excluded_by_history(self, key: str) -> bool:
+        limit = int(self.policy.config.get("exclude_after_failures", 1))
+        h = self.supplier_history().get(key)
+        return bool(h) and limit > 0 and h["failed_verification"] + h["no_delivery"] >= limit
 
     def _t_delivered(self, neg: dict) -> None:
         d = neg["data"]
@@ -530,6 +562,7 @@ class Buyer(Agent):
         d["verification"] = {"verifier": stats.VERIFIER, "ok": ok, "errors": errors[:32]}
         if ok:
             self._transition(neg, "VERIFIED", verification_ok=True)
+            self._record_outcome(neg, "verified")
             return
         # Failed verification: no release. Freeze escrow and preserve evidence.
         if not self.store.get_effect(neg["id"], "DISPUTE"):
@@ -537,6 +570,7 @@ class Buyer(Agent):
             self.store.record_effect(neg["id"], "DISPUTE", st)
         self.store.set_reservation(neg["id"], "consumed")
         self._transition(neg, "DISPUTED", verification_ok=False, errors=len(errors))
+        self._record_outcome(neg, "failed_verification")
         self._issue_receipt(self.store.get_negotiation(neg["id"]), "REJECTED")
 
     def _t_verified(self, neg: dict) -> None:

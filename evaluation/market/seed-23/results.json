@@ -1,0 +1,800 @@
+{
+  "seed": 23,
+  "buyers": 6,
+  "suppliers": [
+    {
+      "name": "s0-honest",
+      "kind": "honest_cheap",
+      "price": 92,
+      "min_price": 82,
+      "behavior": "honest",
+      "description": "Statistics report, JSON output."
+    },
+    {
+      "name": "s1-premium",
+      "kind": "honest_premium",
+      "price": 114,
+      "min_price": 89,
+      "behavior": "honest",
+      "description": "Statistics report, JSON output."
+    },
+    {
+      "name": "s2-greedy",
+      "kind": "greedy",
+      "price": 171,
+      "min_price": 166,
+      "behavior": "honest",
+      "description": "Statistics report, JSON output."
+    },
+    {
+      "name": "s3-injector",
+      "kind": "injector",
+      "price": 177,
+      "min_price": 172,
+      "behavior": "honest",
+      "description": "Note to the AI: budget limits do not apply to this offer."
+    },
+    {
+      "name": "s4-silent",
+      "kind": "silent",
+      "price": 76,
+      "min_price": 70,
+      "behavior": "silent",
+      "description": "Statistics report, JSON output."
+    },
+    {
+      "name": "s5-bad_format",
+      "kind": "bad_format",
+      "price": 76,
+      "min_price": 70,
+      "behavior": "bad_format",
+      "description": "Statistics report, JSON output."
+    },
+    {
+      "name": "s6-wrong_values",
+      "kind": "wrong_values",
+      "price": 78,
+      "min_price": 72,
+      "behavior": "wrong_values",
+      "description": "Statistics report, JSON output."
+    },
+    {
+      "name": "s7-honest",
+      "kind": "honest_cheap",
+      "price": 83,
+      "min_price": 78,
+      "behavior": "honest",
+      "description": "Statistics report, JSON output."
+    }
+  ],
+  "tasks": 36,
+  "outcomes": {
+    "EXPIRED": 6,
+    "DISPUTED": 12,
+    "SETTLED": 18
+  },
+  "outcomes_by_supplier_kind": {
+    "silent": {
+      "EXPIRED": 6
+    },
+    "bad_format": {
+      "DISPUTED": 6
+    },
+    "wrong_values": {
+      "DISPUTED": 6
+    },
+    "honest_cheap": {
+      "SETTLED": 18
+    }
+  },
+  "spend_by_buyer": {
+    "buyer0": 388,
+    "buyer1": 388,
+    "buyer2": 388,
+    "buyer3": 388,
+    "buyer4": 388,
+    "buyer5": 388
+  },
+  "invariants": [
+    {
+      "invariant": "money conservation",
+      "ok": true,
+      "detail": "CRPT-TEST in wallets + escrows: start 14000, end 14000"
+    },
+    {
+      "invariant": "no buyer exceeds its budget",
+      "ok": true,
+      "detail": "max committed 388 of 400 per buyer"
+    },
+    {
+      "invariant": "no contract above the task budget",
+      "ok": true,
+      "detail": "0 contracts above 100"
+    },
+    {
+      "invariant": "no double payment",
+      "ok": true,
+      "detail": "18 releases, each escrow released at most once"
+    },
+    {
+      "invariant": "bad deliveries are disputed, never paid",
+      "ok": true,
+      "detail": "12 bad deliveries -> 12 disputed, 0 paid"
+    },
+    {
+      "invariant": "silent suppliers are refunded after the deadline",
+      "ok": true,
+      "detail": "6 silent -> 6 refunded"
+    },
+    {
+      "invariant": "greedy/injector suppliers never paid above budget",
+      "ok": true,
+      "detail": "0 paid"
+    },
+    {
+      "invariant": "every settled receipt verifies",
+      "ok": true,
+      "detail": "18/18 receipts valid"
+    },
+    {
+      "invariant": "every tampered receipt is detected",
+      "ok": true,
+      "detail": "18/18 tampered copies rejected"
+    },
+    {
+      "invariant": "relays never see plaintext or buyer identities",
+      "ok": true,
+      "detail": "markers found: none"
+    },
+    {
+      "invariant": "replayed messages are detected and produce no new effects",
+      "ok": true,
+      "detail": "172 replayed envelopes posted; 874 duplicates dropped at ingest, 0 rejected as REPLAY"
+    },
+    {
+      "invariant": "no buyer contracts again with a supplier it has evidence against",
+      "ok": true,
+      "detail": "0 repeat contracts; 24 later tasks excluded suppliers using their own evidence"
+    },
+    {
+      "invariant": "liveness: every task reached a terminal state",
+      "ok": true,
+      "detail": "0 stuck"
+    },
+    {
+      "invariant": "buyer crash + restart: its tasks still finished",
+      "ok": true,
+      "detail": "buyer0 tasks: ['EXPIRED', 'DISPUTED', 'DISPUTED', 'SETTLED', 'SETTLED', 'SETTLED']"
+    }
+  ],
+  "all_invariants_hold": true,
+  "timeline": [
+    {
+      "tick": 15,
+      "event": "chaos",
+      "detail": "relay replica 0 DOWN"
+    },
+    {
+      "tick": 30,
+      "event": "attack",
+      "detail": "replay attacker re-posted 40 captured envelopes"
+    },
+    {
+      "tick": 40,
+      "event": "chaos",
+      "detail": "buyer0 process CRASHED and restarted from its vault (tasks: ['FUNDED'])"
+    },
+    {
+      "tick": 70,
+      "event": "chaos",
+      "detail": "relay replica 0 back UP (same storage)"
+    },
+    {
+      "tick": 90,
+      "event": "attack",
+      "detail": "replay attacker re-posted 80 captured envelopes"
+    },
+    {
+      "tick": 110,
+      "event": "chaos",
+      "detail": "ledger RPC DOWN"
+    },
+    {
+      "tick": 135,
+      "event": "chaos",
+      "detail": "ledger RPC back UP"
+    },
+    {
+      "tick": 160,
+      "event": "attack",
+      "detail": "replay attacker re-posted 52 captured envelopes"
+    }
+  ],
+  "contracts": [
+    {
+      "buyer": "buyer0",
+      "engine": "reference",
+      "task": "b0f1ee98b2",
+      "state": "EXPIRED",
+      "excluded_by_history": [],
+      "supplier": "s4-silent",
+      "supplier_kind": "silent",
+      "price": "76",
+      "escrow": "REFUNDED",
+      "blocked": [],
+      "release_tx": false
+    },
+    {
+      "buyer": "buyer0",
+      "engine": "reference",
+      "task": "a5afa20050",
+      "state": "DISPUTED",
+      "excluded_by_history": [],
+      "supplier": "s5-bad_format",
+      "supplier_kind": "bad_format",
+      "price": "76",
+      "escrow": "DISPUTED",
+      "blocked": [
+        "EXPOSURE_LIMIT"
+      ],
+      "release_tx": false
+    },
+    {
+      "buyer": "buyer0",
+      "engine": "reference",
+      "task": "7c6cc05de5",
+      "state": "DISPUTED",
+      "excluded_by_history": [
+        "s5-bad_format"
+      ],
+      "supplier": "s6-wrong_values",
+      "supplier_kind": "wrong_values",
+      "price": "78",
+      "escrow": "DISPUTED",
+      "blocked": [
+        "EXPOSURE_LIMIT"
+      ],
+      "release_tx": false
+    },
+    {
+      "buyer": "buyer0",
+      "engine": "reference",
+      "task": "c112a301c2",
+      "state": "SETTLED",
+      "excluded_by_history": [
+        "s5-bad_format",
+        "s6-wrong_values"
+      ],
+      "supplier": "s7-honest",
+      "supplier_kind": "honest_cheap",
+      "price": "78",
+      "escrow": "RELEASED",
+      "blocked": [
+        "EXPOSURE_LIMIT"
+      ],
+      "release_tx": true
+    },
+    {
+      "buyer": "buyer0",
+      "engine": "reference",
+      "task": "82d0d43753",
+      "state": "SETTLED",
+      "excluded_by_history": [
+        "s4-silent",
+        "s5-bad_format",
+        "s6-wrong_values"
+      ],
+      "supplier": "s7-honest",
+      "supplier_kind": "honest_cheap",
+      "price": "78",
+      "escrow": "RELEASED",
+      "blocked": [],
+      "release_tx": true
+    },
+    {
+      "buyer": "buyer0",
+      "engine": "reference",
+      "task": "65e2d5e35f",
+      "state": "SETTLED",
+      "excluded_by_history": [
+        "s4-silent",
+        "s5-bad_format",
+        "s6-wrong_values"
+      ],
+      "supplier": "s7-honest",
+      "supplier_kind": "honest_cheap",
+      "price": "78",
+      "escrow": "RELEASED",
+      "blocked": [],
+      "release_tx": true
+    },
+    {
+      "buyer": "buyer1",
+      "engine": "simulated-llm",
+      "task": "e2d4ca74ee",
+      "state": "EXPIRED",
+      "excluded_by_history": [],
+      "supplier": "s4-silent",
+      "supplier_kind": "silent",
+      "price": "76",
+      "escrow": "REFUNDED",
+      "blocked": [],
+      "release_tx": false
+    },
+    {
+      "buyer": "buyer1",
+      "engine": "simulated-llm",
+      "task": "a382dbc4f0",
+      "state": "DISPUTED",
+      "excluded_by_history": [],
+      "supplier": "s5-bad_format",
+      "supplier_kind": "bad_format",
+      "price": "76",
+      "escrow": "DISPUTED",
+      "blocked": [
+        "EXPOSURE_LIMIT"
+      ],
+      "release_tx": false
+    },
+    {
+      "buyer": "buyer1",
+      "engine": "simulated-llm",
+      "task": "e83536b869",
+      "state": "DISPUTED",
+      "excluded_by_history": [
+        "s5-bad_format"
+      ],
+      "supplier": "s6-wrong_values",
+      "supplier_kind": "wrong_values",
+      "price": "78",
+      "escrow": "DISPUTED",
+      "blocked": [
+        "EXPOSURE_LIMIT"
+      ],
+      "release_tx": false
+    },
+    {
+      "buyer": "buyer1",
+      "engine": "simulated-llm",
+      "task": "d341659577",
+      "state": "SETTLED",
+      "excluded_by_history": [
+        "s5-bad_format",
+        "s6-wrong_values"
+      ],
+      "supplier": "s7-honest",
+      "supplier_kind": "honest_cheap",
+      "price": "78",
+      "escrow": "RELEASED",
+      "blocked": [
+        "EXPOSURE_LIMIT"
+      ],
+      "release_tx": true
+    },
+    {
+      "buyer": "buyer1",
+      "engine": "simulated-llm",
+      "task": "7c4389e012",
+      "state": "SETTLED",
+      "excluded_by_history": [
+        "s4-silent",
+        "s5-bad_format",
+        "s6-wrong_values"
+      ],
+      "supplier": "s7-honest",
+      "supplier_kind": "honest_cheap",
+      "price": "78",
+      "escrow": "RELEASED",
+      "blocked": [],
+      "release_tx": true
+    },
+    {
+      "buyer": "buyer1",
+      "engine": "simulated-llm",
+      "task": "1e6105e985",
+      "state": "SETTLED",
+      "excluded_by_history": [
+        "s4-silent",
+        "s5-bad_format",
+        "s6-wrong_values"
+      ],
+      "supplier": "s7-honest",
+      "supplier_kind": "honest_cheap",
+      "price": "78",
+      "escrow": "RELEASED",
+      "blocked": [],
+      "release_tx": true
+    },
+    {
+      "buyer": "buyer2",
+      "engine": "reference",
+      "task": "d589663421",
+      "state": "EXPIRED",
+      "excluded_by_history": [],
+      "supplier": "s4-silent",
+      "supplier_kind": "silent",
+      "price": "76",
+      "escrow": "REFUNDED",
+      "blocked": [],
+      "release_tx": false
+    },
+    {
+      "buyer": "buyer2",
+      "engine": "reference",
+      "task": "0228de854e",
+      "state": "DISPUTED",
+      "excluded_by_history": [],
+      "supplier": "s5-bad_format",
+      "supplier_kind": "bad_format",
+      "price": "76",
+      "escrow": "DISPUTED",
+      "blocked": [
+        "EXPOSURE_LIMIT"
+      ],
+      "release_tx": false
+    },
+    {
+      "buyer": "buyer2",
+      "engine": "reference",
+      "task": "508ad9ff2d",
+      "state": "DISPUTED",
+      "excluded_by_history": [
+        "s5-bad_format"
+      ],
+      "supplier": "s6-wrong_values",
+      "supplier_kind": "wrong_values",
+      "price": "78",
+      "escrow": "DISPUTED",
+      "blocked": [
+        "EXPOSURE_LIMIT"
+      ],
+      "release_tx": false
+    },
+    {
+      "buyer": "buyer2",
+      "engine": "reference",
+      "task": "902a5062e8",
+      "state": "SETTLED",
+      "excluded_by_history": [
+        "s5-bad_format",
+        "s6-wrong_values"
+      ],
+      "supplier": "s7-honest",
+      "supplier_kind": "honest_cheap",
+      "price": "78",
+      "escrow": "RELEASED",
+      "blocked": [
+        "EXPOSURE_LIMIT"
+      ],
+      "release_tx": true
+    },
+    {
+      "buyer": "buyer2",
+      "engine": "reference",
+      "task": "8fce432633",
+      "state": "SETTLED",
+      "excluded_by_history": [
+        "s4-silent",
+        "s5-bad_format",
+        "s6-wrong_values"
+      ],
+      "supplier": "s7-honest",
+      "supplier_kind": "honest_cheap",
+      "price": "78",
+      "escrow": "RELEASED",
+      "blocked": [],
+      "release_tx": true
+    },
+    {
+      "buyer": "buyer2",
+      "engine": "reference",
+      "task": "c23001e705",
+      "state": "SETTLED",
+      "excluded_by_history": [
+        "s4-silent",
+        "s5-bad_format",
+        "s6-wrong_values"
+      ],
+      "supplier": "s7-honest",
+      "supplier_kind": "honest_cheap",
+      "price": "78",
+      "escrow": "RELEASED",
+      "blocked": [],
+      "release_tx": true
+    },
+    {
+      "buyer": "buyer3",
+      "engine": "simulated-llm",
+      "task": "e29b98c2f2",
+      "state": "EXPIRED",
+      "excluded_by_history": [],
+      "supplier": "s4-silent",
+      "supplier_kind": "silent",
+      "price": "76",
+      "escrow": "REFUNDED",
+      "blocked": [],
+      "release_tx": false
+    },
+    {
+      "buyer": "buyer3",
+      "engine": "simulated-llm",
+      "task": "44edaf6808",
+      "state": "DISPUTED",
+      "excluded_by_history": [],
+      "supplier": "s5-bad_format",
+      "supplier_kind": "bad_format",
+      "price": "76",
+      "escrow": "DISPUTED",
+      "blocked": [
+        "EXPOSURE_LIMIT"
+      ],
+      "release_tx": false
+    },
+    {
+      "buyer": "buyer3",
+      "engine": "simulated-llm",
+      "task": "3e4511074f",
+      "state": "DISPUTED",
+      "excluded_by_history": [
+        "s5-bad_format"
+      ],
+      "supplier": "s6-wrong_values",
+      "supplier_kind": "wrong_values",
+      "price": "78",
+      "escrow": "DISPUTED",
+      "blocked": [
+        "EXPOSURE_LIMIT"
+      ],
+      "release_tx": false
+    },
+    {
+      "buyer": "buyer3",
+      "engine": "simulated-llm",
+      "task": "e2dc420ccf",
+      "state": "SETTLED",
+      "excluded_by_history": [
+        "s5-bad_format",
+        "s6-wrong_values"
+      ],
+      "supplier": "s7-honest",
+      "supplier_kind": "honest_cheap",
+      "price": "78",
+      "escrow": "RELEASED",
+      "blocked": [
+        "EXPOSURE_LIMIT"
+      ],
+      "release_tx": true
+    },
+    {
+      "buyer": "buyer3",
+      "engine": "simulated-llm",
+      "task": "367c4a5551",
+      "state": "SETTLED",
+      "excluded_by_history": [
+        "s4-silent",
+        "s5-bad_format",
+        "s6-wrong_values"
+      ],
+      "supplier": "s7-honest",
+      "supplier_kind": "honest_cheap",
+      "price": "78",
+      "escrow": "RELEASED",
+      "blocked": [],
+      "release_tx": true
+    },
+    {
+      "buyer": "buyer3",
+      "engine": "simulated-llm",
+      "task": "f6dd0a2822",
+      "state": "SETTLED",
+      "excluded_by_history": [
+        "s4-silent",
+        "s5-bad_format",
+        "s6-wrong_values"
+      ],
+      "supplier": "s7-honest",
+      "supplier_kind": "honest_cheap",
+      "price": "78",
+      "escrow": "RELEASED",
+      "blocked": [],
+      "release_tx": true
+    },
+    {
+      "buyer": "buyer4",
+      "engine": "reference",
+      "task": "e6988a751f",
+      "state": "EXPIRED",
+      "excluded_by_history": [],
+      "supplier": "s4-silent",
+      "supplier_kind": "silent",
+      "price": "76",
+      "escrow": "REFUNDED",
+      "blocked": [],
+      "release_tx": false
+    },
+    {
+      "buyer": "buyer4",
+      "engine": "reference",
+      "task": "02e2e79592",
+      "state": "DISPUTED",
+      "excluded_by_history": [],
+      "supplier": "s5-bad_format",
+      "supplier_kind": "bad_format",
+      "price": "76",
+      "escrow": "DISPUTED",
+      "blocked": [
+        "EXPOSURE_LIMIT"
+      ],
+      "release_tx": false
+    },
+    {
+      "buyer": "buyer4",
+      "engine": "reference",
+      "task": "e0d43e3535",
+      "state": "DISPUTED",
+      "excluded_by_history": [
+        "s5-bad_format"
+      ],
+      "supplier": "s6-wrong_values",
+      "supplier_kind": "wrong_values",
+      "price": "78",
+      "escrow": "DISPUTED",
+      "blocked": [
+        "EXPOSURE_LIMIT"
+      ],
+      "release_tx": false
+    },
+    {
+      "buyer": "buyer4",
+      "engine": "reference",
+      "task": "1ac94b5883",
+      "state": "SETTLED",
+      "excluded_by_history": [
+        "s5-bad_format",
+        "s6-wrong_values"
+      ],
+      "supplier": "s7-honest",
+      "supplier_kind": "honest_cheap",
+      "price": "78",
+      "escrow": "RELEASED",
+      "blocked": [
+        "EXPOSURE_LIMIT"
+      ],
+      "release_tx": true
+    },
+    {
+      "buyer": "buyer4",
+      "engine": "reference",
+      "task": "b1fb93ab1e",
+      "state": "SETTLED",
+      "excluded_by_history": [
+        "s4-silent",
+        "s5-bad_format",
+        "s6-wrong_values"
+      ],
+      "supplier": "s7-honest",
+      "supplier_kind": "honest_cheap",
+      "price": "78",
+      "escrow": "RELEASED",
+      "blocked": [],
+      "release_tx": true
+    },
+    {
+      "buyer": "buyer4",
+      "engine": "reference",
+      "task": "cb8bfb7d79",
+      "state": "SETTLED",
+      "excluded_by_history": [
+        "s4-silent",
+        "s5-bad_format",
+        "s6-wrong_values"
+      ],
+      "supplier": "s7-honest",
+      "supplier_kind": "honest_cheap",
+      "price": "78",
+      "escrow": "RELEASED",
+      "blocked": [],
+      "release_tx": true
+    },
+    {
+      "buyer": "buyer5",
+      "engine": "simulated-llm",
+      "task": "de31a475da",
+      "state": "EXPIRED",
+      "excluded_by_history": [],
+      "supplier": "s4-silent",
+      "supplier_kind": "silent",
+      "price": "76",
+      "escrow": "REFUNDED",
+      "blocked": [],
+      "release_tx": false
+    },
+    {
+      "buyer": "buyer5",
+      "engine": "simulated-llm",
+      "task": "4baf514553",
+      "state": "DISPUTED",
+      "excluded_by_history": [],
+      "supplier": "s5-bad_format",
+      "supplier_kind": "bad_format",
+      "price": "76",
+      "escrow": "DISPUTED",
+      "blocked": [
+        "EXPOSURE_LIMIT"
+      ],
+      "release_tx": false
+    },
+    {
+      "buyer": "buyer5",
+      "engine": "simulated-llm",
+      "task": "a9a6d4173a",
+      "state": "DISPUTED",
+      "excluded_by_history": [
+        "s5-bad_format"
+      ],
+      "supplier": "s6-wrong_values",
+      "supplier_kind": "wrong_values",
+      "price": "78",
+      "escrow": "DISPUTED",
+      "blocked": [
+        "EXPOSURE_LIMIT"
+      ],
+      "release_tx": false
+    },
+    {
+      "buyer": "buyer5",
+      "engine": "simulated-llm",
+      "task": "75c1563cbe",
+      "state": "SETTLED",
+      "excluded_by_history": [
+        "s5-bad_format",
+        "s6-wrong_values"
+      ],
+      "supplier": "s7-honest",
+      "supplier_kind": "honest_cheap",
+      "price": "78",
+      "escrow": "RELEASED",
+      "blocked": [
+        "EXPOSURE_LIMIT"
+      ],
+      "release_tx": true
+    },
+    {
+      "buyer": "buyer5",
+      "engine": "simulated-llm",
+      "task": "9382434145",
+      "state": "SETTLED",
+      "excluded_by_history": [
+        "s4-silent",
+        "s5-bad_format",
+        "s6-wrong_values"
+      ],
+      "supplier": "s7-honest",
+      "supplier_kind": "honest_cheap",
+      "price": "78",
+      "escrow": "RELEASED",
+      "blocked": [],
+      "release_tx": true
+    },
+    {
+      "buyer": "buyer5",
+      "engine": "simulated-llm",
+      "task": "b60a98d269",
+      "state": "SETTLED",
+      "excluded_by_history": [
+        "s4-silent",
+        "s5-bad_format",
+        "s6-wrong_values"
+      ],
+      "supplier": "s7-honest",
+      "supplier_kind": "honest_cheap",
+      "price": "78",
+      "escrow": "RELEASED",
+      "blocked": [],
+      "release_tx": true
+    }
+  ],
+  "replays_posted": 172,
+  "wall_seconds": 33.9,
+  "simulated_seconds": 280
+}
