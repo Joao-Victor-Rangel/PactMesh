@@ -24,10 +24,9 @@ class Supplier(Agent):
         self.advert_ttl, self.quote_ttl = advert_ttl, quote_ttl
         route = self.store.get_kv("advert_route")
         if not route:
-            route = random_id()
+            route = self.new_mailbox()
             self.store.set_kv("advert_route", route)
         self.advert_route = route
-        self.add_route(route)
         self._advert_at = 0
 
     def advert(self) -> dict:

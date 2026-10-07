@@ -28,29 +28,33 @@ class DirectTransport:
             raise ValueError("at least one relay is required")
         self.relays = relays
 
-    def send(self, envelope: dict) -> None:
-        last = None
+    def send(self, envelope: dict) -> int:
+        """Replicate to every configured relay; succeed if at least one stored it.
+        Receivers deduplicate by message id, so replicas never double-process."""
+        ok, last = 0, None
         for relay in self.relays:
             try:
                 call("POST", f"{relay}/mailbox/{envelope['route']}", envelope, timeout=5)
-                return
+                ok += 1
             except (HttpError, OSError) as e:
                 last = e
-        raise TransportUnavailable(f"no relay accepted the envelope: {last}")
+        if not ok:
+            raise TransportUnavailable(f"no relay accepted the envelope: {last}")
+        return ok
 
-    def receive(self, route: str) -> list[tuple[str, dict]]:
+    def receive(self, secret: str) -> list[tuple[str, dict]]:
         out = []
         for relay in self.relays:
             try:
-                for env in call("GET", f"{relay}/mailbox/{route}", timeout=5)["envelopes"]:
+                for env in call("POST", f"{relay}/mailbox/fetch", {"secret": secret}, timeout=5)["envelopes"]:
                     out.append((relay, env))
             except (HttpError, OSError):
                 continue
         return out
 
-    def acknowledge(self, relay: str, route: str, ids: list[str]) -> None:
+    def acknowledge(self, relay: str, secret: str, ids: list[str]) -> None:
         if ids:
-            call("POST", f"{relay}/mailbox/{route}/ack", ids, timeout=5)
+            call("POST", f"{relay}/mailbox/ack", {"secret": secret, "ids": ids}, timeout=5)
 
     def status(self) -> dict:
         up = []

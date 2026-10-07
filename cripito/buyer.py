@@ -6,6 +6,7 @@ from __future__ import annotations
 import csv
 import io
 import json
+import time
 
 from . import verifier as stats
 from .canonical import sha256_hex
@@ -65,6 +66,8 @@ class Buyer(Agent):
         old = neg["state"]
         if new not in TRANSITIONS[old]:
             raise StateError(f"{old} -> {new} not allowed")
+        # Local wall-clock metrics (not part of signed evidence).
+        neg["data"].setdefault("timings_ms", {})[new] = int(time.time() * 1000)
         with self.store.tx():
             self.store.save_negotiation(neg["id"], new, neg["data"])
             self.event(neg["id"], "STATE", prev_state=old, new_state=new,
@@ -93,7 +96,7 @@ class Buyer(Agent):
         stats.load_column(csv_bytes, column)  # reject an unusable dataset up front
         sha = sha256_hex(csv_bytes)
         self._artifact_path(sha).write_bytes(csv_bytes)
-        task_id, reply_route = random_id(), random_id()
+        task_id, reply_route = random_id(), self.new_mailbox()
         task = {
             "task_id": task_id, "service": SERVICE, "verifier": stats.VERIFIER,
             "requirements": {"format": "json", "column": column, "percentiles": list(percentiles),
@@ -104,11 +107,11 @@ class Buyer(Agent):
         }
         data = {"task": task, "reply_route": reply_route, "sessions": {}, "adverts": {}, "quotes": {},
                 "blocked": {}, "round": 0, "counter_pending": None}
+        data["timings_ms"] = {"CREATED": int(time.time() * 1000)}
         with self.store.tx():
             self.store.create_negotiation(task_id, "buyer", "CREATED", data)
             self.event(task_id, "TASK_CREATED", prev_state=None, new_state="CREATED",
                        artifacts={"dataset_sha256": sha}, budget=str(budget), policy_hash=self.policy.hash)
-        self.add_route(reply_route)
         return task_id
 
     def cancel(self, task_id: str, reason: str = "USER_CANCELLED") -> dict:

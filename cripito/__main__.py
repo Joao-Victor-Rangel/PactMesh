@@ -213,6 +213,14 @@ def cmd_solana_keygen(args):
             print(f"[solana] airdrop failed ({e}); use https://faucet.solana.com with the address above")
 
 
+def cmd_bench(args):
+    sys.path.insert(0, str(ROOT))
+    from evaluation.bench import run
+
+    out = args.out or str(ROOT / "evaluation" / f"bench-{args.chain}.json")
+    run(args.n, args.chain, out)
+
+
 def cmd_demo(args):
     from .demo import run_demo
 
@@ -256,6 +264,9 @@ def main(argv=None):
     p = sub.add_parser("verify"); p.add_argument("package"); p.add_argument("--ledger"); chain(p); p.set_defaults(fn=cmd_verify)
     p = sub.add_parser("eval", help="compare engines on 300 synthetic scenarios (add yours with --engine)")
     p.add_argument("--out", default=str(ROOT / "evaluation" / "results.json")); model_args(p); p.set_defaults(fn=cmd_eval)
+    p = sub.add_parser("bench", help="measure latency per stage and cost per contract")
+    p.add_argument("--n", type=int, default=10); p.add_argument("--chain", choices=["sim", "localnet"], default="sim")
+    p.add_argument("--out"); p.set_defaults(fn=cmd_bench)
     p = sub.add_parser("solana-keygen", help="create a Devnet-only keypair (and optionally request an airdrop)")
     p.add_argument("--out", default="devnet.json"); p.add_argument("--airdrop", action="store_true"); p.add_argument("--rpc")
     p.set_defaults(fn=cmd_solana_keygen)

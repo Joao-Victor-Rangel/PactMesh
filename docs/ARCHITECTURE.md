@@ -62,3 +62,5 @@ discloses only one negotiation's events with their randomness and inclusion proo
 | Stolen key | separate message/payment keys, kill switch | past signatures remain valid |
 | Chain observer | batched commitments with hidden randomness | payments are public/pseudonymous |
 | Fake adverts | signed, expiring adverts, optional allow-list | availability can be degraded |
+| Mailbox griefing (read/delete someone's queue) | public route = H(secret); fetch and ack need the secret | relay operator can still drop messages; replicate to several relays |
+| Relay outage | sends replicated to every configured relay; receivers dedup by message id | all relays down = no progress (never a silent downgrade) |

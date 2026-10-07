@@ -20,7 +20,7 @@ pip install -r requirements.txt -r requirements-dev.txt
 python -m cripito demo            # 5 independent processes, full flow, narrated
 python -m cripito demo --keep     # same, then keep running and print the dashboard URL
 python -m cripito demo --chain localnet   # same flow on the Rust escrow program (needs cargo)
-pytest                            # 58 tests, including the spec's mandatory failure cases
+pytest                            # 62 tests, including the spec's mandatory failure cases
 cargo test --manifest-path contracts/escrow/Cargo.toml   # 8 tests of the Solana escrow program
 python -m cripito eval            # 300 seeded synthetic negotiations -> evaluation/results.json
 ```
@@ -126,6 +126,30 @@ signature, slow). Every recommendation goes through the same policy as the runti
 
 Labels are rule-derived, not human-reviewed, and 300 cases is a coverage target, not a statistically
 sufficient sample. These numbers show the policy holds under the suite; they say nothing about model quality.
+
+## Measured latency and cost (`python -m cripito bench`)
+
+10 complete contracts per backend: discovery to signed receipt. All agents run in one process on localhost
+(x86_64, 4 CPUs), so the numbers cover protocol, cryptography, storage and settlement, not network or
+mixnet latency. Raw output is in `evaluation/bench-*.json`.
+
+| Stage | SIMULATED ledger p50 / p95 (ms) | Rust escrow via cripito-localnet p50 / p95 (ms) |
+|---|---|---|
+| discovery | 26 / 31 | 34 / 41 |
+| quotes | 48 / 62 | 48 / 57 |
+| negotiation (incl. one counteroffer) | 137 / 153 | 145 / 156 |
+| funding (until confirmed) | 765 / 807 | 163 / 320 |
+| delivery | 50 / 59 | 54 / 70 |
+| verification | 4 / 7 | 5 / 6 |
+| settlement (until finalized) | 2944 / 3514 | 1534 / 1557 |
+| **total** | **3988 / 4516** | **1976 / 2123** |
+
+Cost per contract: 11 relay operations, ~34 KB of padded envelopes plus a ~7 KB encrypted dataset blob.
+The buyer sends 4 transactions (create, fund and release the escrow; anchor the evidence) and the supplier
+sends 1 (its own anchor). On Solana the buyer also pays the escrow account's rent-exempt deposit:
+1,691,280 + 4 × 5,000 = **1,711,280 lamports (~0.0017 SOL, free on Devnet)**. The rent stays in the escrow
+account so that auditors can read its final state; closing terminal escrows to reclaim it is a possible
+optimization with an evidence trade-off.
 
 ## Limits we state up front
 

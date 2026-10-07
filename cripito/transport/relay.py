@@ -18,7 +18,9 @@ import threading
 from collections import defaultdict
 from pathlib import Path
 
-from ..crypto import MAX_CONTROL_MESSAGE, SIZE_CLASSES, TRANSPORT_VERSION
+import re
+
+from ..crypto import MAX_CONTROL_MESSAGE, SIZE_CLASSES, TRANSPORT_VERSION, mailbox_route
 from ..httpbase import App, HttpError, Raw, Request
 from ..protocol import ProtocolError, validate_advert
 from ..util import now
@@ -26,6 +28,13 @@ from ..util import now
 MAX_QUEUE = 1000
 MAX_BLOB = 8 * 1024 * 1024
 HEADER_KEYS = {"v", "id", "route", "exp", "size", "eph", "nonce", "ct"}
+_SECRET = re.compile(r"^[0-9a-f]{32}$")
+
+
+def _route_of(secret) -> str:
+    if not isinstance(secret, str) or not _SECRET.match(secret):
+        raise HttpError(400, "BAD_MAILBOX_SECRET")
+    return mailbox_route(secret)
 
 
 class Relay:
@@ -64,7 +73,9 @@ class Relay:
                        "exp": env["exp"], "ct_prefix": env["ct"][:16]})
         return {"accepted": env["id"]}
 
-    def fetch(self, route: str) -> dict:
+    def fetch(self, secret: str) -> dict:
+        """Reading requires the mailbox secret; the public route is not enough."""
+        route = _route_of(secret)
         t = now()
         with self.lock:
             box = self.mailboxes.get(route, {})
@@ -72,7 +83,8 @@ class Relay:
                 del box[k]
             return {"envelopes": list(box.values())[:100]}
 
-    def ack(self, route: str, ids) -> dict:
+    def ack(self, secret: str, ids) -> dict:
+        route = _route_of(secret)
         ids = ids if isinstance(ids, list) else []
         with self.lock:
             box = self.mailboxes.get(route, {})
@@ -120,13 +132,14 @@ class Relay:
         def post(req: Request, route: str):
             return self.post_envelope(route, req.json())
 
-        @app.route("GET", "/mailbox/([0-9a-f]{32})")
-        def fetch(req: Request, route: str):
-            return self.fetch(route)
+        @app.route("POST", "/mailbox/fetch")
+        def fetch(req: Request):
+            return self.fetch((req.json() or {}).get("secret"))
 
-        @app.route("POST", "/mailbox/([0-9a-f]{32})/ack")
-        def ack(req: Request, route: str):
-            return self.ack(route, req.json() or [])
+        @app.route("POST", "/mailbox/ack")
+        def ack(req: Request):
+            body = req.json() or {}
+            return self.ack(body.get("secret"), body.get("ids"))
 
         @app.route("POST", "/adverts")
         def put_advert(req: Request):

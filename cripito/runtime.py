@@ -15,7 +15,7 @@ import time
 from pathlib import Path
 
 from .canonical import hash_obj
-from .crypto import EnvelopeError, Identity, open_envelope, random_id, seal
+from .crypto import EnvelopeError, Identity, mailbox_route, open_envelope, random_id, seal
 from .evidence import MERKLE_VERSION, inclusion_proof, merkle_root
 from .ledger import LedgerError, SimLedgerClient, Wallet
 from .protocol import ProtocolError, build_message, message_hash, validate_message
@@ -50,13 +50,15 @@ class Agent:
 
     # ------------------------------------------------------------- routes
 
-    def routes(self) -> list[str]:
-        return self.store.get_kv("routes", [])
+    def mailboxes(self) -> list[str]:
+        """Secrets of the mailboxes this agent reads (never leave the vault)."""
+        return self.store.get_kv("mailboxes", [])
 
-    def add_route(self, route: str) -> None:
-        r = self.routes()
-        if route not in r:
-            self.store.set_kv("routes", r + [route])
+    def new_mailbox(self) -> str:
+        """Create a mailbox; returns its public deposit route."""
+        secret = random_id()
+        self.store.set_kv("mailboxes", self.mailboxes() + [secret])
+        return mailbox_route(secret)
 
     # ------------------------------------------------------------- events
 
@@ -110,9 +112,9 @@ class Agent:
     # ---------------------------------------------------------- receiving
 
     def poll(self) -> None:
-        for route in self.routes():
+        for secret in self.mailboxes():
             try:
-                items = self.transport.receive(route)
+                items = self.transport.receive(secret)
             except TransportUnavailable as e:
                 log.warning("%s: transport unavailable: %s", self.name, e)
                 return
@@ -122,7 +124,7 @@ class Agent:
                 self._ingest(env)
             for relay, ids in acks.items():
                 try:
-                    self.transport.acknowledge(relay, route, ids)
+                    self.transport.acknowledge(relay, secret, ids)
                 except (TransportUnavailable, OSError):
                     pass
         self.process_inbox()

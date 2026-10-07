@@ -28,8 +28,8 @@ Deadline: **12 Oct 2026, 23:59 PDT** (13 Oct, 03:59 Brasília). Plan to submit o
 > when the model falls for it. Every step is a signed, hash-chained event. Events are committed with
 > hidden randomness into Merkle batches anchored on chain, so an auditor can verify a selectively
 > disclosed receipt without seeing the whole conversation, and any tampering shows up.
-> Everything is open source (MIT) and free to run: 58 Python tests, 8 Rust tests, a 300-scenario
-> evaluation, and a one-command demo.
+> Everything is open source (MIT) and free to run: 62 Python tests, 8 Rust tests, a 300-scenario
+> evaluation, a latency/cost benchmark, and a one-command demo.
 
 **Links to provide:** public GitHub repository · demo video · (if deployed) Devnet program id and explorer
 link of an escrow release and of an evidence anchor.

@@ -68,8 +68,12 @@ class Net:
         return False
 
     def close(self):
-        self.relay_srv.shutdown()
-        self.ledger_srv.shutdown()
+        for srv in (self.relay_srv, self.ledger_srv):
+            try:
+                srv.shutdown()
+                srv.server_close()
+            except OSError:
+                pass
 
 
 @pytest.fixture

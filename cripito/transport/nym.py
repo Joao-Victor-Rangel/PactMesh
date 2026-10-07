@@ -159,17 +159,17 @@ class MixnetTransport:
         except HttpError as e:
             raise TransportUnavailable(f"relay refused envelope: {e.code}") from None
 
-    def receive(self, route: str) -> list[tuple[str, dict]]:
-        acks = self.pending_acks.pop(route, [])
+    def receive(self, secret: str) -> list[tuple[str, dict]]:
+        acks = self.pending_acks.pop(secret, [])
         try:
-            out = self._rpc("fetch", route=route, ack=acks)  # acks piggyback to save a mixnet round trip
+            out = self._rpc("fetch", secret=secret, ack=acks)  # acks piggyback to save a mixnet round trip
         except HttpError:
             return []
         return [("nym", env) for env in out["envelopes"]]
 
-    def acknowledge(self, relay: str, route: str, ids: list[str]) -> None:
+    def acknowledge(self, relay: str, secret: str, ids: list[str]) -> None:
         if ids:
-            self.pending_acks.setdefault(route, []).extend(ids)
+            self.pending_acks.setdefault(secret, []).extend(ids)
 
     def status(self) -> dict:
         ok = self.client is not None and self.client.alive
@@ -216,8 +216,8 @@ class RelayNymGateway:
             return r.post_envelope(body["route"], body["env"], via="nym")
         if op == "fetch":
             if body.get("ack"):
-                r.ack(body["route"], body["ack"])
-            return r.fetch(body["route"])
+                r.ack(body["secret"], body["ack"])
+            return r.fetch(body["secret"])
         if op == "put_advert":
             return r.put_advert(body["advert"])
         if op == "adverts":

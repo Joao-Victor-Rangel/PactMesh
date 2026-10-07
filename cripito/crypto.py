@@ -48,6 +48,15 @@ def b64d(s: str) -> bytes:
     return base64.b64decode(s.encode(), validate=True)
 
 
+def mailbox_route(secret_hex: str) -> str:
+    """Public deposit route of a mailbox. Reading or acknowledging requires
+    the secret itself, so publishing the route (e.g. in an advert) does not
+    let anyone read or delete the mailbox's messages."""
+    import hashlib
+
+    return hashlib.sha256(b"cripito/mailbox/v1" + bytes.fromhex(secret_hex)).hexdigest()[:32]
+
+
 def random_id(nbytes: int = 16) -> str:
     """Random identifier (128 bits by default) that carries no user data."""
     return secrets.token_hex(nbytes)
