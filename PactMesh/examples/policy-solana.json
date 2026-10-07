@@ -1,0 +1,11 @@
+{
+  "version": "2026-10-07.solana.1",
+  "budget_total": "100",
+  "max_per_task": "100",
+  "allowed_settlement": [{"network": "solana-devnet", "asset": "SOL"}],
+  "allowed_verifiers": [{"name": "pactmesh.stats", "version": "1.0"}],
+  "data_purposes": ["stats-report"],
+  "max_counter_rounds": 3,
+  "authorization_ttl_seconds": 30,
+  "counter_grid_percent": [90, 85, 80]
+}

@@ -1,0 +1,62 @@
+{
+  "chain": "sim",
+  "simulated_settlement": true,
+  "hardware": "x86_64 \u00b7 4 CPUs \u00b7 Linux 6.18.44-fc-v77 \u00b7 Python 3.13.16",
+  "contracts": 10,
+  "settled": 10,
+  "states": {
+    "SETTLED": 10
+  },
+  "latency": {
+    "discovery": {
+      "p50_ms": 22.0,
+      "p95_ms": 32.8,
+      "n": 10
+    },
+    "quotes": {
+      "p50_ms": 48.5,
+      "p95_ms": 55.7,
+      "n": 10
+    },
+    "negotiation": {
+      "p50_ms": 135.5,
+      "p95_ms": 144.7,
+      "n": 10
+    },
+    "funding": {
+      "p50_ms": 778.0,
+      "p95_ms": 800.0,
+      "n": 10
+    },
+    "delivery": {
+      "p50_ms": 47.0,
+      "p95_ms": 53.5,
+      "n": 10
+    },
+    "verification": {
+      "p50_ms": 4.0,
+      "p95_ms": 6.0,
+      "n": 10
+    },
+    "settlement": {
+      "p50_ms": 2944.0,
+      "p95_ms": 3503.9,
+      "n": 10
+    },
+    "total": {
+      "p50_ms": 3984.5,
+      "p95_ms": 4439.7,
+      "n": 10
+    }
+  },
+  "note_latency": "quotes stage waits for all suppliers; settlement waits for finality (SIMULATED: 8 slots x 0.4 s; localnet: 4 slots)",
+  "cost_per_contract": {
+    "service_price_avg": 78.0,
+    "buyer_fees_and_rent_SIM-SOL": 20000.0,
+    "supplier_fees_SIM-SOL": 5000.0,
+    "relay_envelope_bytes": 34816,
+    "relay_blob_bytes": 7303,
+    "relay_operations": 11.0,
+    "buyer_vault_bytes": 461982
+  }
+}

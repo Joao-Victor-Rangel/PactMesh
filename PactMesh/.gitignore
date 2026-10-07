@@ -1,0 +1,10 @@
+.pactmesh/
+.pactmesh-demo/
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+*.sqlite*
+devnet*.json
+contracts/escrow/target/
+.pactmesh-laya/

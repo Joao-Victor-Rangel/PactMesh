@@ -1,0 +1,22 @@
+[project]
+name = "pactmesh"
+version = "0.1.0"
+description = "Private, verifiable negotiation between AI agents (hackathon prototype)"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+dependencies = ["PyNaCl==1.6.2"]
+
+[project.optional-dependencies]
+dev = ["pytest==9.1.1"]
+
+[project.scripts]
+pactmesh = "pactmesh.__main__:main"
+
+[tool.setuptools]
+packages = ["pactmesh", "pactmesh.transport", "pactmesh.ledger"]
+
+[tool.setuptools.package-data]
+pactmesh = ["dashboard.html"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

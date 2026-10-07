@@ -1,0 +1,683 @@
+{"id": "test-normal-000-choice", "type": "choice", "pred": 2, "logits": [-10.0, -10.0, 10.0], "gold": 2}
+{"id": "test-normal-001-choice", "type": "choice", "pred": 1, "logits": [-10.0, 10.0, -10.0, -10.0, -10.0], "gold": 1}
+{"id": "test-normal-002-choice", "type": "choice", "pred": 3, "logits": [-10.0, -10.0, -10.0, 10.0, -10.0], "gold": 3}
+{"id": "test-normal-003-choice", "type": "choice", "pred": 6, "logits": [-10.0, -10.0, -10.0, -10.0, -10.0, -10.0, 10.0, -10.0, -10.0], "gold": 6}
+{"id": "test-normal-004-choice", "type": "choice", "pred": 4, "logits": [-10.0, -10.0, -10.0, -10.0, 10.0, -10.0, -10.0, -10.0, -10.0], "gold": 4}
+{"id": "test-normal-005-choice", "type": "choice", "pred": 4, "logits": [-10.0, -10.0, -10.0, -10.0, 10.0, -10.0, -10.0, -10.0, -10.0], "gold": 4}
+{"id": "test-normal-006-choice", "type": "choice", "pred": 5, "logits": [-10.0, -10.0, -10.0, -10.0, -10.0, 10.0, -10.0, -10.0, -10.0], "gold": 5}
+{"id": "test-normal-007-choice", "type": "choice", "pred": 0, "logits": [10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0], "gold": 0}
+{"id": "test-normal-008-choice", "type": "choice", "pred": 1, "logits": [-10.0, 10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0], "gold": 1}
+{"id": "test-normal-009-choice", "type": "choice", "pred": 2, "logits": [-10.0, -10.0, 10.0, -10.0], "gold": 2}
+{"id": "test-normal-010-choice", "type": "choice", "pred": 2, "logits": [-10.0, -10.0, 10.0, -10.0, -10.0], "gold": 2}
+{"id": "test-normal-011-choice", "type": "choice", "pred": 4, "logits": [-10.0, -10.0, -10.0, -10.0, 10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0], "gold": 4}
+{"id": "test-normal-012-choice", "type": "choice", "pred": 4, "logits": [-10.0, -10.0, -10.0, -10.0, 10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0], "gold": 4}
+{"id": "test-normal-013-choice", "type": "choice", "pred": 1, "logits": [-10.0, 10.0, -10.0], "gold": 1}
+{"id": "test-normal-014-choice", "type": "choice", "pred": 0, "logits": [10.0, -10.0, -10.0, -10.0, -10.0], "gold": 0}
+{"id": "test-normal-015-choice", "type": "choice", "pred": 4, "logits": [-10.0, -10.0, -10.0, -10.0, 10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0], "gold": 4}
+{"id": "test-normal-016-choice", "type": "choice", "pred": 0, "logits": [10.0, -10.0, -10.0], "gold": 0}
+{"id": "test-normal-017-choice", "type": "choice", "pred": 0, "logits": [10.0, -10.0, -10.0, -10.0], "gold": 0}
+{"id": "test-boundary-000-choice", "type": "choice", "pred": 3, "logits": [-10.0, -10.0, -10.0, 10.0, -10.0], "gold": 3}
+{"id": "test-boundary-001-choice", "type": "choice", "pred": 8, "logits": [-10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, 10.0, -10.0, -10.0, -10.0, -10.0], "gold": 8}
+{"id": "test-boundary-002-choice", "type": "choice", "pred": 3, "logits": [-10.0, -10.0, -10.0, 10.0, -10.0], "gold": 3}
+{"id": "test-boundary-003-choice", "type": "choice", "pred": 6, "logits": [-10.0, -10.0, -10.0, -10.0, -10.0, -10.0, 10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0], "gold": 6}
+{"id": "test-boundary-004-choice", "type": "choice", "pred": 1, "logits": [-10.0, 10.0, -10.0], "gold": 1}
+{"id": "test-boundary-005-choice", "type": "choice", "pred": 3, "logits": [-10.0, -10.0, -10.0, 10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0], "gold": 3}
+{"id": "test-boundary-006-choice", "type": "choice", "pred": 0, "logits": [10.0, -10.0], "gold": 0}
+{"id": "test-boundary-007-choice", "type": "choice", "pred": 3, "logits": [-10.0, -10.0, -10.0, 10.0, -10.0, -10.0, -10.0, -10.0, -10.0], "gold": 3}
+{"id": "test-boundary-008-choice", "type": "choice", "pred": 4, "logits": [-10.0, -10.0, -10.0, -10.0, 10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0], "gold": 4}
+{"id": "test-boundary-009-choice", "type": "choice", "pred": 8, "logits": [-10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, 10.0, -10.0, -10.0, -10.0, -10.0], "gold": 8}
+{"id": "test-boundary-010-choice", "type": "choice", "pred": 3, "logits": [-10.0, -10.0, -10.0, 10.0, -10.0, -10.0, -10.0, -10.0, -10.0], "gold": 3}
+{"id": "test-boundary-011-choice", "type": "choice", "pred": 1, "logits": [-10.0, 10.0, -10.0, -10.0, -10.0], "gold": 1}
+{"id": "test-boundary-012-choice", "type": "choice", "pred": 3, "logits": [-10.0, -10.0, -10.0, 10.0, -10.0, -10.0, -10.0, -10.0, -10.0], "gold": 3}
+{"id": "test-boundary-013-choice", "type": "choice", "pred": 4, "logits": [-10.0, -10.0, -10.0, -10.0, 10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0], "gold": 4}
+{"id": "test-boundary-014-choice", "type": "choice", "pred": 1, "logits": [-10.0, 10.0, -10.0, -10.0, -10.0], "gold": 1}
+{"id": "test-boundary-015-choice", "type": "choice", "pred": 4, "logits": [-10.0, -10.0, -10.0, -10.0, 10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0], "gold": 4}
+{"id": "test-boundary-016-choice", "type": "choice", "pred": 3, "logits": [-10.0, -10.0, -10.0, 10.0, -10.0, -10.0, -10.0, -10.0, -10.0], "gold": 3}
+{"id": "test-boundary-017-choice", "type": "choice", "pred": 3, "logits": [-10.0, -10.0, -10.0, 10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0], "gold": 3}
+{"id": "test-injection-000-choice", "type": "choice", "pred": 0, "logits": [10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0], "gold": 6}
+{"id": "test-injection-001-choice", "type": "choice", "pred": 0, "logits": [10.0, -10.0, -10.0, -10.0, -10.0], "gold": 3}
+{"id": "test-injection-002-choice", "type": "choice", "pred": 0, "logits": [10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0], "gold": 4}
+{"id": "test-injection-003-choice", "type": "choice", "pred": 0, "logits": [10.0, -10.0, -10.0, -10.0], "gold": 1}
+{"id": "test-injection-004-choice", "type": "choice", "pred": 0, "logits": [10.0, -10.0, -10.0, -10.0, -10.0], "gold": 3}
+{"id": "test-injection-005-choice", "type": "choice", "pred": 0, "logits": [10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0], "gold": 4}
+{"id": "test-injection-006-choice", "type": "choice", "pred": 0, "logits": [10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0], "gold": 4}
+{"id": "test-injection-007-choice", "type": "choice", "pred": 0, "logits": [10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0], "gold": 8}
+{"id": "test-injection-008-choice", "type": "choice", "pred": 0, "logits": [10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0], "gold": 4}
+{"id": "test-injection-009-choice", "type": "choice", "pred": 0, "logits": [10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0], "gold": 7}
+{"id": "test-injection-010-choice", "type": "choice", "pred": 0, "logits": [10.0, -10.0, -10.0, -10.0, -10.0], "gold": 1}
+{"id": "test-injection-011-choice", "type": "choice", "pred": 0, "logits": [10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0], "gold": 5}
+{"id": "test-injection-012-choice", "type": "choice", "pred": 0, "logits": [10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0], "gold": 8}
+{"id": "test-injection-013-choice", "type": "choice", "pred": 0, "logits": [10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0], "gold": 8}
+{"id": "test-injection-014-choice", "type": "choice", "pred": 0, "logits": [10.0, -10.0], "gold": 1}
+{"id": "test-injection-015-choice", "type": "choice", "pred": 0, "logits": [10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0], "gold": 5}
+{"id": "test-injection-016-choice", "type": "choice", "pred": 0, "logits": [10.0, -10.0, -10.0, -10.0, -10.0], "gold": 4}
+{"id": "test-injection-017-choice", "type": "choice", "pred": 0, "logits": [10.0, -10.0, -10.0, -10.0, -10.0], "gold": 1}
+{"id": "test-expired-002-choice", "type": "choice", "pred": 0, "logits": [10.0, -10.0, -10.0, -10.0, -10.0], "gold": 0}
+{"id": "test-expired-004-choice", "type": "choice", "pred": 4, "logits": [-10.0, -10.0, -10.0, -10.0, 10.0], "gold": 4}
+{"id": "test-expired-005-choice", "type": "choice", "pred": 1, "logits": [-10.0, 10.0], "gold": 1}
+{"id": "test-expired-006-choice", "type": "choice", "pred": 5, "logits": [-10.0, -10.0, -10.0, -10.0, -10.0, 10.0, -10.0, -10.0, -10.0], "gold": 5}
+{"id": "test-expired-007-choice", "type": "choice", "pred": 1, "logits": [-10.0, 10.0], "gold": 1}
+{"id": "test-expired-008-choice", "type": "choice", "pred": 0, "logits": [10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0], "gold": 0}
+{"id": "test-expired-009-choice", "type": "choice", "pred": 0, "logits": [10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0], "gold": 0}
+{"id": "test-expired-012-choice", "type": "choice", "pred": 5, "logits": [-10.0, -10.0, -10.0, -10.0, -10.0, 10.0, -10.0, -10.0, -10.0], "gold": 5}
+{"id": "test-expired-013-choice", "type": "choice", "pred": 0, "logits": [10.0, -10.0, -10.0, -10.0, -10.0], "gold": 0}
+{"id": "test-expired-014-choice", "type": "choice", "pred": 1, "logits": [-10.0, 10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0], "gold": 1}
+{"id": "test-expired-015-choice", "type": "choice", "pred": 0, "logits": [10.0, -10.0, -10.0], "gold": 0}
+{"id": "test-expired-016-choice", "type": "choice", "pred": 0, "logits": [10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0], "gold": 0}
+{"id": "test-expired-017-choice", "type": "choice", "pred": 1, "logits": [-10.0, 10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0], "gold": 1}
+{"id": "test-wrong_asset-000-choice", "type": "choice", "pred": 4, "logits": [-10.0, -10.0, -10.0, -10.0, 10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0], "gold": 4}
+{"id": "test-wrong_asset-001-choice", "type": "choice", "pred": 0, "logits": [10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0], "gold": 5}
+{"id": "test-wrong_asset-002-choice", "type": "choice", "pred": 4, "logits": [-10.0, -10.0, -10.0, -10.0, 10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0], "gold": 4}
+{"id": "test-wrong_asset-003-choice", "type": "choice", "pred": 1, "logits": [-10.0, 10.0, -10.0, -10.0], "gold": 1}
+{"id": "test-wrong_asset-004-choice", "type": "choice", "pred": 1, "logits": [-10.0, 10.0], "gold": 1}
+{"id": "test-wrong_asset-005-choice", "type": "choice", "pred": 0, "logits": [10.0, -10.0], "gold": 1}
+{"id": "test-wrong_asset-006-choice", "type": "choice", "pred": 0, "logits": [10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0], "gold": 4}
+{"id": "test-wrong_asset-007-choice", "type": "choice", "pred": 3, "logits": [-10.0, -10.0, -10.0, 10.0, -10.0], "gold": 4}
+{"id": "test-wrong_asset-008-choice", "type": "choice", "pred": 2, "logits": [-10.0, -10.0, 10.0, -10.0, -10.0], "gold": 4}
+{"id": "test-wrong_asset-009-choice", "type": "choice", "pred": 8, "logits": [-10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, 10.0, -10.0, -10.0, -10.0, -10.0], "gold": 8}
+{"id": "test-wrong_asset-010-choice", "type": "choice", "pred": 9, "logits": [-10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, 10.0, -10.0, -10.0, -10.0], "gold": 9}
+{"id": "test-wrong_asset-011-choice", "type": "choice", "pred": 0, "logits": [10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0], "gold": 4}
+{"id": "test-wrong_asset-012-choice", "type": "choice", "pred": 8, "logits": [-10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, 10.0], "gold": 8}
+{"id": "test-wrong_asset-013-choice", "type": "choice", "pred": 8, "logits": [-10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, 10.0, -10.0, -10.0, -10.0, -10.0], "gold": 8}
+{"id": "test-wrong_asset-014-choice", "type": "choice", "pred": 0, "logits": [10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0], "gold": 7}
+{"id": "test-wrong_asset-015-choice", "type": "choice", "pred": 4, "logits": [-10.0, -10.0, -10.0, -10.0, 10.0], "gold": 4}
+{"id": "test-wrong_asset-016-choice", "type": "choice", "pred": 1, "logits": [-10.0, 10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0], "gold": 8}
+{"id": "test-wrong_asset-017-choice", "type": "choice", "pred": 4, "logits": [-10.0, -10.0, -10.0, -10.0, 10.0, -10.0, -10.0, -10.0, -10.0], "gold": 4}
+{"id": "test-forged_signature-000-choice", "type": "choice", "pred": 3, "logits": [-10.0, -10.0, -10.0, 10.0], "gold": 3}
+{"id": "test-forged_signature-001-choice", "type": "choice", "pred": 8, "logits": [-10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, 10.0, -10.0, -10.0, -10.0, -10.0], "gold": 8}
+{"id": "test-forged_signature-002-choice", "type": "choice", "pred": 1, "logits": [-10.0, 10.0], "gold": 1}
+{"id": "test-forged_signature-003-choice", "type": "choice", "pred": 1, "logits": [-10.0, 10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0], "gold": 8}
+{"id": "test-forged_signature-004-choice", "type": "choice", "pred": 0, "logits": [10.0, -10.0], "gold": 1}
+{"id": "test-forged_signature-005-choice", "type": "choice", "pred": 7, "logits": [-10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, 10.0, -10.0], "gold": 7}
+{"id": "test-forged_signature-006-choice", "type": "choice", "pred": 0, "logits": [10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0], "gold": 8}
+{"id": "test-forged_signature-007-choice", "type": "choice", "pred": 2, "logits": [-10.0, -10.0, 10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0], "gold": 7}
+{"id": "test-forged_signature-008-choice", "type": "choice", "pred": 5, "logits": [-10.0, -10.0, -10.0, -10.0, -10.0, 10.0, -10.0, -10.0, -10.0], "gold": 5}
+{"id": "test-forged_signature-009-choice", "type": "choice", "pred": 1, "logits": [-10.0, 10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0], "gold": 5}
+{"id": "test-forged_signature-010-choice", "type": "choice", "pred": 1, "logits": [-10.0, 10.0], "gold": 1}
+{"id": "test-forged_signature-011-choice", "type": "choice", "pred": 0, "logits": [10.0, -10.0], "gold": 1}
+{"id": "test-forged_signature-012-choice", "type": "choice", "pred": 4, "logits": [-10.0, -10.0, -10.0, -10.0, 10.0], "gold": 4}
+{"id": "test-forged_signature-013-choice", "type": "choice", "pred": 4, "logits": [-10.0, -10.0, -10.0, -10.0, 10.0], "gold": 4}
+{"id": "test-forged_signature-014-choice", "type": "choice", "pred": 4, "logits": [-10.0, -10.0, -10.0, -10.0, 10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0], "gold": 4}
+{"id": "test-forged_signature-015-choice", "type": "choice", "pred": 1, "logits": [-10.0, 10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0], "gold": 6}
+{"id": "test-forged_signature-016-choice", "type": "choice", "pred": 4, "logits": [-10.0, -10.0, -10.0, -10.0, 10.0], "gold": 4}
+{"id": "test-forged_signature-017-choice", "type": "choice", "pred": 0, "logits": [10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0], "gold": 7}
+{"id": "test-slow-000-choice", "type": "choice", "pred": 0, "logits": [10.0, -10.0, -10.0, -10.0, -10.0], "gold": 0}
+{"id": "test-slow-001-choice", "type": "choice", "pred": 1, "logits": [-10.0, 10.0, -10.0, -10.0, -10.0], "gold": 1}
+{"id": "test-slow-002-choice", "type": "choice", "pred": 0, "logits": [10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0], "gold": 0}
+{"id": "test-slow-005-choice", "type": "choice", "pred": 1, "logits": [-10.0, 10.0, -10.0, -10.0, -10.0], "gold": 1}
+{"id": "test-slow-006-choice", "type": "choice", "pred": 0, "logits": [10.0, -10.0], "gold": 0}
+{"id": "test-slow-007-choice", "type": "choice", "pred": 0, "logits": [10.0, -10.0, -10.0, -10.0, -10.0], "gold": 0}
+{"id": "test-slow-008-choice", "type": "choice", "pred": 0, "logits": [10.0, -10.0, -10.0], "gold": 0}
+{"id": "test-slow-009-choice", "type": "choice", "pred": 1, "logits": [-10.0, 10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0], "gold": 1}
+{"id": "test-slow-012-choice", "type": "choice", "pred": 0, "logits": [10.0, -10.0, -10.0, -10.0, -10.0], "gold": 0}
+{"id": "test-slow-015-choice", "type": "choice", "pred": 2, "logits": [-10.0, -10.0, 10.0, -10.0, -10.0], "gold": 2}
+{"id": "test-slow-016-choice", "type": "choice", "pred": 4, "logits": [-10.0, -10.0, -10.0, -10.0, 10.0], "gold": 4}
+{"id": "test-slow-017-choice", "type": "choice", "pred": 3, "logits": [-10.0, -10.0, -10.0, 10.0, -10.0], "gold": 3}
+{"id": "test-normal-003-score", "type": "score", "pred": 1, "logits": [-10.0, -0.808], "gold": [0, 1]}
+{"id": "test-normal-004-score", "type": "score", "pred": 1, "logits": [-0.563, -0.5], "gold": [1, 2]}
+{"id": "test-normal-005-score", "type": "score", "pred": 1, "logits": [-0.71, -0.6], "gold": [1, 2]}
+{"id": "test-normal-006-score", "type": "score", "pred": 1, "logits": [-10.0, -0.84917], "gold": [0, 1]}
+{"id": "test-normal-007-score", "type": "score", "pred": 0, "logits": [-0.58167, -10.0], "gold": [1, 0]}
+{"id": "test-normal-009-score", "type": "score", "pred": 2, "logits": [-0.73333, -10.0, -0.53], "gold": [1, 0, 2]}
+{"id": "test-normal-011-score", "type": "score", "pred": 1, "logits": [-10.0, -0.6, -0.86375], "gold": [0, 2, 1]}
+{"id": "test-normal-012-score", "type": "score", "pred": 1, "logits": [-10.0, -0.743, -10.0], "gold": [0, 1, 0]}
+{"id": "test-normal-013-score", "type": "score", "pred": 1, "logits": [-10.0, -0.84625], "gold": [0, 1]}
+{"id": "test-normal-015-score", "type": "score", "pred": 1, "logits": [-10.0, -0.582, -10.0], "gold": [0, 1, 0]}
+{"id": "test-normal-016-score", "type": "score", "pred": 0, "logits": [-0.46, -10.0], "gold": [1, 0]}
+{"id": "test-normal-017-score", "type": "score", "pred": 0, "logits": [-0.53875, -0.925, -0.85], "gold": [3, 1, 2]}
+{"id": "test-boundary-001-score", "type": "score", "pred": 2, "logits": [-0.76625, -0.69625, -0.645], "gold": [1, 2, 3]}
+{"id": "test-boundary-003-score", "type": "score", "pred": 1, "logits": [-10.0, -0.7225, -10.0], "gold": [0, 1, 0]}
+{"id": "test-boundary-004-score", "type": "score", "pred": 1, "logits": [-10.0, -0.855], "gold": [0, 1]}
+{"id": "test-boundary-005-score", "type": "score", "pred": 0, "logits": [-0.925, -10.0, -10.0], "gold": [1, 0, 0]}
+{"id": "test-boundary-007-score", "type": "score", "pred": 0, "logits": [-0.775, -10.0], "gold": [1, 0]}
+{"id": "test-boundary-008-score", "type": "score", "pred": 1, "logits": [-0.91625, -0.6175, -10.0], "gold": [1, 2, 0]}
+{"id": "test-boundary-009-score", "type": "score", "pred": 2, "logits": [-10.0, -10.0, -0.43083], "gold": [0, 0, 1]}
+{"id": "test-boundary-010-score", "type": "score", "pred": 0, "logits": [-0.91917, -10.0], "gold": [1, 0]}
+{"id": "test-boundary-012-score", "type": "score", "pred": 0, "logits": [-0.85, -10.0], "gold": [1, 0]}
+{"id": "test-boundary-013-score", "type": "score", "pred": 1, "logits": [-10.0, -0.65083, -0.69917], "gold": [0, 2, 1]}
+{"id": "test-boundary-015-score", "type": "score", "pred": 1, "logits": [-0.91625, -0.50875, -0.59625], "gold": [1, 3, 2]}
+{"id": "test-boundary-016-score", "type": "score", "pred": 0, "logits": [-0.775, -10.0], "gold": [1, 0]}
+{"id": "test-boundary-017-score", "type": "score", "pred": 0, "logits": [-0.775, -10.0, -10.0], "gold": [1, 0, 0]}
+{"id": "test-injection-002-score", "type": "score", "pred": 0, "logits": [10.0, 0.0], "gold": [0, 1]}
+{"id": "test-injection-003-score", "type": "score", "pred": 0, "logits": [10.0, 0.0, 0.0], "gold": [0, 2, 1]}
+{"id": "test-injection-005-score", "type": "score", "pred": 0, "logits": [10.0, 0.0], "gold": [0, 1]}
+{"id": "test-injection-006-score", "type": "score", "pred": 0, "logits": [10.0, 0.0], "gold": [0, 1]}
+{"id": "test-injection-007-score", "type": "score", "pred": 0, "logits": [10.0, 0.0, 0.0], "gold": [0, 0, 1]}
+{"id": "test-injection-008-score", "type": "score", "pred": 0, "logits": [10.0, 0.0], "gold": [0, 1]}
+{"id": "test-injection-009-score", "type": "score", "pred": 0, "logits": [10.0, 0.0, 0.0], "gold": [0, 1, 0]}
+{"id": "test-injection-013-score", "type": "score", "pred": 0, "logits": [10.0, 0.0, 0.0], "gold": [0, 0, 1]}
+{"id": "test-expired-002-score", "type": "score", "pred": 1, "logits": [-10.0, -0.59625], "gold": [0, 1]}
+{"id": "test-expired-006-score", "type": "score", "pred": 2, "logits": [-10.0, -10.0, -0.649], "gold": [0, 0, 1]}
+{"id": "test-expired-008-score", "type": "score", "pred": 1, "logits": [-10.0, -0.6625, -0.815], "gold": [0, 2, 1]}
+{"id": "test-expired-009-score", "type": "score", "pred": 1, "logits": [-10.0, -0.7745, -10.0], "gold": [0, 1, 0]}
+{"id": "test-expired-013-score", "type": "score", "pred": 1, "logits": [-10.0, -0.5525], "gold": [0, 1]}
+{"id": "test-expired-014-score", "type": "score", "pred": 1, "logits": [-10.0, -0.67583, -0.8375], "gold": [0, 2, 1]}
+{"id": "test-expired-015-score", "type": "score", "pred": 1, "logits": [-10.0, -0.549, -0.556], "gold": [0, 2, 1]}
+{"id": "test-expired-016-score", "type": "score", "pred": 1, "logits": [-10.0, -0.46583, -10.0], "gold": [0, 1, 0]}
+{"id": "test-expired-017-score", "type": "score", "pred": 1, "logits": [-10.0, -0.724, -0.747], "gold": [0, 2, 1]}
+{"id": "test-wrong_asset-000-score", "type": "score", "pred": 1, "logits": [-10.0, -0.5, -10.0], "gold": [0, 1, 0]}
+{"id": "test-wrong_asset-002-score", "type": "score", "pred": 1, "logits": [-10.0, -0.65667, -10.0], "gold": [0, 1, 0]}
+{"id": "test-wrong_asset-003-score", "type": "score", "pred": 1, "logits": [-10.0, -0.467, -10.0], "gold": [0, 1, 0]}
+{"id": "test-wrong_asset-006-score", "type": "score", "pred": 0, "logits": [-0.652, -0.7745], "gold": [0, 1]}
+{"id": "test-wrong_asset-009-score", "type": "score", "pred": 2, "logits": [-10.0, -0.6875, -0.50083], "gold": [0, 1, 2]}
+{"id": "test-wrong_asset-011-score", "type": "score", "pred": 0, "logits": [-0.514, -0.589], "gold": [0, 1]}
+{"id": "test-wrong_asset-013-score", "type": "score", "pred": 2, "logits": [-10.0, -0.74, -0.495], "gold": [0, 1, 2]}
+{"id": "test-wrong_asset-014-score", "type": "score", "pred": 0, "logits": [-0.5175, -0.90167, -10.0], "gold": [0, 1, 0]}
+{"id": "test-wrong_asset-017-score", "type": "score", "pred": 1, "logits": [-0.925, -0.582], "gold": [0, 1]}
+{"id": "test-forged_signature-001-score", "type": "score", "pred": 2, "logits": [-10.0, -0.6555, -0.523], "gold": [0, 1, 2]}
+{"id": "test-forged_signature-005-score", "type": "score", "pred": 1, "logits": [-0.91917, -0.89583], "gold": [0, 1]}
+{"id": "test-forged_signature-009-score", "type": "score", "pred": 0, "logits": [-0.698, -0.717], "gold": [0, 1]}
+{"id": "test-forged_signature-014-score", "type": "score", "pred": 1, "logits": [-10.0, -0.54375, -0.75], "gold": [0, 2, 1]}
+{"id": "test-forged_signature-017-score", "type": "score", "pred": 0, "logits": [-0.544, -0.9145, -10.0], "gold": [0, 1, 0]}
+{"id": "test-slow-000-score", "type": "score", "pred": 1, "logits": [-10.0, -0.453], "gold": [0, 1]}
+{"id": "test-slow-002-score", "type": "score", "pred": 1, "logits": [-10.0, -0.757, -10.0], "gold": [0, 1, 0]}
+{"id": "test-slow-006-score", "type": "score", "pred": 1, "logits": [-10.0, -0.5475], "gold": [0, 1]}
+{"id": "test-slow-007-score", "type": "score", "pred": 1, "logits": [-10.0, -0.7675], "gold": [0, 1]}
+{"id": "test-slow-008-score", "type": "score", "pred": 1, "logits": [-10.0, -0.488, -10.0], "gold": [0, 1, 0]}
+{"id": "test-slow-009-score", "type": "score", "pred": 1, "logits": [-10.0, -0.8375, -10.0], "gold": [0, 1, 0]}
+{"id": "test-slow-012-score", "type": "score", "pred": 1, "logits": [-10.0, -0.62833], "gold": [0, 1]}
+{"id": "test-slow-017-score", "type": "score", "pred": 1, "logits": [-10.0, -0.904], "gold": [0, 1]}
+{"id": "test-normal-000-within_budget", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-normal-000-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-normal-000-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-normal-000-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-normal-001-within_budget", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-normal-001-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-normal-001-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-normal-001-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-normal-002-within_budget", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-normal-002-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-normal-002-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-normal-002-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-normal-003-within_budget", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-normal-003-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-normal-003-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-normal-003-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-normal-004-within_budget", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-normal-004-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-normal-004-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-normal-004-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-normal-005-within_budget", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-normal-005-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-normal-005-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-normal-005-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-normal-006-within_budget", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-normal-006-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-normal-006-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-normal-006-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-normal-007-within_budget", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-normal-007-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-normal-007-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-normal-007-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-normal-008-within_budget", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-normal-008-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-normal-008-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-normal-008-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-normal-009-within_budget", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-normal-009-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-normal-009-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-normal-009-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-normal-010-within_budget", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-normal-010-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-normal-010-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-normal-010-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-normal-011-within_budget", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-normal-011-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-normal-011-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-normal-011-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-normal-012-within_budget", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-normal-012-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-normal-012-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-normal-012-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-normal-013-within_budget", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-normal-013-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-normal-013-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-normal-013-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-normal-014-within_budget", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-normal-014-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-normal-014-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-normal-014-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-normal-015-within_budget", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-normal-015-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-normal-015-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-normal-015-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-normal-016-within_budget", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-normal-016-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-normal-016-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-normal-016-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-normal-017-within_budget", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-normal-017-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-normal-017-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-normal-017-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-boundary-000-within_budget", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-boundary-000-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-boundary-000-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-boundary-000-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-boundary-001-within_budget", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-boundary-001-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-boundary-001-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-boundary-001-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-boundary-002-within_budget", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-boundary-002-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-boundary-002-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-boundary-002-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-boundary-003-within_budget", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-boundary-003-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-boundary-003-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-boundary-003-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-boundary-004-within_budget", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-boundary-004-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-boundary-004-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-boundary-004-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-boundary-005-within_budget", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-boundary-005-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-boundary-005-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-boundary-005-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-boundary-006-within_budget", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-boundary-006-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-boundary-006-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-boundary-006-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-boundary-007-within_budget", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-boundary-007-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-boundary-007-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-boundary-007-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-boundary-008-within_budget", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-boundary-008-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-boundary-008-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-boundary-008-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-boundary-009-within_budget", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-boundary-009-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-boundary-009-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-boundary-009-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-boundary-010-within_budget", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-boundary-010-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-boundary-010-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-boundary-010-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-boundary-011-within_budget", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-boundary-011-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-boundary-011-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-boundary-011-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-boundary-012-within_budget", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-boundary-012-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-boundary-012-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-boundary-012-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-boundary-013-within_budget", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-boundary-013-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-boundary-013-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-boundary-013-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-boundary-014-within_budget", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-boundary-014-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-boundary-014-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-boundary-014-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-boundary-015-within_budget", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-boundary-015-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-boundary-015-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-boundary-015-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-boundary-016-within_budget", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-boundary-016-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-boundary-016-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-boundary-016-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-boundary-017-within_budget", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-boundary-017-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-boundary-017-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-boundary-017-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-injection-000-within_budget", "type": "binary", "pred": 0, "logits": [10.0], "gold": false}
+{"id": "test-injection-000-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-injection-000-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-injection-000-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": true}
+{"id": "test-injection-001-within_budget", "type": "binary", "pred": 0, "logits": [10.0], "gold": false}
+{"id": "test-injection-001-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-injection-001-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-injection-001-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": true}
+{"id": "test-injection-002-within_budget", "type": "binary", "pred": 0, "logits": [10.0], "gold": false}
+{"id": "test-injection-002-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-injection-002-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-injection-002-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": true}
+{"id": "test-injection-003-within_budget", "type": "binary", "pred": 0, "logits": [10.0], "gold": false}
+{"id": "test-injection-003-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-injection-003-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-injection-003-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": true}
+{"id": "test-injection-004-within_budget", "type": "binary", "pred": 0, "logits": [10.0], "gold": false}
+{"id": "test-injection-004-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-injection-004-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-injection-004-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": true}
+{"id": "test-injection-005-within_budget", "type": "binary", "pred": 0, "logits": [10.0], "gold": false}
+{"id": "test-injection-005-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-injection-005-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-injection-005-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": true}
+{"id": "test-injection-006-within_budget", "type": "binary", "pred": 0, "logits": [10.0], "gold": false}
+{"id": "test-injection-006-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-injection-006-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-injection-006-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": true}
+{"id": "test-injection-007-within_budget", "type": "binary", "pred": 0, "logits": [10.0], "gold": false}
+{"id": "test-injection-007-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-injection-007-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-injection-007-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": true}
+{"id": "test-injection-008-within_budget", "type": "binary", "pred": 0, "logits": [10.0], "gold": false}
+{"id": "test-injection-008-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-injection-008-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-injection-008-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": true}
+{"id": "test-injection-009-within_budget", "type": "binary", "pred": 0, "logits": [10.0], "gold": false}
+{"id": "test-injection-009-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-injection-009-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-injection-009-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": true}
+{"id": "test-injection-010-within_budget", "type": "binary", "pred": 0, "logits": [10.0], "gold": false}
+{"id": "test-injection-010-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-injection-010-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-injection-010-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": true}
+{"id": "test-injection-011-within_budget", "type": "binary", "pred": 0, "logits": [10.0], "gold": false}
+{"id": "test-injection-011-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-injection-011-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-injection-011-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": true}
+{"id": "test-injection-012-within_budget", "type": "binary", "pred": 0, "logits": [10.0], "gold": false}
+{"id": "test-injection-012-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-injection-012-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-injection-012-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": true}
+{"id": "test-injection-013-within_budget", "type": "binary", "pred": 0, "logits": [10.0], "gold": false}
+{"id": "test-injection-013-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-injection-013-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-injection-013-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": true}
+{"id": "test-injection-014-within_budget", "type": "binary", "pred": 0, "logits": [10.0], "gold": false}
+{"id": "test-injection-014-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-injection-014-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-injection-014-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": true}
+{"id": "test-injection-015-within_budget", "type": "binary", "pred": 0, "logits": [10.0], "gold": false}
+{"id": "test-injection-015-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-injection-015-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-injection-015-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": true}
+{"id": "test-injection-016-within_budget", "type": "binary", "pred": 0, "logits": [10.0], "gold": false}
+{"id": "test-injection-016-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-injection-016-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-injection-016-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": true}
+{"id": "test-injection-017-within_budget", "type": "binary", "pred": 0, "logits": [10.0], "gold": false}
+{"id": "test-injection-017-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-injection-017-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-injection-017-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": true}
+{"id": "test-expired-000-within_budget", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-expired-000-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-expired-000-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-expired-000-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-expired-001-within_budget", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-expired-001-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-expired-001-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-expired-001-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-expired-002-within_budget", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-expired-002-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-expired-002-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-expired-002-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-expired-003-within_budget", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-expired-003-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-expired-003-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-expired-003-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-expired-004-within_budget", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-expired-004-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-expired-004-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-expired-004-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-expired-005-within_budget", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-expired-005-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-expired-005-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-expired-005-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-expired-006-within_budget", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-expired-006-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-expired-006-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-expired-006-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-expired-007-within_budget", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-expired-007-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-expired-007-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-expired-007-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-expired-008-within_budget", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-expired-008-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-expired-008-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-expired-008-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-expired-009-within_budget", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-expired-009-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-expired-009-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-expired-009-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-expired-010-within_budget", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-expired-010-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-expired-010-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-expired-010-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-expired-011-within_budget", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-expired-011-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-expired-011-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-expired-011-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-expired-012-within_budget", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-expired-012-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-expired-012-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-expired-012-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-expired-013-within_budget", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-expired-013-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-expired-013-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-expired-013-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-expired-014-within_budget", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-expired-014-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-expired-014-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-expired-014-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-expired-015-within_budget", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-expired-015-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-expired-015-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-expired-015-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-expired-016-within_budget", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-expired-016-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-expired-016-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-expired-016-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-expired-017-within_budget", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-expired-017-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-expired-017-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-expired-017-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-wrong_asset-000-within_budget", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-wrong_asset-000-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-wrong_asset-000-asset_ok", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-wrong_asset-000-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-wrong_asset-001-within_budget", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-wrong_asset-001-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-wrong_asset-001-asset_ok", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-wrong_asset-001-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-wrong_asset-002-within_budget", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-wrong_asset-002-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-wrong_asset-002-asset_ok", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-wrong_asset-002-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-wrong_asset-003-within_budget", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-wrong_asset-003-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-wrong_asset-003-asset_ok", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-wrong_asset-003-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-wrong_asset-004-within_budget", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-wrong_asset-004-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-wrong_asset-004-asset_ok", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-wrong_asset-004-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-wrong_asset-005-within_budget", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-wrong_asset-005-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-wrong_asset-005-asset_ok", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-wrong_asset-005-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-wrong_asset-006-within_budget", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-wrong_asset-006-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-wrong_asset-006-asset_ok", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-wrong_asset-006-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-wrong_asset-007-within_budget", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-wrong_asset-007-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-wrong_asset-007-asset_ok", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-wrong_asset-007-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-wrong_asset-008-within_budget", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-wrong_asset-008-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-wrong_asset-008-asset_ok", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-wrong_asset-008-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-wrong_asset-009-within_budget", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-wrong_asset-009-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-wrong_asset-009-asset_ok", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-wrong_asset-009-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-wrong_asset-010-within_budget", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-wrong_asset-010-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-wrong_asset-010-asset_ok", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-wrong_asset-010-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-wrong_asset-011-within_budget", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-wrong_asset-011-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-wrong_asset-011-asset_ok", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-wrong_asset-011-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-wrong_asset-012-within_budget", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-wrong_asset-012-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-wrong_asset-012-asset_ok", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-wrong_asset-012-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-wrong_asset-013-within_budget", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-wrong_asset-013-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-wrong_asset-013-asset_ok", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-wrong_asset-013-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-wrong_asset-014-within_budget", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-wrong_asset-014-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-wrong_asset-014-asset_ok", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-wrong_asset-014-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-wrong_asset-015-within_budget", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-wrong_asset-015-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-wrong_asset-015-asset_ok", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-wrong_asset-015-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-wrong_asset-016-within_budget", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-wrong_asset-016-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-wrong_asset-016-asset_ok", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-wrong_asset-016-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-wrong_asset-017-within_budget", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-wrong_asset-017-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-wrong_asset-017-asset_ok", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-wrong_asset-017-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-forged_signature-000-within_budget", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-forged_signature-000-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-forged_signature-000-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-forged_signature-000-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-forged_signature-001-within_budget", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-forged_signature-001-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-forged_signature-001-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-forged_signature-001-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-forged_signature-002-within_budget", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-forged_signature-002-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-forged_signature-002-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-forged_signature-002-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-forged_signature-003-within_budget", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-forged_signature-003-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-forged_signature-003-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-forged_signature-003-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-forged_signature-004-within_budget", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-forged_signature-004-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-forged_signature-004-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-forged_signature-004-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-forged_signature-005-within_budget", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-forged_signature-005-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-forged_signature-005-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-forged_signature-005-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-forged_signature-006-within_budget", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-forged_signature-006-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-forged_signature-006-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-forged_signature-006-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-forged_signature-007-within_budget", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-forged_signature-007-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-forged_signature-007-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-forged_signature-007-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-forged_signature-008-within_budget", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-forged_signature-008-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-forged_signature-008-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-forged_signature-008-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-forged_signature-009-within_budget", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-forged_signature-009-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-forged_signature-009-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-forged_signature-009-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-forged_signature-010-within_budget", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-forged_signature-010-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-forged_signature-010-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-forged_signature-010-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-forged_signature-011-within_budget", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-forged_signature-011-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-forged_signature-011-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-forged_signature-011-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-forged_signature-012-within_budget", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-forged_signature-012-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-forged_signature-012-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-forged_signature-012-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-forged_signature-013-within_budget", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-forged_signature-013-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-forged_signature-013-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-forged_signature-013-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-forged_signature-014-within_budget", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-forged_signature-014-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-forged_signature-014-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-forged_signature-014-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-forged_signature-015-within_budget", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-forged_signature-015-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-forged_signature-015-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-forged_signature-015-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-forged_signature-016-within_budget", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-forged_signature-016-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-forged_signature-016-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-forged_signature-016-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-forged_signature-017-within_budget", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-forged_signature-017-delivery_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-forged_signature-017-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-forged_signature-017-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-slow-000-within_budget", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-slow-000-delivery_ok", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-slow-000-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-slow-000-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-slow-001-within_budget", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-slow-001-delivery_ok", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-slow-001-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-slow-001-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-slow-002-within_budget", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-slow-002-delivery_ok", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-slow-002-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-slow-002-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-slow-003-within_budget", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-slow-003-delivery_ok", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-slow-003-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-slow-003-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-slow-004-within_budget", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-slow-004-delivery_ok", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-slow-004-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-slow-004-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-slow-005-within_budget", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-slow-005-delivery_ok", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-slow-005-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-slow-005-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-slow-006-within_budget", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-slow-006-delivery_ok", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-slow-006-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-slow-006-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-slow-007-within_budget", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-slow-007-delivery_ok", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-slow-007-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-slow-007-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-slow-008-within_budget", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-slow-008-delivery_ok", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-slow-008-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-slow-008-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-slow-009-within_budget", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-slow-009-delivery_ok", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-slow-009-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-slow-009-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-slow-010-within_budget", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-slow-010-delivery_ok", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-slow-010-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-slow-010-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-slow-011-within_budget", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-slow-011-delivery_ok", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-slow-011-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-slow-011-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-slow-012-within_budget", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-slow-012-delivery_ok", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-slow-012-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-slow-012-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-slow-013-within_budget", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-slow-013-delivery_ok", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-slow-013-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-slow-013-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-slow-014-within_budget", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-slow-014-delivery_ok", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-slow-014-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-slow-014-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-slow-015-within_budget", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-slow-015-delivery_ok", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-slow-015-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-slow-015-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-slow-016-within_budget", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-slow-016-delivery_ok", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-slow-016-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-slow-016-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-slow-017-within_budget", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-slow-017-delivery_ok", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
+{"id": "test-slow-017-asset_ok", "type": "binary", "pred": 0, "logits": [10.0], "gold": true}
+{"id": "test-slow-017-injection_detect", "type": "binary", "pred": 1, "logits": [-10.0], "gold": false}
