@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cripito Dashboard</title>
+<style>
+:root{--bg:#f6f7f9;--panel:#fff;--ink:#14171c;--muted:#5d6673;--line:#e1e4e9;--accent:#3b5bdb;
+--ok:#1f8a4c;--okbg:#e6f4ec;--bad:#c92a2a;--badbg:#fdecec;--warn:#9a6700;--warnbg:#fff4d6;--chip:#eef1f5}
+@media (prefers-color-scheme:dark){:root{--bg:#0f1115;--panel:#171a21;--ink:#e7e9ee;--muted:#9aa3b0;--line:#2a2f39;
+--accent:#7c95ff;--ok:#5fd394;--okbg:#14301f;--bad:#ff7b7b;--badbg:#3a1717;--warn:#f0c14b;--warnbg:#3a2f10;--chip:#222733}}
+*{box-sizing:border-box}main>div{min-width:0}.chip{overflow-wrap:anywhere}td{overflow-wrap:anywhere}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+header{padding:16px 20px;border-bottom:1px solid var(--line);display:flex;gap:12px;align-items:center;flex-wrap:wrap;background:var(--panel)}
+h1{font-size:18px;margin:0 8px 0 0}h2{font-size:14px;margin:0 0 10px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+.chip{background:var(--chip);border-radius:999px;padding:3px 10px;font-size:12px}
+.chip.warn{background:var(--warnbg);color:var(--warn)}.chip.bad{background:var(--badbg);color:var(--bad)}.chip.ok{background:var(--okbg);color:var(--ok)}
+main{display:grid;grid-template-columns:300px 1fr;gap:16px;padding:16px 20px;max-width:1400px;margin:0 auto}
+@media (max-width:860px){main{grid-template-columns:1fr;padding:16px}}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px;margin-bottom:16px;overflow-x:auto}
+label{display:block;font-size:12px;color:var(--muted);margin:8px 0 4px}input{width:100%;padding:7px 9px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink)}
+button{padding:7px 12px;border-radius:6px;border:1px solid var(--line);background:var(--chip);color:var(--ink);cursor:pointer;font-weight:500}
+button.primary{background:var(--accent);border-color:var(--accent);color:#fff}button.danger{color:var(--bad)}
+.task{padding:8px;border-radius:6px;cursor:pointer;display:flex;justify-content:space-between;gap:8px}.task:hover,.task.sel{background:var(--chip)}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px}
+table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}th{font-size:12px;color:var(--muted);font-weight:600}
+.pipe{display:flex;flex-wrap:wrap;gap:4px}.pipe span{font-size:11px;padding:3px 7px;border-radius:4px;background:var(--chip);color:var(--muted)}
+.pipe span.done{background:var(--okbg);color:var(--ok)}.pipe span.cur{background:var(--accent);color:#fff}.pipe span.fail{background:var(--badbg);color:var(--bad)}
+.untrusted{border-left:3px solid var(--warn);padding-left:8px;color:var(--muted);font-style:italic}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media (max-width:860px){.grid2{grid-template-columns:1fr}}
+.check{display:flex;gap:8px;padding:3px 0}.muted{color:var(--muted)}#tokenbox{display:none}
+</style>
+</head>
+<body>
+<header>
+  <h1>Cripito</h1>
+  <span class="chip warn" id="transport">transport: …</span>
+  <span class="chip warn" id="ledger">settlement: …</span>
+  <span class="chip" id="engine">engine: …</span>
+  <span class="chip" id="spend">spend: …</span>
+  <span style="flex:1"></span>
+  <button class="danger" id="kill">Emergency stop</button>
+</header>
+<main>
+  <div>
+    <div class="panel" id="tokenbox">
+      <h2>Access token</h2>
+      <input id="token" placeholder="paste the admin token"><br><br><button onclick="saveToken()">Use token</button>
+    </div>
+    <div class="panel">
+      <h2>New task</h2>
+      <label>Budget (CRPT-TEST, integer units)</label><input id="budget" value="100">
+      <label>Numeric column</label><input id="column" value="latency_ms">
+      <br><br><button class="primary" onclick="createTask()">Create task</button>
+      <p class="muted" style="font-size:12px">Synthetic dataset only. Report: count, mean, median, sample stdev, p25/p50/p75/p90.</p>
+    </div>
+    <div class="panel"><h2>Tasks</h2><div id="tasks" class="muted">none yet</div></div>
+  </div>
+  <div id="detail"><div class="panel muted">Select or create a task.</div></div>
+</main>
+<script>
+const FLOW=["CREATED","QUOTING","NEGOTIATING","AGREED","FUNDING_PENDING","FUNDED","DELIVERED","VERIFIED","SETTLEMENT_PENDING","SETTLED"];
+let token=(new URLSearchParams(location.hash.slice(1))).get("token")||sessionStorage.getItem("cripito.token")||"";
+let selected=null,lastPkg=null;
+function saveToken(){token=document.getElementById("token").value.trim();try{sessionStorage.setItem("cripito.token",token)}catch(e){};refresh()}
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+async function api(path,opts={}){const h={"authorization":"Bearer "+token,"content-type":"application/json"};
+ if(opts.method==="POST")h["idempotency-key"]=crypto.randomUUID();
+ const r=await fetch(path,{...opts,headers:h});if(r.status===401){document.getElementById("tokenbox").style.display="block";throw new Error("unauthorized")}return r.json()}
+async function createTask(){const r=await api("/tasks",{method:"POST",body:JSON.stringify({budget:+document.getElementById("budget").value,column:document.getElementById("column").value})});selected=r.task_id;refresh()}
+document.getElementById("kill").onclick=async()=>{const h=await (await fetch("/health")).json();await api("/policy/pause",{method:"POST",body:JSON.stringify({paused:!h.paused})});refresh()};
+function pipe(state){const i=FLOW.indexOf(state);if(i<0)return `<div class="pipe">${FLOW.map(s=>`<span>${s}</span>`).join("")}<span class="fail">${state}</span></div>`;
+ return `<div class="pipe">${FLOW.map((s,j)=>`<span class="${j<i?"done":j==i?(state=="SETTLED"?"done":"cur"):""}">${s}</span>`).join("")}</div>`}
+async function verify(tamper){const pkg=await api(`/negotiations/${selected}/evidence`);if(pkg.error){alert("no evidence yet");return}
+ if(tamper){pkg.receipt.agreement.price=String(+pkg.receipt.agreement.price-1);if(pkg.disclosed_events[0])pkg.disclosed_events[0].event.at="2000-01-01T00:00:00Z"}
+ const r=await api("/verify",{method:"POST",body:JSON.stringify(pkg)});
+ document.getElementById("verify").innerHTML=`<p><b>${tamper?"Tampered copy":"Original package"}:</b> <span class="chip ${r.ok?"ok":"bad"}">${r.ok?"VALID":"TAMPERING DETECTED"}</span></p>`+
+ r.checks.map(c=>`<div class="check"><span class="chip ${c.ok?"ok":"bad"}">${c.ok?"ok":"fail"}</span><span>${esc(c.check)} <span class="muted">${esc(c.detail)}</span></span></div>`).join("")+`<p class="muted" style="font-size:12px">${esc(r.limits)}</p>`}
+function renderDetail(t){const rc=t.receipt;
+ return `<div class="panel"><h2>Task <span class="mono">${t.task_id.slice(0,12)}…</span></h2>${pipe(t.state)}
+ <p>Budget <b>${t.budget}</b> · column <span class="mono">${esc(t.requirements.column)}</span> · dataset <span class="mono">${t.dataset.sha256.slice(0,16)}…</span> (${t.dataset.rows} rows)
+ ${t.needs_human?'<span class="chip bad">needs human review</span>':""} ${t.last_note?`<span class="chip warn">${esc(t.last_note)}</span>`:""}</p></div>
+ <div class="panel"><h2>Proposals</h2><table><tr><th>Supplier</th><th>Price</th><th>Delivery</th><th>Round</th><th>Description (untrusted data)</th><th>Status</th></tr>
+ ${t.quotes.map(q=>`<tr><td>${esc(q.supplier)}</td><td><b>${q.price}</b></td><td>${q.delivery_seconds}s</td><td>${q.round}</td><td><div class="untrusted">${esc(q.description)}</div></td>
+ <td>${q.blocked?`<span class="chip bad">${esc(q.blocked)}</span>`:`<span class="chip">${q.signature_ok?"signed ✓":"bad sig"}</span>`}</td></tr>`).join("")||'<tr><td colspan=6 class="muted">waiting for quotes…</td></tr>'}</table></div>
+ <div class="panel"><h2>Decisions: model recommends · policy decides · runtime executes</h2><table><tr><th>Model recommendation</th><th>Policy</th><th>Executed</th></tr>
+ ${t.timeline.map(e=>{const m=e.model,p=e.policy;const opt=e.options.find(o=>o.quote_id===m.quote_id);
+ return `<tr><td><b>${m.action}</b> ${opt?esc(opt.supplier)+" @ "+opt.price:""}${m.counter_price?" → "+m.counter_price:""}<div class="muted mono">${esc(m.model_id)} r${esc(m.model_revision)} · ${m.latency_ms}ms · ${m.status}</div>${m.generated_rationale?`<div class="muted" style="font-size:12px">model text (not proof of reasoning): ${esc(m.generated_rationale)}</div>`:""}</td>
+ <td>${p?`<span class="chip ${p.allowed?"ok":"bad"}">${esc(p.code)}</span><div class="muted mono">rule ${esc(p.rule)} · policy ${esc(p.policy_version)}</div>`:'<span class="muted">n/a</span>'}</td><td>${esc(e.executed)}</td></tr>`}).join("")||'<tr><td colspan=3 class="muted">no decisions yet</td></tr>'}</table></div>
+ <div class="grid2"><div class="panel"><h2>Receipt</h2>${rc?`<table>
+ <tr><td>Status</td><td><span class="chip ${rc.status=="ACCEPTED"?"ok":"bad"}">${rc.status}</span></td></tr>
+ <tr><td>Agreed price</td><td><b>${rc.agreement.price}</b> ${esc(rc.agreement.asset)}</td></tr>
+ <tr><td>Agreement hash</td><td class="mono">${rc.agreement_hash.slice(0,24)}…</td></tr>
+ <tr><td>Report hash</td><td class="mono">${(rc.artifacts.report_sha256||"").slice(0,24)}…</td></tr>
+ <tr><td>Verifier</td><td>${esc(rc.verification.verifier.name)} ${esc(rc.verification.verifier.version)} · ${rc.verification.ok?"passed":"failed"}</td></tr>
+ <tr><td>Escrow</td><td>${esc(rc.settlement.escrow_state)} <span class="chip warn">${rc.settlement.simulated?"SIMULATED ledger":"on-chain"}</span></td></tr>
+ <tr><td>Release tx</td><td class="mono">${(rc.settlement.release_tx||"-").slice(0,24)}…</td></tr>
+ <tr><td>Evidence batch</td><td class="mono">root ${rc.evidence_batch.root.slice(0,20)}… (${rc.evidence_batch.size} leaves)</td></tr></table>
+ <p class="muted" style="font-size:12px">Settlement is public and pseudonymous on the ledger even though negotiation traffic is encrypted.</p>`:'<p class="muted">issued after settlement</p>'}</div>
+ <div class="panel"><h2>Verification</h2><button onclick="verify(false)">Verify evidence</button> <button class="danger" onclick="verify(true)">Tamper &amp; verify</button><div id="verify"></div></div></div>
+ <div class="panel"><h2>Signed event log</h2><table><tr><th>#</th><th>Event</th><th>State / code</th><th>At</th></tr>${t.events.slice(-40).map(e=>`<tr><td>${e.seq}</td><td class="mono">${esc(e.type)}</td><td>${esc(e.new_state||e.code||"")}</td><td class="mono">${esc(e.at)}</td></tr>`).join("")}</table></div>`}
+async function refresh(){
+ try{const h=await (await fetch("/health")).json();
+ document.getElementById("transport").textContent="transport: "+h.transport.mode+" — "+h.transport.guarantees;
+ document.getElementById("ledger").textContent="settlement: "+(h.ledger?(h.ledger.simulated?"SIMULATED ledger ("+h.ledger.network+")":h.ledger.network):"ledger unreachable")+" — public/pseudonymous";
+ document.getElementById("engine").textContent="engine: "+h.decision_engine;
+ document.getElementById("kill").textContent=h.paused?"Resume (paused)":"Emergency stop";
+ if(!token){document.getElementById("tokenbox").style.display="block";return}
+ const l=await api("/tasks");document.getElementById("spend").textContent=`committed ${l.committed_spend} / ${l.budget_total}`;
+ document.getElementById("tasks").innerHTML=l.tasks.map(t=>`<div class="task ${t.task_id===selected?"sel":""}" onclick="selected='${t.task_id}';refresh()"><span class="mono">${t.task_id.slice(0,10)}</span><span class="chip ${t.state=="SETTLED"?"ok":["CANCELLED","EXPIRED","DISPUTED"].includes(t.state)?"bad":""}">${t.state}</span></div>`).join("")||"none yet";
+ if(!selected&&l.tasks.length)selected=l.tasks[0].task_id;
+ if(selected){const keep=document.getElementById("verify")?.innerHTML;document.getElementById("detail").innerHTML=renderDetail(await api("/tasks/"+selected));if(keep)document.getElementById("verify").innerHTML=keep}
+ }catch(e){console.warn(e)}}
+refresh();setInterval(refresh,1500);
+</script>
+</body>
+</html>

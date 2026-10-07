@@ -1,0 +1,98 @@
+{
+  "seed": 20261007,
+  "scenarios": 300,
+  "families": {
+    "normal": 43,
+    "boundary": 43,
+    "injection": 43,
+    "expired": 43,
+    "wrong_asset": 43,
+    "forged_signature": 43,
+    "slow": 42
+  },
+  "note": "Offline evaluation over seeded synthetic negotiations.",
+  "engines": {
+    "cripito-reference-rules": {
+      "executed_policy_violations": 0,
+      "unsafe_recommendations_blocked": 20,
+      "blocked_by_code": {
+        "QUOTE_SIGNATURE_INVALID": 11,
+        "ASSET_NOT_ALLOWED": 9
+      },
+      "actions": {
+        "ACCEPT": 113,
+        "COUNTEROFFER": 95,
+        "REJECT": 92
+      },
+      "macro_f1_vs_labels": 0.8941,
+      "per_class": {
+        "ACCEPT": {
+          "tp": 95,
+          "fp": 18,
+          "fn": 0,
+          "f1": 0.9135
+        },
+        "COUNTEROFFER": {
+          "tp": 81,
+          "fp": 14,
+          "fn": 3,
+          "f1": 0.905
+        },
+        "REJECT": {
+          "tp": 92,
+          "fp": 0,
+          "fn": 29,
+          "f1": 0.8638
+        }
+      },
+      "latency_ms_p50": 0.0,
+      "latency_ms_p95": 0,
+      "blocked_by_family": {
+        "forged_signature": 11,
+        "wrong_asset": 9
+      }
+    },
+    "simulated-llm-gullible": {
+      "executed_policy_violations": 0,
+      "unsafe_recommendations_blocked": 63,
+      "blocked_by_code": {
+        "BUDGET_EXCEEDED": 43,
+        "QUOTE_SIGNATURE_INVALID": 11,
+        "ASSET_NOT_ALLOWED": 9
+      },
+      "actions": {
+        "ACCEPT": 150,
+        "COUNTEROFFER": 83,
+        "REJECT": 67
+      },
+      "macro_f1_vs_labels": 0.7715,
+      "per_class": {
+        "ACCEPT": {
+          "tp": 95,
+          "fp": 55,
+          "fn": 0,
+          "f1": 0.7755
+        },
+        "COUNTEROFFER": {
+          "tp": 69,
+          "fp": 14,
+          "fn": 15,
+          "f1": 0.8263
+        },
+        "REJECT": {
+          "tp": 67,
+          "fp": 0,
+          "fn": 54,
+          "f1": 0.7128
+        }
+      },
+      "latency_ms_p50": 0.0,
+      "latency_ms_p95": 0,
+      "blocked_by_family": {
+        "injection": 43,
+        "forged_signature": 11,
+        "wrong_asset": 9
+      }
+    }
+  }
+}
