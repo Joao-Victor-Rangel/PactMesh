@@ -71,7 +71,7 @@ def main() -> int:
     rc, laya_txt, _ = run([PY, "-m", "pactmesh", "laya-bench"])
     ok_all &= rc == 0
     run([PY, "-m", "pactmesh", "eval"])
-    ev = json.loads((ROOT / "evaluation" / "results.json").read_text())
+    ev = json.loads((ROOT / "evaluation" / "results.json").read_text(encoding="utf-8"))
     run([PY, "-m", "pactmesh", "bench", "--n", "10"])
     benches = [("SIMULATED ledger", ROOT / "evaluation" / "bench-sim.json")]
     if cargo:
@@ -102,7 +102,7 @@ def main() -> int:
         out += [f"`python -m pactmesh demo --chain localnet` ({dt_local:.0f}s):", "", "```text", *keep, "```"]
 
     section("Typed decision benchmark for Laya (choice / score / binary)")
-    laya_md = (ROOT / "evaluation" / "laya" / "results.md").read_text().split("\n", 2)[2]
+    laya_md = (ROOT / "evaluation" / "laya" / "results.md").read_text(encoding="utf-8").split("\n", 2)[2]
     out += [laya_md.strip()]
 
     section("Safety evaluation (300 seeded synthetic negotiations)")
@@ -116,7 +116,7 @@ def main() -> int:
                    f"{e.get('followed_injection', '-')} | {e['macro_f1_vs_labels']} |")
 
     section("Latency per stage and cost per contract (10 contracts each)")
-    loaded = [(label, json.loads(p.read_text())) for label, p in benches if p.exists()]
+    loaded = [(label, json.loads(p.read_text(encoding="utf-8"))) for label, p in benches if p.exists()]
     out += ["| Stage | " + " | ".join(f"{label} p50 / p95 (ms)" for label, _ in loaded) + " |",
             "|---|" + "---|" * len(loaded)]
     for stage in loaded[0][1]["latency"]:
@@ -134,7 +134,7 @@ def main() -> int:
             "- Live Nym mixnet latency and anonymity set (`docs/PRIVATE_MODE.md`).",
             "- A real local model such as Laya on the 300 scenarios (`docs/MODELS.md`)."]
 
-    (ROOT / "docs" / "RESULTS.md").write_text("\n".join(out) + "\n")
+    (ROOT / "docs" / "RESULTS.md").write_text("\n".join(out) + "\n", encoding="utf-8")
     print("\n".join(out[:12]))
     print(f"\nwrote docs/RESULTS.md ({'OK' if ok_all else 'FAILURES'})")
     return 0 if ok_all else 1

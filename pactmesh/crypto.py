@@ -78,14 +78,14 @@ class Identity:
     @classmethod
     def load_or_create(cls, path: Path) -> "Identity":
         if path.exists():
-            data = json.loads(path.read_text())
+            data = json.loads(path.read_text(encoding="utf-8"))
             pk, sk = sodium.crypto_kx_seed_keypair(bytes.fromhex(data["kx_seed"]))
             return cls(SigningKey(bytes.fromhex(data["signing_seed"])), pk, sk)
         signing_seed = os.urandom(32)
         kx_seed = os.urandom(32)
         path.parent.mkdir(parents=True, exist_ok=True)
         fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
-        with os.fdopen(fd, "w") as f:
+        with os.fdopen(fd, "w", encoding="utf-8") as f:
             json.dump({"signing_seed": signing_seed.hex(), "kx_seed": kx_seed.hex()}, f)
         pk, sk = sodium.crypto_kx_seed_keypair(kx_seed)
         return cls(SigningKey(signing_seed), pk, sk)

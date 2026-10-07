@@ -29,15 +29,40 @@ def say(tag: str, msg: str, color: str = "c") -> None:
     print(f"{C[color]}{C['b']}[{tag}]{C['x']} {msg}", flush=True)
 
 
-def wait_http(url: str, timeout: float = 20) -> None:
+CHILDREN: list[tuple[str, subprocess.Popen, Path]] = []
+
+
+def _child_failure() -> str | None:
+    """If a demo process died, return its name and the end of its log."""
+    for name, proc, log in CHILDREN:
+        if proc.poll() is not None:
+            try:
+                tail = log.read_text(encoding="utf-8", errors="replace").strip().splitlines()[-15:]
+            except OSError:
+                tail = []
+            hint = ""
+            text = "\n".join(tail)
+            if "No module named" in text:
+                hint = ("\n-> A dependency is missing in the Python running the demo. Activate the virtual "
+                        "environment and run: pip install -r requirements.txt -r requirements-dev.txt")
+            elif "address already in use" in text.lower() or "10048" in text:
+                hint = "\n-> A port is busy. Close the other demo or set PACTMESH_PORT_BASE=9700 and retry."
+            return f"process '{name}' exited with code {proc.returncode}. Last log lines ({log}):\n" + text + hint
+    return None
+
+
+def wait_http(url: str, timeout: float = 30) -> None:
     end = time.time() + timeout
     while time.time() < end:
         try:
             call("GET", url, timeout=1)
             return
         except (HttpError, OSError):
+            failure = _child_failure()
+            if failure:
+                raise SystemExit("[demo] " + failure)
             time.sleep(0.2)
-    raise SystemExit(f"timeout waiting for {url}")
+    raise SystemExit(f"[demo] timeout waiting for {url}. " + (_child_failure() or "Check the logs in .pactmesh-demo/logs"))
 
 
 LOCALNET_BIN = ROOT / "contracts" / "escrow" / "target" / "debug" / "pactmesh-localnet"
@@ -68,16 +93,21 @@ def run_demo(keep: bool = False, engine: str = "simulated-llm", chain: str = "si
     logs = home / "logs"
     logs.mkdir()
 
+    env = {**os.environ, "PYTHONIOENCODING": "utf-8", "PYTHONUTF8": "1"}
+
     def spawn(name: str, args: list[str]) -> None:
-        f = open(logs / f"{name}.log", "w")
-        procs.append(subprocess.Popen(py + args, cwd=ROOT, stdout=f, stderr=subprocess.STDOUT))
+        log = logs / f"{name}.log"
+        f = open(log, "w", encoding="utf-8")
+        p = subprocess.Popen(py + args, cwd=ROOT, stdout=f, stderr=subprocess.STDOUT, env=env)
+        procs.append(p)
+        CHILDREN.append((name, p, log))
 
     try:
         say("demo", "starting 5 independent processes (each with its own SQLite vault and keys)", "b")
         spawn("relay", ["relay", "--port", str(BASE + 1), "--observe", str(home / "relay_observed.jsonl")])
         wait_http(RELAY + "/health")
         if chain == "localnet":
-            f = open(logs / "localnet.log", "w")
+            f = open(logs / "localnet.log", "w", encoding="utf-8")
             procs.append(subprocess.Popen([str(LOCALNET_BIN), "--port", str(BASE + 3), "--program-id", LOCALNET_PROGRAM],
                                           stdout=f, stderr=subprocess.STDOUT))
             time.sleep(0.5)
@@ -97,7 +127,7 @@ def run_demo(keep: bool = False, engine: str = "simulated-llm", chain: str = "si
         spawn("buyer", ["buyer", "--home", str(home / "buyer"), *net, "--api-port", str(BASE), "--engine", engine, *model,
                         "--dataset", str(dataset), *policy])
         wait_http(API + "/health")
-        token = (home / "buyer" / "admin_token").read_text().strip()
+        token = (home / "buyer" / "admin_token").read_text(encoding="utf-8").strip()
         H = {"authorization": f"Bearer {token}"}
         time.sleep(1.0)  # let suppliers publish signed adverts
         unit = "lamports" if chain == "localnet" else "CRPT-TEST"
@@ -151,7 +181,7 @@ def run_demo(keep: bool = False, engine: str = "simulated-llm", chain: str = "si
         say("settle", f"escrow {r['settlement']['escrow_state']} on {r['settlement']['network']} ({label}) "
                       f"release tx {r['settlement']['release_tx'][:16]}…", "g")
         pkg = call("GET", f"{API}/negotiations/{tid}/evidence", headers=H)
-        (home / "evidence.json").write_text(json.dumps(pkg, indent=2))
+        (home / "evidence.json").write_text(json.dumps(pkg, indent=2), encoding="utf-8")
         res = call("POST", API + "/verify", pkg, H)
         say("audit", f"evidence package ({len(pkg['disclosed_events'])} disclosed events, root "
                      f"{r['evidence_batch']['root'][:16]}… anchored): {'VALID' if res['ok'] else 'INVALID'}",
@@ -162,7 +192,7 @@ def run_demo(keep: bool = False, engine: str = "simulated-llm", chain: str = "si
         failed = [c["check"] for c in res2["checks"] if not c["ok"]]
         say("audit", f"tampered copy (price 60): {'VALID?!' if res2['ok'] else 'TAMPERING DETECTED'} -> {failed}",
             "r" if res2["ok"] else "g")
-        obs = (home / "relay_observed.jsonl").read_text().splitlines()
+        obs = (home / "relay_observed.jsonl").read_text(encoding="utf-8").splitlines()
         leaked = [w for w in ("latency_ms", "ignore the budget", tid, '"price"') if any(w in line for line in obs)]
         say("privacy", f"relay observed {len(obs)} envelopes/blobs; plaintext markers found: {leaked or 'none'}",
             "g" if not leaked else "r")

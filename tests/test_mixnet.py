@@ -73,7 +73,7 @@ def test_full_negotiation_over_mixnet(net, dataset, mixnet):
     assert tl[0]["policy"]["code"] == "BUDGET_EXCEEDED"
 
     # Everything reached the relay through the mixnet, never over HTTP.
-    observed = [json.loads(line) for line in (net.tmp / "relay_observed.jsonl").read_text().splitlines()]
+    observed = [json.loads(line) for line in (net.tmp / "relay_observed.jsonl").read_text(encoding="utf-8").splitlines()]
     assert observed and all(o["via"] == "nym" for o in observed)
     # The relay's nym endpoint only ever saw sender *tags*, never an agent's Nym address or plaintext.
     relay_view = json.dumps(gw_client.received_log)

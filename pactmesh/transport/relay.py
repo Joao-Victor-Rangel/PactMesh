@@ -50,7 +50,7 @@ class Relay:
     def _observe(self, record: dict) -> None:
         # What a curious relay operator can see. Used by privacy tests.
         if self.observation_log:
-            with open(self.observation_log, "a") as f:
+            with open(self.observation_log, "a", encoding="utf-8") as f:
                 f.write(json.dumps(record) + "\n")
 
     # ------------------------------------------------- operations (any channel)

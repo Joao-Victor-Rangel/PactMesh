@@ -37,7 +37,7 @@ class SplitModified(RuntimeError):
 
 
 def load(data_dir: Path = DATA) -> tuple[dict, dict[str, list[dict]]]:
-    manifest = json.loads((data_dir / "manifest.json").read_text())
+    manifest = json.loads((data_dir / "manifest.json").read_text(encoding="utf-8"))
     splits = {}
     for name, info in manifest["splits"].items():
         raw = (data_dir / info["file"]).read_bytes()
@@ -176,12 +176,12 @@ def run(model_url: str | None = None, model_name: str | None = None, data_dir: P
             res, preds = run_engine(eng, splits, Path(tmp))
             report["engines"].append(res)
             safe = "".join(c if c.isalnum() or c in "-_." else "_" for c in eng.name)[:80]
-            (out_dir / "predictions" / f"{safe}.jsonl").write_text("".join(json.dumps(p) + "\n" for p in preds))
-    (out_dir / "results.json").write_text(json.dumps(report, indent=2, ensure_ascii=False) + "\n")
-    (out_dir / "results.md").write_text(markdown(report))
+            (out_dir / "predictions" / f"{safe}.jsonl").write_text("".join(json.dumps(p) + "\n" for p in preds), encoding="utf-8")
+    (out_dir / "results.json").write_text(json.dumps(report, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    (out_dir / "results.md").write_text(markdown(report), encoding="utf-8")
     return report
 
 
 if __name__ == "__main__":
     r = run(sys.argv[1] if len(sys.argv) > 1 else None)
-    print((DATA / "results.md").read_text())
+    print((DATA / "results.md").read_text(encoding="utf-8"))

@@ -120,7 +120,7 @@ def cmd_buyer(args):
     from .api import build_api
     from .buyer import Buyer
     from .decision import make_engine
-    policy = json.loads(Path(args.policy).read_text()) if args.policy else None
+    policy = json.loads(Path(args.policy).read_text(encoding="utf-8")) if args.policy else None
     home = Path(args.home)
     b = Buyer(home, args.name, _transport(args), _ledger(args),
               engine=_engine(args), policy=policy)
@@ -131,9 +131,9 @@ def cmd_buyer(args):
     token_file = home / "admin_token"
     if not token_file.exists():
         fd = os.open(token_file, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
-        with os.fdopen(fd, "w") as f:
+        with os.fdopen(fd, "w", encoding="utf-8") as f:
             f.write(secrets.token_urlsafe(24))
-    token = token_file.read_text().strip()
+    token = token_file.read_text(encoding="utf-8").strip()
     dataset = Path(args.dataset).read_bytes() if args.dataset else None
     srv = build_api(b, token, dataset).serve(args.host, args.api_port)
     run_in_thread(srv)
@@ -143,7 +143,7 @@ def cmd_buyer(args):
 
 def cmd_verify(args):
     from .audit import verify_package
-    pkg = json.loads(Path(args.package).read_text())
+    pkg = json.loads(Path(args.package).read_text(encoding="utf-8"))
     res = verify_package(pkg, _ledger(args) if (args.ledger or args.chain == "solana") else None)
     for c in res["checks"]:
         print(f"  [{'ok' if c['ok'] else 'FAIL'}] {c['check']} {c['detail']}")
@@ -181,8 +181,8 @@ def cmd_solana_anchor(args):
 
     from .ledger.solana import DEVNET_RPC, SolanaMemoAnchor
 
-    secret = bytes(json.loads(Path(args.keypair).read_text()))  # solana-keygen JSON (64 bytes)
-    batch = json.loads(Path(args.package).read_text())["receipt"]["evidence_batch"]
+    secret = bytes(json.loads(Path(args.keypair).read_text(encoding="utf-8")))  # solana-keygen JSON (64 bytes)
+    batch = json.loads(Path(args.package).read_text(encoding="utf-8"))["receipt"]["evidence_batch"]
     anchor = SolanaMemoAnchor(SigningKey(secret[:32]), args.rpc or DEVNET_RPC)
     print(f"[solana] payer {anchor.address} anchoring root {batch['root'][:16]}... (Devnet, memo)")
     sig = anchor.anchor(batch["batch_id"], batch["root"], batch["version"])
@@ -196,13 +196,13 @@ def cmd_solana_keygen(args):
 
     path = Path(args.out)
     if path.exists():
-        key = SigningKey(bytes(json.loads(path.read_text()))[:32])
+        key = SigningKey(bytes(json.loads(path.read_text(encoding="utf-8")))[:32])
         print(f"[solana] using existing {path}")
     else:
         key = SigningKey.generate()
         secret = list(bytes(key) + key.verify_key.encode())  # solana-keygen JSON format (64 bytes)
         fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
-        with os.fdopen(fd, "w") as f:
+        with os.fdopen(fd, "w", encoding="utf-8") as f:
             json.dump(secret, f)
         print(f"[solana] new Devnet-only keypair written to {path} (never commit it; no real funds)")
     anchor = SolanaMemoAnchor(key, args.rpc or DEVNET_RPC)
@@ -218,7 +218,7 @@ def cmd_solana_keygen(args):
 def cmd_mcp(args):
     from .mcp import PactMeshMCP
 
-    token = Path(args.token_file).read_text().strip() if args.token_file else os.environ.get("PACTMESH_TOKEN", "")
+    token = Path(args.token_file).read_text(encoding="utf-8").strip() if args.token_file else os.environ.get("PACTMESH_TOKEN", "")
     if not token:
         sys.exit("[mcp] provide --token-file or PACTMESH_TOKEN")
     PactMeshMCP(args.api, token).serve_stdio()
@@ -255,7 +255,71 @@ def cmd_laya_bench(args):
     from evaluation.laya_run import DATA, run
 
     run(args.model_url, args.model_name)
-    print((DATA / "results.md").read_text())
+    print((DATA / "results.md").read_text(encoding="utf-8"))
+
+
+def cmd_laya_run(args):
+    """Cross-platform version of scripts/run_laya.sh (works in Windows PowerShell)."""
+    import subprocess
+    import time as _t
+    import urllib.request
+
+    try:
+        import torch  # noqa: F401
+        import transformers  # noqa: F401
+    except (ImportError, OSError) as e:
+        sys.exit(f"[laya-run] cannot load torch/transformers: {type(e).__name__}: {e}\n"
+                 "-> pip install -r requirements-model.txt (inside the activated virtual environment)")
+    home = ROOT / ".pactmesh-laya"
+    home.mkdir(exist_ok=True)
+    log = home / "model-server.log"
+    url = f"http://127.0.0.1:{args.port}"
+    env = {**os.environ, "PYTHONIOENCODING": "utf-8", "PYTHONUTF8": "1"}
+    cmd = [sys.executable, "-m", "pactmesh", "model-server", "--hf", args.hf, "--port", str(args.port)]
+    if args.revision:
+        cmd += ["--revision", args.revision]
+    if args.backend:
+        cmd += ["--backend", args.backend]
+    print(f"[laya-run] starting model server for {args.hf} (first run downloads the weights; log: {log})", flush=True)
+    with open(log, "w", encoding="utf-8") as f:
+        server = subprocess.Popen(cmd, cwd=ROOT, stdout=f, stderr=subprocess.STDOUT, env=env)
+    try:
+        start = _t.time()
+        while True:
+            try:
+                with urllib.request.urlopen(url + "/health", timeout=2) as r:
+                    print("[laya-run] model server ready:", r.read().decode(), flush=True)
+                break
+            except OSError:
+                if server.poll() is not None:
+                    tail = "\n".join(log.read_text(encoding="utf-8", errors="replace").splitlines()[-20:])
+                    sys.exit(f"[laya-run] model server exited (code {server.returncode}):\n{tail}")
+                if _t.time() - start > args.timeout:
+                    sys.exit(f"[laya-run] model server not ready after {args.timeout}s; see {log}")
+                _t.sleep(2)
+        sys.path.insert(0, str(ROOT))
+        from evaluation.laya_build import build
+        from evaluation.laya_run import DATA, run
+
+        if not (DATA / "manifest.json").exists():
+            build()
+        report = run(url, args.name)
+        print((DATA / "results.md").read_text(encoding="utf-8"), flush=True)
+        temp = report["engines"][-1]["tasks"]["choice"]["test"]["temperature"]
+        print(f"[laya-run] calibrated choice temperature (validation split): {temp}", flush=True)
+        base = [sys.executable, "-m", "pactmesh"]
+        subprocess.run(base + ["eval", "--engine", "laya", "--model-url", url, "--laya-temperature", str(temp),
+                               "--out", str(ROOT / "evaluation" / "results-model.json")], cwd=ROOT, check=True, env=env)
+        if not args.skip_demo:
+            subprocess.run(base + ["demo", "--engine", "laya+fallback", "--model-url", url,
+                                   "--laya-temperature", str(temp)], cwd=ROOT, check=True, env=env)
+        print("[laya-run] done: evaluation/laya/results.md and evaluation/results-model.json", flush=True)
+    finally:
+        server.terminate()
+        try:
+            server.wait(timeout=10)
+        except subprocess.TimeoutExpired:
+            server.kill()
 
 
 def cmd_bench(args):
@@ -273,7 +337,27 @@ def cmd_demo(args):
              model_name=args.model_name)
 
 
+def _preflight() -> None:
+    """Fail with a clear message instead of a traceback when the environment is not set up."""
+    for stream in (sys.stdout, sys.stderr):
+        try:
+            stream.reconfigure(errors="replace")  # Windows consoles/redirects: never crash on a character
+        except (AttributeError, ValueError):
+            pass
+    if sys.version_info < (3, 10):
+        sys.exit(f"[pactmesh] Python 3.10+ is required (this is {sys.version.split()[0]} at {sys.executable})")
+    try:
+        import nacl  # noqa: F401
+    except ImportError:
+        in_venv = sys.prefix != getattr(sys, "base_prefix", sys.prefix)
+        sys.exit("[pactmesh] PyNaCl is not installed in this Python:\n  " + sys.executable + "\n"
+                 + ("" if in_venv else "-> No virtual environment is active. Windows PowerShell: "
+                    ".venv\\Scripts\\Activate.ps1   (Mac/Linux: source .venv/bin/activate)\n")
+                 + "-> Then run: pip install -r requirements.txt -r requirements-dev.txt")
+
+
 def main(argv=None):
+    _preflight()
     logging.basicConfig(level=logging.WARNING, format="%(levelname)s %(name)s: %(message)s")
     ap = argparse.ArgumentParser(prog="pactmesh")
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -326,6 +410,12 @@ def main(argv=None):
     p = sub.add_parser("laya-bench", help="run the Laya-style benchmark (add a served model with --model-url)")
     p.add_argument("--model-url", help="model server base URL, e.g. http://127.0.0.1:9000")
     p.add_argument("--model-name"); p.set_defaults(fn=cmd_laya_bench)
+    p = sub.add_parser("laya-run", help="serve Laya, run the benchmark, calibrated safety eval and demo (any OS)")
+    p.add_argument("--hf", default="convaiinnovations/laya"); p.add_argument("--revision")
+    p.add_argument("--port", type=int, default=9000); p.add_argument("--name", help="label for the report")
+    p.add_argument("--backend", choices=["transformers", "rule", "hash"], help=argparse.SUPPRESS)
+    p.add_argument("--timeout", type=int, default=3600, help="seconds to wait for download + load")
+    p.add_argument("--skip-demo", action="store_true"); p.set_defaults(fn=cmd_laya_run)
     p = sub.add_parser("bench", help="measure latency per stage and cost per contract")
     p.add_argument("--n", type=int, default=10); p.add_argument("--chain", choices=["sim", "localnet"], default="sim")
     p.add_argument("--out"); p.set_defaults(fn=cmd_bench)

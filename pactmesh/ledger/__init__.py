@@ -38,11 +38,11 @@ class Wallet:
     @classmethod
     def load_or_create(cls, path: Path) -> "Wallet":
         if path.exists():
-            return cls(SigningKey(bytes.fromhex(json.loads(path.read_text())["seed"])))
+            return cls(SigningKey(bytes.fromhex(json.loads(path.read_text(encoding="utf-8"))["seed"])))
         seed = os.urandom(32)
         path.parent.mkdir(parents=True, exist_ok=True)
         fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
-        with os.fdopen(fd, "w") as f:
+        with os.fdopen(fd, "w", encoding="utf-8") as f:
             json.dump({"seed": seed.hex(), "note": "SIMULATED devnet wallet - no real assets"}, f)
         return cls(SigningKey(seed))
 
@@ -53,7 +53,7 @@ class Wallet:
     @classmethod
     def from_solana_keypair(cls, path: Path) -> "Wallet":
         """Import a solana-keygen JSON keypair (64 bytes: seed || public key)."""
-        raw = bytes(json.loads(path.read_text()))
+        raw = bytes(json.loads(path.read_text(encoding="utf-8")))
         key = SigningKey(raw[:32])
         if len(raw) != 64 or key.verify_key.encode() != raw[32:]:
             raise ValueError(f"{path} is not a valid solana-keygen keypair")

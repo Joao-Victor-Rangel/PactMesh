@@ -146,7 +146,7 @@ def run(n: int = 10, chain: str = "sim", out: str | None = None) -> dict:
                   if a in r["data"]["timings_ms"] and b in r["data"]["timings_ms"]]
             stages[name] = {"p50_ms": pct(xs, 50), "p95_ms": pct(xs, 95), "n": len(xs)}
 
-        observed = [json.loads(line) for line in obs.read_text().splitlines()] if obs.exists() else []
+        observed = [json.loads(line) for line in obs.read_text(encoding="utf-8").splitlines()] if obs.exists() else []
         env_bytes = sum(o.get("size", 0) for o in observed if o["op"] == "post")
         blob_bytes = sum(o.get("bytes", 0) for o in observed if o["op"] == "blob")
         paid = sum(int(r["data"]["agreement"]["price"]) for r in settled)
@@ -184,7 +184,7 @@ def run(n: int = 10, chain: str = "sim", out: str | None = None) -> dict:
         rsrv.shutdown()
     text = json.dumps(report, indent=2)
     if out:
-        Path(out).write_text(text + "\n")
+        Path(out).write_text(text + "\n", encoding="utf-8")
     print(text)
     return report
 

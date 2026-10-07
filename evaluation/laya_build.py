@@ -202,7 +202,7 @@ def build(out_dir: Path | None = None) -> dict:
             counts[it["type"]] = counts.get(it["type"], 0) + 1
         manifest["splits"][split] = {"file": path.name, "sha256": hashlib.sha256(text.encode()).hexdigest(),
                                      "items": len(items), "by_type": counts, "template": t}
-    (out_dir / "manifest.json").write_text(json.dumps(manifest, indent=2, ensure_ascii=False) + "\n")
+    (out_dir / "manifest.json").write_text(json.dumps(manifest, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     return manifest
 
 

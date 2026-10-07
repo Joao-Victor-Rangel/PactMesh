@@ -365,7 +365,7 @@ def test_relay_never_sees_plaintext(net, dataset):
     b = net.buyer()
     tid = b.create_task(csv_bytes=dataset, column="latency_ms", budget=100, quote_window_seconds=2)
     assert net.run(lambda: done(b, tid), advance=0.5)
-    observed = (net.tmp / "relay_observed.jsonl").read_text()
+    observed = (net.tmp / "relay_observed.jsonl").read_text(encoding="utf-8")
     for marker in ("UNIQUE-MARKER-XYZ", "latency_ms", tid, b.identity.key_id, '"price"'):
         assert marker not in observed
 

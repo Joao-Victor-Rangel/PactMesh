@@ -7,3 +7,4 @@ __pycache__/
 *.sqlite*
 devnet*.json
 contracts/escrow/target/
+.pactmesh-laya/

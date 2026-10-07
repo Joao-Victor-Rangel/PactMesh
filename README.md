@@ -17,6 +17,9 @@ Built for the Colosseum Crypto World's Fair (category: Developer Infrastructure;
 
 ## Quick start (about 1 minute)
 
+Windows (PowerShell): follow [docs/WINDOWS.md](docs/WINDOWS.md), one command at a time.
+
+
 ```bash
 python3 -m venv .venv && . .venv/bin/activate
 pip install -r requirements.txt -r requirements-dev.txt
@@ -151,7 +154,7 @@ the frozen test split by SHA-256, and sends every ACCEPT through the real policy
 | pactmesh-reference-rules | 0.861 (0.79–0.91) | 0.922 (0.83–0.97) | 0.964 (0.94–0.98) | 9 | 9 | 0 |
 | simulated-llm-gullible | 0.704 (0.62–0.78) | 0.797 (0.68–0.88) | 0.929 (0.90–0.95) | 27 | 27 | 0 |
 
-Laya plugs in with `scripts/run_laya.sh` (serve, benchmark, calibrated safety eval, demo); it has not
+Laya plugs in with `python -m pactmesh laya-run` (any OS: serve, benchmark, calibrated safety eval, demo); it has not
 been run yet because Hugging Face was unreachable from the build environment. Protocol and details:
 [docs/LAYA.md](docs/LAYA.md).
 

@@ -41,7 +41,7 @@ def test_agent_hires_service_through_mcp_and_policy_still_rules(net, dataset, tm
     b = net.buyer(engine="simulated-llm")
     srv = build_api(b, "tok", dataset).serve("127.0.0.1", 0)
     run_in_thread(srv)
-    (tmp_path / "token").write_text("tok")
+    (tmp_path / "token").write_text("tok", encoding="utf-8")
     c = Client(f"http://127.0.0.1:{srv.server_address[1]}", str(tmp_path / "token"))
     try:
         init = c.rpc("initialize", {"protocolVersion": "2025-06-18", "capabilities": {},
@@ -80,7 +80,7 @@ def test_wrong_token_is_reported_not_crashing(net, dataset, tmp_path):
     b = net.buyer()
     srv = build_api(b, "right", dataset).serve("127.0.0.1", 0)
     run_in_thread(srv)
-    (tmp_path / "token").write_text("wrong")
+    (tmp_path / "token").write_text("wrong", encoding="utf-8")
     c = Client(f"http://127.0.0.1:{srv.server_address[1]}", str(tmp_path / "token"))
     try:
         c.rpc("initialize", {"protocolVersion": "1999-01-01"})

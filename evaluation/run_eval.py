@@ -161,7 +161,7 @@ def main(out: str | None = None, n: int = 300, extra=None) -> dict:
             }
     text = json.dumps(report, indent=2)
     if out:
-        Path(out).write_text(text + "\n")
+        Path(out).write_text(text + "\n", encoding="utf-8")
     print(text)
     return report
 

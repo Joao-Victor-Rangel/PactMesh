@@ -97,11 +97,11 @@ def test_modified_test_split_is_refused(built, tmp_path):
         if f.is_file():
             (tmp_path / f.name).write_bytes(f.read_bytes())
     t = tmp_path / "test.jsonl"
-    lines = t.read_text().splitlines()
+    lines = t.read_text(encoding="utf-8").splitlines()
     first = json.loads(lines[0])
     first["context"] += " "  # the smallest possible edit to a frozen item
     lines[0] = json.dumps(first, sort_keys=True)
-    t.write_text("\n".join(lines) + "\n")
+    t.write_text("\n".join(lines) + "\n", encoding="utf-8")
     with pytest.raises(laya_run.SplitModified):
         laya_run.load(tmp_path)
 
@@ -128,7 +128,7 @@ def test_runner_with_served_model(built, tmp_path):
     gull = rep["engines"][1]["tasks"]["choice"]["policy_gate"]
     assert gull["unsafe_accepts_recommended"] > 0 and gull["blocked_by_policy"] == gull["unsafe_accepts_recommended"]
     assert (tmp_path / "results.md").exists() and (tmp_path / "predictions" / "hash-model.jsonl").exists()
-    md = (tmp_path / "results.md").read_text()
+    md = (tmp_path / "results.md").read_text(encoding="utf-8")
     assert "Executed violations" in md and "verified before running" in md
 
 

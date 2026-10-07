@@ -63,7 +63,7 @@ def python_deps() -> list[tuple[str, str, str, str]]:
     rows = []
     for req_file, scope in (("requirements.txt", "runtime"), ("requirements-dev.txt", "dev/test"),
                             ("requirements-model.txt", "optional model")):
-        for line in (ROOT / req_file).read_text().splitlines():
+        for line in (ROOT / req_file).read_text(encoding="utf-8").splitlines():
             name = line.split("==")[0].strip()
             if not name or name.startswith("#"):
                 continue
@@ -107,7 +107,7 @@ def main() -> int:
              "| Package | Version | License | Scope |", "|---|---|---|---|"]
     lines += [f"| {n} | {v} | {lic} | {s} |" for n, v, lic, s in rows]
     if "--python" not in sys.argv:
-        (ROOT / "docs" / "LICENSES.md").write_text("\n".join(lines) + "\n")
+        (ROOT / "docs" / "LICENSES.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
     for n, v, lic, s in bad:
         print(f"NOT ALLOWED: {n} {v} ({lic or 'no license metadata'}) [{s}]")
     print(f"{len(rows)} dependencies checked, {len(bad)} problems")

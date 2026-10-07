@@ -133,8 +133,10 @@ class TransformersBackend:
         try:
             import torch
             from transformers import AutoModelForCausalLM, AutoTokenizer
-        except ImportError as e:  # pragma: no cover - optional dependency
-            raise SystemExit("install the optional model dependencies: pip install torch transformers") from e
+        except (ImportError, OSError) as e:  # pragma: no cover - optional dependency / platform issue
+            hint = ("pip install -r requirements-model.txt" if isinstance(e, ImportError)
+                    else "on Windows, install the Microsoft Visual C++ Redistributable (x64) and reopen the terminal")
+            raise SystemExit(f"[model-server] cannot load torch/transformers: {type(e).__name__}: {e}\n-> {hint}") from e
         self.torch = torch
         self.tok = AutoTokenizer.from_pretrained(model, revision=revision, trust_remote_code=trust_remote_code)
         self.model = AutoModelForCausalLM.from_pretrained(model, revision=revision,

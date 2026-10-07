@@ -42,7 +42,8 @@ Cripto's decisions are typed choice / score / binary questions answered by Laya 
 `laya+fallback`) at runtime.
 
 ```bash
-scripts/run_laya.sh            # downloads convaiinnovations/laya on first run, serves it, evaluates, demos
+python -m pactmesh laya-run    # any OS (also Windows PowerShell): downloads Laya, serves, benchmarks, evaluates, demos
+scripts/run_laya.sh            # same flow as a bash script (Mac/Linux/Git Bash)
 # or step by step:
 pip install -r requirements-model.txt
 python -m pactmesh model-server --hf convaiinnovations/laya --revision <commit> --port 9000
