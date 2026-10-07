@@ -57,25 +57,45 @@ def cmd_ledger(args):
     srv.serve_forever()
 
 
+def _ledger(args):
+    """Settlement backend: the SIMULATED ledger or Solana (Devnet or cripito-localnet)."""
+    if getattr(args, "chain", "sim") == "solana":
+        from .ledger.solana import DEVNET_RPC, SolanaEscrowClient
+
+        if not args.program_id:
+            sys.exit("[cripito] --program-id is required with --chain solana (see docs/SOLANA.md)")
+        return SolanaEscrowClient(args.rpc or DEVNET_RPC, args.program_id)
+    from .ledger import SimLedgerClient
+
+    return SimLedgerClient(args.ledger)
+
+
+def _use_keypair(agent, args):
+    if getattr(args, "keypair", None):
+        from .ledger import Wallet
+
+        agent.wallet = Wallet.from_solana_keypair(Path(args.keypair))
+        agent.ledger.wallet = agent.wallet
+
+
 def _ensure_funds(agent):
     from .ledger import LedgerError
 
     for _ in range(50):
         try:
-            if int(agent.ledger.balance().get("SIM-SOL", "0")) == 0:
-                agent.ledger.faucet()
+            agent.ledger.ensure_funds()
             return
         except (LedgerError, OSError):
             time.sleep(0.2)
 
 
 def cmd_supplier(args):
-    from .ledger import SimLedgerClient
     from .supplier import Supplier
 
-    s = Supplier(Path(args.home or f".cripito/{args.name}"), args.name, _transport(args), SimLedgerClient(args.ledger),
+    s = Supplier(Path(args.home or f".cripito/{args.name}"), args.name, _transport(args), _ledger(args),
                  price=args.price, min_price=args.min_price, delivery_seconds=args.delivery,
                  description=args.description, behavior=args.behavior)
+    _use_keypair(s, args)
     _ensure_funds(s)
     print(f"[{args.name}] supplier key {s.identity.key_id[:16]}… price {args.price} (min {args.min_price})", flush=True)
     s.run()
@@ -85,13 +105,14 @@ def cmd_buyer(args):
     from .api import build_api
     from .buyer import Buyer
     from .decision import make_engine
-    from .ledger import SimLedgerClient
-
     policy = json.loads(Path(args.policy).read_text()) if args.policy else None
     home = Path(args.home)
-    b = Buyer(home, args.name, _transport(args), SimLedgerClient(args.ledger),
+    b = Buyer(home, args.name, _transport(args), _ledger(args),
               engine=make_engine(args.engine, args.model_url), policy=policy)
+    _use_keypair(b, args)
     _ensure_funds(b)
+    print(f"[buyer] settlement {b.ledger.network} ({'SIMULATED' if b.ledger.simulated else 'on-chain'}), "
+          f"payer {b.ledger.address}", flush=True)
     token_file = home / "admin_token"
     if not token_file.exists():
         fd = os.open(token_file, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
@@ -107,10 +128,8 @@ def cmd_buyer(args):
 
 def cmd_verify(args):
     from .audit import verify_package
-    from .ledger import SimLedgerClient
-
     pkg = json.loads(Path(args.package).read_text())
-    res = verify_package(pkg, SimLedgerClient(args.ledger) if args.ledger else None)
+    res = verify_package(pkg, _ledger(args) if (args.ledger or args.chain == "solana") else None)
     for c in res["checks"]:
         print(f"  [{'ok' if c['ok'] else 'FAIL'}] {c['check']} {c['detail']}")
     print("VALID" if res["ok"] else "INVALID")
@@ -166,7 +185,7 @@ def cmd_solana_keygen(args):
 def cmd_demo(args):
     from .demo import run_demo
 
-    run_demo(keep=args.keep, engine=args.engine)
+    run_demo(keep=args.keep, engine=args.engine, chain=args.chain)
 
 
 def main(argv=None):
@@ -174,9 +193,16 @@ def main(argv=None):
     ap = argparse.ArgumentParser(prog="cripito")
     sub = ap.add_subparsers(dest="cmd", required=True)
 
+    def chain(p):
+        p.add_argument("--chain", choices=["sim", "solana"], default="sim")
+        p.add_argument("--rpc", help="Solana RPC URL (default Devnet; use cripito-localnet for offline runs)")
+        p.add_argument("--program-id", help="deployed cripito-escrow program id")
+
     def net(p):
         p.add_argument("--relay", action="append", default=None, help="relay URL (repeat for mirrors)")
-        p.add_argument("--ledger", default="http://127.0.0.1:8702")
+        p.add_argument("--ledger", default="http://127.0.0.1:8702", help="SIMULATED ledger URL (--chain sim)")
+        chain(p)
+        p.add_argument("--keypair", help="solana-keygen JSON to use as this agent's payment key")
         p.add_argument("--transport", choices=["direct", "mixnet"], default="direct")
         p.add_argument("--nym-client", default=None)
 
@@ -194,7 +220,7 @@ def main(argv=None):
     p.add_argument("--engine", choices=["reference", "simulated-llm", "http", "http+fallback"], default="reference")
     p.add_argument("--model-url"); p.add_argument("--policy", help="policy JSON file")
     p.add_argument("--dataset", default=str(ROOT / "examples" / "dataset.csv")); p.set_defaults(fn=cmd_buyer)
-    p = sub.add_parser("verify"); p.add_argument("package"); p.add_argument("--ledger"); p.set_defaults(fn=cmd_verify)
+    p = sub.add_parser("verify"); p.add_argument("package"); p.add_argument("--ledger"); chain(p); p.set_defaults(fn=cmd_verify)
     p = sub.add_parser("eval"); p.add_argument("--out", default=str(ROOT / "evaluation" / "results.json")); p.set_defaults(fn=cmd_eval)
     p = sub.add_parser("solana-keygen", help="create a Devnet-only keypair (and optionally request an airdrop)")
     p.add_argument("--out", default="devnet.json"); p.add_argument("--airdrop", action="store_true"); p.add_argument("--rpc")
@@ -203,7 +229,9 @@ def main(argv=None):
     p.add_argument("package"); p.add_argument("--keypair", required=True); p.add_argument("--rpc")
     p.set_defaults(fn=cmd_solana_anchor)
     p = sub.add_parser("demo"); p.add_argument("--keep", action="store_true", help="keep processes running for the dashboard")
-    p.add_argument("--engine", choices=["reference", "simulated-llm"], default="simulated-llm"); p.set_defaults(fn=cmd_demo)
+    p.add_argument("--engine", choices=["reference", "simulated-llm"], default="simulated-llm")
+    p.add_argument("--chain", choices=["sim", "localnet"], default="sim",
+                   help="sim: SIMULATED ledger; localnet: Rust escrow program via cripito-localnet"); p.set_defaults(fn=cmd_demo)
     args = ap.parse_args(argv)
     if hasattr(args, "relay") and not args.relay:
         args.relay = ["http://127.0.0.1:8701"]

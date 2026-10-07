@@ -2,8 +2,9 @@
 adapter validates network and asset identifiers, the model never does.
 
 * ``SimLedgerClient`` talks to the SIMULATED local ledger (offline demo).
-* ``solana.SolanaMemoAnchor`` anchors Merkle roots on Solana Devnet via the
-  Memo program (escrow program on Solana is future work).
+* ``solana.SolanaEscrowClient`` drives the ``contracts/escrow`` program on
+  Solana (Devnet or the offline ``cripito-localnet`` emulator) and anchors
+  Merkle roots via the Memo program.
 
 Payment (wallet) keys live in their own file, separate from message keys,
 and only the executor holds them.
@@ -48,6 +49,15 @@ class Wallet:
     @property
     def address(self) -> str:
         return self.key.verify_key.encode().hex()
+
+    @classmethod
+    def from_solana_keypair(cls, path: Path) -> "Wallet":
+        """Import a solana-keygen JSON keypair (64 bytes: seed || public key)."""
+        raw = bytes(json.loads(path.read_text()))
+        key = SigningKey(raw[:32])
+        if len(raw) != 64 or key.verify_key.encode() != raw[32:]:
+            raise ValueError(f"{path} is not a valid solana-keygen keypair")
+        return cls(key)
 
 
 class LedgerError(RuntimeError):
@@ -110,7 +120,18 @@ class SimLedgerClient:
     def get_escrow(self, escrow_id: str) -> dict | None:
         return self._get(f"/escrow/{escrow_id}")
 
-    def get_anchor(self, batch_id: str) -> dict | None:
+    @property
+    def address(self) -> str:
+        return self.wallet.address
+
+    def escrow_id_for(self, agreement_hash: str) -> str:
+        return escrow_id_for(agreement_hash)
+
+    def ensure_funds(self) -> None:
+        if int(self.balance().get(FEE_MINT, "0")) == 0:
+            self.faucet()
+
+    def get_anchor(self, batch_id: str, tx: str | None = None) -> dict | None:
         return self._get(f"/anchor/{batch_id}")
 
     def wait(self, sig: str, level: str = "confirmed", timeout: float = 30.0) -> dict:

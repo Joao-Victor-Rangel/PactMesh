@@ -19,7 +19,9 @@ python3 -m venv .venv && . .venv/bin/activate
 pip install -r requirements.txt -r requirements-dev.txt
 python -m cripito demo            # 5 independent processes, full flow, narrated
 python -m cripito demo --keep     # same, then keep running and print the dashboard URL
-pytest                            # 34 tests, including the spec's mandatory failure cases
+python -m cripito demo --chain localnet   # same flow on the Rust escrow program (needs cargo)
+pytest                            # 43 tests, including the spec's mandatory failure cases
+cargo test --manifest-path contracts/escrow/Cargo.toml   # 8 tests of the Solana escrow program
 python -m cripito eval            # 300 seeded synthetic negotiations -> evaluation/results.json
 ```
 
@@ -43,9 +45,9 @@ payment; the evidence package verifies, a tampered copy fails, and the relay log
 | Decision engines: reference rules; simulated gullible LM (test double); HTTP adapter for a local model with strict output validation and declared fallback/abstention | **Implemented** — a real Laya checkpoint is **not** integrated yet |
 | Verifier `cripito.stats 1.0` (count, mean, median, sample stdev, linear percentiles, 6-dp decimal strings) | **Implemented** |
 | Signed hash-chained event log, hiding commitments, Merkle batches with domain separation, inclusion proofs, selective disclosure, auditor verification | **Implemented** |
-| Escrow + anchoring | **SIMULATED** local ledger process (signed txs, fees, slot expiry, confirmation levels, escrow state machine). It is *not* a blockchain and is labelled as such everywhere |
-| Solana Devnet anchoring via Memo program (`python -m cripito solana-anchor`) | Encoding unit-tested; **not yet run against Devnet** (RPC was unreachable from the build environment) |
-| Solana escrow program | **Planned** |
+| Escrow + anchoring, default demo | **SIMULATED** local ledger process (signed txs, fees, slot expiry, confirmation levels, escrow state machine). It is *not* a blockchain and is labelled as such everywhere |
+| Solana escrow program (`contracts/escrow`, native Rust) | **Implemented and tested on the host** (processor tests with stubbed syscalls; agents end to end via `cripito-localnet`). **Not yet compiled to SBF or deployed to Devnet**: see [docs/SOLANA.md](docs/SOLANA.md) |
+| Solana client (escrow + Memo anchoring), `--chain solana` | PDA and instruction bytes cross-checked with Rust; works against `cripito-localnet`; **not yet run against Devnet** (unreachable from the build environment) |
 | Private transport (Nym mixnet) | **Planned.** The `mixnet` backend fails loudly and never downgrades to direct |
 | Admin API + dashboard (localhost, bearer token, idempotency keys) | **Implemented** |
 

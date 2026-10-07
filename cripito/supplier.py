@@ -4,8 +4,6 @@ from __future__ import annotations
 
 from .crypto import decrypt_artifact, random_id
 from .canonical import sha256_hex
-from .ledger import escrow_id_for
-from .ledger.sim import NETWORK, TEST_MINT
 from .protocol import ProtocolError, agreement_hash, build_advert, terms_hash
 from .runtime import Agent, Retry, agreement_signature_ok
 from .transport import TransportUnavailable
@@ -35,7 +33,7 @@ class Supplier(Agent):
     def advert(self) -> dict:
         return build_advert(
             self.identity, route=self.advert_route, name=self.name, service=SERVICE, verifier=stats.VERIFIER,
-            networks=[{"network": NETWORK, "asset": TEST_MINT}], payee=self.wallet.address, ttl=self.advert_ttl,
+            networks=[{"network": self.ledger.network, "asset": self.ledger.test_mint}], payee=self.ledger.address, ttl=self.advert_ttl,
             description=self.description)
 
     def tick(self) -> None:
@@ -56,7 +54,7 @@ class Supplier(Agent):
         terms = {
             "task_id": d["task_id"], "service": SERVICE, "verifier": stats.VERIFIER, "price": str(price),
             "asset": d["asset"], "network": d["network"], "delivery_seconds": self.delivery_seconds,
-            "valid_until": iso(now() + self.quote_ttl), "payee": self.wallet.address,
+            "valid_until": iso(now() + self.quote_ttl), "payee": self.ledger.address,
             "supplier_key_id": self.identity.key_id, "dataset_sha256": d["dataset_sha256"],
         }
         payload = {"quote_id": random_id(), "round": round_, "in_response_to": in_response_to, "terms": terms,
@@ -77,7 +75,7 @@ class Supplier(Agent):
                 raise ProtocolError("DUPLICATE_SESSION")
             if p["service"] != SERVICE or p["verifier"] != stats.VERIFIER:
                 raise ProtocolError("SERVICE_UNSUPPORTED")
-            if (p["network"], p["asset"]) != (NETWORK, TEST_MINT):
+            if (p["network"], p["asset"]) != (self.ledger.network, self.ledger.test_mint):
                 raise ProtocolError("SETTLEMENT_UNSUPPORTED")
             data = {"task_id": p["task_id"], "buyer_key_id": msg["sender_key_id"], "reply_route": p["reply_route"],
                     "reply_enc_key": p["reply_enc_key"], "asset": p["asset"], "network": p["network"],
@@ -168,13 +166,13 @@ class Supplier(Agent):
             raise ProtocolError("STATE_INVALID")
         ag = d["agreement"]
         # Never work before the escrow is verifiably funded with the exact terms.
-        if p["escrow_id"] != escrow_id_for(d["agreement_hash"]):
+        if p["escrow_id"] != self.ledger.escrow_id_for(d["agreement_hash"]):
             raise ProtocolError("ESCROW_MISMATCH")
         esc = self.ledger.get_escrow(p["escrow_id"])
         if not esc or esc["state"] != "FUNDED":
             raise Retry()
         if (esc["amount"], esc["mint"], esc["payee"], esc["agreement_hash"]) != (
-                ag["price"], ag["asset"], self.wallet.address, d["agreement_hash"]):
+                ag["price"], ag["asset"], self.ledger.address, d["agreement_hash"]):
             raise ProtocolError("ESCROW_MISMATCH")
         acc = p["dataset_access"]
         try:

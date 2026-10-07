@@ -11,8 +11,7 @@ from . import verifier as stats
 from .canonical import sha256_hex
 from .crypto import encrypt_artifact, random_id, verify_obj
 from .decision import Decision
-from .ledger import LedgerError, escrow_id_for
-from .ledger.sim import NETWORK, TEST_MINT
+from .ledger import LedgerError
 from .policy import PolicyEngine
 from .protocol import PROTOCOL_VERSION, ProtocolError, agreement_hash, validate_advert
 from .runtime import Agent, agreement_signature_ok
@@ -100,7 +99,7 @@ class Buyer(Agent):
             "requirements": {"format": "json", "column": column, "percentiles": list(percentiles),
                              "max_delivery_seconds": max_delivery_seconds},
             "dataset": {"sha256": sha, "rows": rows, "bytes": len(csv_bytes)},
-            "asset": TEST_MINT, "network": NETWORK, "budget": str(budget),
+            "asset": self.ledger.test_mint, "network": self.ledger.network, "budget": str(budget),
             "quote_deadline": iso(now() + quote_window_seconds),
         }
         data = {"task": task, "reply_route": reply_route, "sessions": {}, "adverts": {}, "quotes": {},
@@ -407,7 +406,7 @@ class Buyer(Agent):
         agreement = {
             "protocol_version": PROTOCOL_VERSION, "task_id": terms["task_id"], "quote_id": p["quote_id"],
             "terms_hash": p["terms_hash"], "buyer_key_id": self.identity.key_id,
-            "supplier_key_id": terms["supplier_key_id"], "payer": self.wallet.address, "payee": terms["payee"],
+            "supplier_key_id": terms["supplier_key_id"], "payer": self.ledger.address, "payee": terms["payee"],
             "price": terms["price"], "asset": terms["asset"], "network": terms["network"],
             "verifier": terms["verifier"], "dataset_sha256": terms["dataset_sha256"],
             "delivery_deadline": iso(delivery_deadline), "escrow_deadline": iso(delivery_deadline + ESCROW_GRACE),
@@ -430,7 +429,7 @@ class Buyer(Agent):
     def _fund_params(self, d: dict) -> dict:
         ag = d["agreement"]
         return {"amount": ag["price"], "payee": ag["payee"], "network": ag["network"], "asset": ag["asset"],
-                "escrow_id": escrow_id_for(d["agreement_hash"])}
+                "escrow_id": self.ledger.escrow_id_for(d["agreement_hash"])}
 
     def _t_agreed(self, neg: dict) -> None:
         d = neg["data"]

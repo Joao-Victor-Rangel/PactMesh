@@ -52,7 +52,8 @@ def verify_package(pkg: dict, ledger=None) -> dict:
     check("disclosed_events", bool(events) and not bad, "; ".join(bad[:5]) or f"{len(events)} events verified")
 
     if ledger is not None:
-        anchor = ledger.get_anchor(batch.get("batch_id", "")) if batch.get("batch_id") else None
+        anchor_tx = (batch.get("anchor") or {}).get("tx")
+        anchor = ledger.get_anchor(batch["batch_id"], anchor_tx) if batch.get("batch_id") else None
         check("batch_anchored", bool(anchor) and anchor.get("root") == root,
               f"anchored at slot {anchor.get('slot')}" if anchor else "anchor not found")
         esc = ledger.get_escrow(r.get("settlement", {}).get("escrow_id", ""))
