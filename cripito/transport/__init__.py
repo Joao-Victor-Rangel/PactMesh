@@ -6,8 +6,9 @@ different guarantees:
 
 * ``direct``  - encrypted end to end through store-and-forward relays.
                 NOT anonymous: relays see mailbox, timing and IP.
-* ``mixnet``  - private mode through a Nym client. Fails explicitly when
-                unavailable; it never silently downgrades to direct.
+* ``mixnet``  - private mode: the relay is reached through the Nym mixnet
+                with anonymous sends + reply SURBs (see nym.py). Fails
+                explicitly when unavailable; never downgrades to direct.
 """
 
 from __future__ import annotations
@@ -15,10 +16,7 @@ from __future__ import annotations
 import random
 
 from ..httpbase import HttpError, call
-
-
-class TransportUnavailable(RuntimeError):
-    pass
+from .nym import MixnetTransport, TransportUnavailable  # private backend; one exception type for both
 
 
 class DirectTransport:
@@ -105,41 +103,17 @@ class DirectTransport:
         raise TransportUnavailable("blob not available on any relay")
 
 
-class MixnetTransport:
-    """Private backend placeholder for a Nym client (websocket API).
-
-    Not implemented in this prototype. Every operation raises
-    ``TransportUnavailable`` so private mode fails loudly instead of
-    falling back to direct.
-    """
-
-    mode = "mixnet"
-    guarantees = "intended: sender/receiver unlinkability via Nym mixnet (NOT IMPLEMENTED)"
-
-    def __init__(self, nym_client_url: str | None = None):
-        self.nym_client_url = nym_client_url
-
-    def _unavailable(self, *a, **k):
-        raise TransportUnavailable(
-            "private (mixnet) transport is not available in this build; refusing to downgrade to direct"
-        )
-
-    send = receive = acknowledge = publish_advert = fetch_adverts = put_blob = get_blob = _unavailable
-
-    def status(self) -> dict:
-        return {"mode": self.mode, "guarantees": self.guarantees, "available": False}
-
-
 def backoff(attempt: int, base: float = 1.0, cap: float = 16.0) -> float:
     """Exponential backoff with full jitter."""
     return random.uniform(0, min(cap, base * (2**attempt)))
 
 
-def make_transport(mode: str, relays: list[str], nym_client_url: str | None = None):
+def make_transport(mode: str, relays: list[str], nym_client_url: str | None = None,
+                   relay_nym: str | None = None):
     if mode == "direct":
         return DirectTransport(relays)
     if mode == "mixnet":
-        return MixnetTransport(nym_client_url)
+        return MixnetTransport(nym_client_url, relay_nym)
     raise ValueError(f"unknown transport {mode!r}")
 
 

@@ -45,6 +45,11 @@
           "f1": 0.8638
         }
       },
+      "output_status": {
+        "valid": 300
+      },
+      "followed_injection": 0,
+      "coverage_non_abstain": 1.0,
       "latency_ms_p50": 0.0,
       "latency_ms_p95": 0,
       "blocked_by_family": {
@@ -86,6 +91,11 @@
           "f1": 0.7128
         }
       },
+      "output_status": {
+        "valid": 300
+      },
+      "followed_injection": 43,
+      "coverage_non_abstain": 1.0,
       "latency_ms_p50": 0.0,
       "latency_ms_p95": 0,
       "blocked_by_family": {

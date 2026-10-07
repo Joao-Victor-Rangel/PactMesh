@@ -90,7 +90,7 @@ def test_artifact_stream_detects_truncation():
 
 def test_mixnet_fails_explicitly():
     with pytest.raises(TransportUnavailable):
-        MixnetTransport().send({})
+        MixnetTransport("ws://127.0.0.1:9", "relay@gw").send({"route": "a" * 32})
 
 
 # --------------------------------------------------------------- evidence

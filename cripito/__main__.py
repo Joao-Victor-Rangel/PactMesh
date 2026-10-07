@@ -19,6 +19,7 @@ import os
 import secrets
 import signal
 import sys
+import threading
 import time
 from pathlib import Path
 
@@ -30,12 +31,12 @@ ROOT = Path(__file__).resolve().parents[1]
 def _transport(args):
     from .transport import TransportUnavailable, make_transport
 
-    t = make_transport(args.transport, args.relay, args.nym_client)
-    if args.transport == "mixnet":
-        try:
-            t.fetch_adverts()
-        except TransportUnavailable as e:
-            sys.exit(f"[cripito] private mode requested but unavailable: {e}")
+    try:
+        t = make_transport(args.transport, args.relay, args.nym_client, args.relay_nym)
+        if args.transport == "mixnet":
+            t.fetch_adverts()  # prove the mixnet path works before doing anything
+    except TransportUnavailable as e:
+        sys.exit(f"[cripito] private mode requested but unavailable (no fallback to direct): {e}")
     return t
 
 
@@ -43,6 +44,20 @@ def cmd_relay(args):
     from .transport.relay import Relay
 
     relay = Relay(Path(args.observe) if args.observe else None)
+    if args.nym_client:
+        from .transport.nym import RelayNymGateway, TransportUnavailable
+
+        try:
+            gw = RelayNymGateway(relay, args.nym_client)
+        except TransportUnavailable as e:
+            sys.exit(f"[relay] private mode requested but unavailable: {e}")
+        print(f"[relay] mixnet service address (give to agents as --relay-nym): {gw.address}", flush=True)
+
+        def serve_nym():
+            gw.serve_forever()
+            os._exit(3)  # losing the mixnet side must be loud, never a silent downgrade
+
+        threading.Thread(target=serve_nym, daemon=True).start()
     srv = relay.app.serve(args.host, args.port)
     print(f"[relay] direct-mode relay on http://{args.host}:{args.port} (sees only opaque envelopes)", flush=True)
     srv.serve_forever()
@@ -108,7 +123,7 @@ def cmd_buyer(args):
     policy = json.loads(Path(args.policy).read_text()) if args.policy else None
     home = Path(args.home)
     b = Buyer(home, args.name, _transport(args), _ledger(args),
-              engine=make_engine(args.engine, args.model_url), policy=policy)
+              engine=_engine(args), policy=policy)
     _use_keypair(b, args)
     _ensure_funds(b)
     print(f"[buyer] settlement {b.ledger.network} ({'SIMULATED' if b.ledger.simulated else 'on-chain'}), "
@@ -136,11 +151,27 @@ def cmd_verify(args):
     sys.exit(0 if res["ok"] else 1)
 
 
+def _engine(args):
+    from .decision import make_engine
+
+    return make_engine(args.engine, args.model_url, args.model_name, args.model_revision,
+                       os.environ.get("CRIPITO_MODEL_API_KEY"))
+
+
+def model_args(p, default="reference"):
+    from .decision import ENGINES
+
+    p.add_argument("--engine", choices=ENGINES, default=default)
+    p.add_argument("--model-url", help="http: full URL; openai-compat: base URL, e.g. http://127.0.0.1:11434/v1")
+    p.add_argument("--model-name", help="openai-compat model name, e.g. laya or llama3.2")
+    p.add_argument("--model-revision", default="unpinned", help="pin the checkpoint revision you evaluated")
+
+
 def cmd_eval(args):
     sys.path.insert(0, str(ROOT))
     from evaluation.run_eval import main
 
-    main(args.out)
+    main(args.out, extra=_engine(args) if args.engine != "reference" else None)
 
 
 def cmd_solana_anchor(args):
@@ -204,10 +235,13 @@ def main(argv=None):
         chain(p)
         p.add_argument("--keypair", help="solana-keygen JSON to use as this agent's payment key")
         p.add_argument("--transport", choices=["direct", "mixnet"], default="direct")
-        p.add_argument("--nym-client", default=None)
+        p.add_argument("--nym-client", default=None, help="local nym-client websocket, e.g. ws://127.0.0.1:1977")
+        p.add_argument("--relay-nym", default=None, help="the relay's Nym address (mixnet mode)")
 
     p = sub.add_parser("relay"); p.add_argument("--host", default="127.0.0.1"); p.add_argument("--port", type=int, default=8701)
-    p.add_argument("--observe", help="write what the relay observes (headers only) to this file"); p.set_defaults(fn=cmd_relay)
+    p.add_argument("--observe", help="write what the relay observes (headers only) to this file")
+    p.add_argument("--nym-client", help="also serve this relay over the Nym mixnet via a local nym-client")
+    p.set_defaults(fn=cmd_relay)
     p = sub.add_parser("ledger"); p.add_argument("--host", default="127.0.0.1"); p.add_argument("--port", type=int, default=8702)
     p.add_argument("--db", default=".cripito/ledger.sqlite"); p.set_defaults(fn=cmd_ledger)
     p = sub.add_parser("supplier"); net(p); p.add_argument("--name", required=True); p.add_argument("--home")
@@ -217,11 +251,11 @@ def main(argv=None):
     p.set_defaults(fn=cmd_supplier)
     p = sub.add_parser("buyer"); net(p); p.add_argument("--name", default="buyer"); p.add_argument("--home", default=".cripito/buyer")
     p.add_argument("--host", default="127.0.0.1"); p.add_argument("--api-port", type=int, default=8700)
-    p.add_argument("--engine", choices=["reference", "simulated-llm", "http", "http+fallback"], default="reference")
-    p.add_argument("--model-url"); p.add_argument("--policy", help="policy JSON file")
+    model_args(p); p.add_argument("--policy", help="policy JSON file")
     p.add_argument("--dataset", default=str(ROOT / "examples" / "dataset.csv")); p.set_defaults(fn=cmd_buyer)
     p = sub.add_parser("verify"); p.add_argument("package"); p.add_argument("--ledger"); chain(p); p.set_defaults(fn=cmd_verify)
-    p = sub.add_parser("eval"); p.add_argument("--out", default=str(ROOT / "evaluation" / "results.json")); p.set_defaults(fn=cmd_eval)
+    p = sub.add_parser("eval", help="compare engines on 300 synthetic scenarios (add yours with --engine)")
+    p.add_argument("--out", default=str(ROOT / "evaluation" / "results.json")); model_args(p); p.set_defaults(fn=cmd_eval)
     p = sub.add_parser("solana-keygen", help="create a Devnet-only keypair (and optionally request an airdrop)")
     p.add_argument("--out", default="devnet.json"); p.add_argument("--airdrop", action="store_true"); p.add_argument("--rpc")
     p.set_defaults(fn=cmd_solana_keygen)

@@ -55,7 +55,7 @@ discloses only one negotiation's events with their randomness and inclusion proo
 | Adversary / failure | Mitigation | Limit |
 |---|---|---|
 | Curious relay | AEAD envelopes, padding classes, coarse expiry | sees mailbox, timing, IP |
-| Traffic observer | (planned) Nym mixnet | direct mode gives none |
+| Traffic observer | mixnet mode: relay reached via Nym with SURB replies | direct mode gives none; global observer not claimed |
 | Malicious supplier | minimal data, signed terms, verifier before release, escrow | can copy received data |
 | Prompt injection | schema validation, closed actions, policy on effects | model can still be fooled; only recommendations |
 | Replay | message ids, expiry, per-session sequence, persisted dedup | — |
