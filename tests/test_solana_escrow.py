@@ -5,8 +5,8 @@ from pathlib import Path
 
 from nacl.signing import SigningKey
 
-from cripito.ledger import Wallet
-from cripito.ledger.solana import (SYSTEM_PROGRAM, SolanaEscrowClient, b58decode, b58encode, build_tx,
+from pactmesh.ledger import Wallet
+from pactmesh.ledger.solana import (SYSTEM_PROGRAM, SolanaEscrowClient, b58decode, b58encode, build_tx,
                                    escrow_ix_data, escrow_pda, is_on_curve, parse_escrow)
 
 FIX = json.loads((Path(__file__).resolve().parents[1] / "contracts" / "escrow" / "fixtures.json").read_text())

@@ -1,6 +1,6 @@
 from nacl.signing import SigningKey
 
-from cripito.ledger.solana import MEMO_PROGRAM, b58decode, b58encode, build_memo_tx, compact_u16, memo_text
+from pactmesh.ledger.solana import MEMO_PROGRAM, b58decode, b58encode, build_memo_tx, compact_u16, memo_text
 
 
 def test_base58_roundtrip_and_known_program_id():
@@ -19,7 +19,7 @@ def test_compact_u16():
 
 def test_memo_tx_layout_and_signature():
     key = SigningKey(bytes(range(32)))
-    memo = memo_text("a" * 32, "b" * 64, "cripito-merkle/1")
+    memo = memo_text("a" * 32, "b" * 64, "pactmesh-merkle/1")
     tx = build_memo_tx(key, memo, b58encode(bytes([7]) * 32))
     assert tx[0] == 1
     sig, message = tx[1:65], tx[65:]

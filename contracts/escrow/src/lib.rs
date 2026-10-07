@@ -1,7 +1,7 @@
-//! Cripito test escrow program (Solana, native, no Anchor).
+//! PactMesh test escrow program (Solana, native, no Anchor).
 //!
 //! Holds native SOL (Devnet) in a PDA derived from the agreement hash:
-//! seeds = ["cripito-escrow", agreement_hash]. States: CREATED -> FUNDED ->
+//! seeds = ["pactmesh-escrow", agreement_hash]. States: CREATED -> FUNDED ->
 //! RELEASED | REFUNDED | DISPUTED. RELEASED and REFUNDED are terminal.
 //! Only the payer can fund, release (to the exact payee) and refund (after
 //! the deadline); payer or payee can open a dispute, which freezes funds.

@@ -1,6 +1,6 @@
 """Transport backends.
 
-Both backends move opaque outer envelopes; the Cripito inner protocol is
+Both backends move opaque outer envelopes; the PactMesh inner protocol is
 identical on either. They have different names because they give
 different guarantees:
 

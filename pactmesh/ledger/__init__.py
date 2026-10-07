@@ -3,7 +3,7 @@ adapter validates network and asset identifiers, the model never does.
 
 * ``SimLedgerClient`` talks to the SIMULATED local ledger (offline demo).
 * ``solana.SolanaEscrowClient`` drives the ``contracts/escrow`` program on
-  Solana (Devnet or the offline ``cripito-localnet`` emulator) and anchors
+  Solana (Devnet or the offline ``pactmesh-localnet`` emulator) and anchors
   Merkle roots via the Memo program.
 
 Payment (wallet) keys live in their own file, separate from message keys,

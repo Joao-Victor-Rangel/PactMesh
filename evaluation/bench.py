@@ -4,8 +4,8 @@ Runs N complete contracts (discovery -> negotiation -> escrow -> delivery ->
 verification -> settlement -> receipt) with real HTTP relay and ledger
 servers on localhost, and reports p50/p95 per stage plus measured costs.
 
-    python -m cripito bench --n 10                  # SIMULATED ledger
-    python -m cripito bench --n 10 --chain localnet # Rust escrow via cripito-localnet
+    python -m pactmesh bench --n 10                  # SIMULATED ledger
+    python -m pactmesh bench --n 10 --chain localnet # Rust escrow via pactmesh-localnet
 
 All agents run in one Python process here, so the numbers measure the
 protocol, cryptography, storage and settlement path, not network latency.
@@ -30,15 +30,15 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "examples"))
 
-from cripito.buyer import Buyer  # noqa: E402
-from cripito.decision import make_engine  # noqa: E402
-from cripito.httpbase import run_in_thread  # noqa: E402
-from cripito.ledger import SimLedgerClient  # noqa: E402
-from cripito.ledger.sim import SimLedger  # noqa: E402
-from cripito.policy import DEFAULT_POLICY  # noqa: E402
-from cripito.supplier import Supplier  # noqa: E402
-from cripito.transport import DirectTransport  # noqa: E402
-from cripito.transport.relay import Relay  # noqa: E402
+from pactmesh.buyer import Buyer  # noqa: E402
+from pactmesh.decision import make_engine  # noqa: E402
+from pactmesh.httpbase import run_in_thread  # noqa: E402
+from pactmesh.ledger import SimLedgerClient  # noqa: E402
+from pactmesh.ledger.sim import SimLedger  # noqa: E402
+from pactmesh.policy import DEFAULT_POLICY  # noqa: E402
+from pactmesh.supplier import Supplier  # noqa: E402
+from pactmesh.transport import DirectTransport  # noqa: E402
+from pactmesh.transport.relay import Relay  # noqa: E402
 
 STAGES = [
     ("discovery", "CREATED", "QUOTING"),
@@ -50,7 +50,7 @@ STAGES = [
     ("settlement", "VERIFIED", "SETTLED"),
     ("total", "CREATED", "SETTLED"),
 ]
-LOCALNET_BIN = ROOT / "contracts" / "escrow" / "target" / "debug" / "cripito-localnet"
+LOCALNET_BIN = ROOT / "contracts" / "escrow" / "target" / "debug" / "pactmesh-localnet"
 
 
 def pct(xs: list[float], p: float) -> float:
@@ -75,7 +75,7 @@ def run(n: int = 10, chain: str = "sim", out: str | None = None) -> dict:
     from make_dataset import make
 
     dataset = make()
-    tmp = Path(tempfile.mkdtemp(prefix="cripito-bench-"))
+    tmp = Path(tempfile.mkdtemp(prefix="pactmesh-bench-"))
     obs = tmp / "relay.jsonl"
     relay = Relay(observation_log=obs)
     rsrv = relay.app.serve("127.0.0.1", 0)
@@ -83,10 +83,10 @@ def run(n: int = 10, chain: str = "sim", out: str | None = None) -> dict:
     relay_url = f"http://127.0.0.1:{rsrv.server_address[1]}"
     proc = None
     if chain == "localnet":
-        from cripito.ledger.solana import SolanaEscrowClient, b58encode
+        from pactmesh.ledger.solana import SolanaEscrowClient, b58encode
 
         if not LOCALNET_BIN.exists():
-            raise SystemExit("build cripito-localnet first (see docs/SOLANA.md)")
+            raise SystemExit("build pactmesh-localnet first (see docs/SOLANA.md)")
         port, pid = free_port(), b58encode(bytes([0x5C]) * 32)
         proc = subprocess.Popen([str(LOCALNET_BIN), "--port", str(port), "--program-id", pid],
                                 stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
@@ -159,7 +159,7 @@ def run(n: int = 10, chain: str = "sim", out: str | None = None) -> dict:
             buyer_fees_and_rent = buyer_spent
         vault_bytes = sum(f.stat().st_size for f in (tmp / "buyer").glob("vault.sqlite*"))
         report = {
-            "chain": chain if chain == "sim" else "cripito-localnet (Rust escrow, host emulator)",
+            "chain": chain if chain == "sim" else "pactmesh-localnet (Rust escrow, host emulator)",
             "simulated_settlement": chain == "sim",
             "hardware": f"{platform.machine()} · {os.cpu_count()} CPUs · {platform.system()} {platform.release()} · "
                         f"Python {platform.python_version()}",

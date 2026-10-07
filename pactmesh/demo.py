@@ -17,7 +17,7 @@ from pathlib import Path
 from .httpbase import HttpError, call
 
 ROOT = Path(__file__).resolve().parents[1]
-BASE = int(os.environ.get("CRIPITO_PORT_BASE", "8700"))
+BASE = int(os.environ.get("PACTMESH_PORT_BASE", "8700"))
 API, RELAY, LEDGER = f"http://127.0.0.1:{BASE}", f"http://127.0.0.1:{BASE + 1}", f"http://127.0.0.1:{BASE + 2}"
 
 C = {"b": "\033[1m", "g": "\033[32m", "r": "\033[31m", "y": "\033[33m", "c": "\033[36m", "d": "\033[2m", "x": "\033[0m"}
@@ -40,12 +40,12 @@ def wait_http(url: str, timeout: float = 20) -> None:
     raise SystemExit(f"timeout waiting for {url}")
 
 
-LOCALNET_BIN = ROOT / "contracts" / "escrow" / "target" / "debug" / "cripito-localnet"
+LOCALNET_BIN = ROOT / "contracts" / "escrow" / "target" / "debug" / "pactmesh-localnet"
 LOCALNET_PROGRAM = "7DYCAhqwQSKqqL1h8V1XmY1BTcMWxrASQYKNMy87jeg3"  # bytes [0x5c]*32, matches fixtures.json
 
 
 def run_demo(keep: bool = False, engine: str = "simulated-llm", chain: str = "sim") -> None:
-    home = ROOT / ".cripito-demo"
+    home = ROOT / ".pactmesh-demo"
     shutil.rmtree(home, ignore_errors=True)
     home.mkdir()
     dataset = ROOT / "examples" / "dataset.csv"
@@ -54,13 +54,13 @@ def run_demo(keep: bool = False, engine: str = "simulated-llm", chain: str = "si
         from make_dataset import make
 
         dataset.write_bytes(make())
-    py = [sys.executable, "-m", "cripito"]
+    py = [sys.executable, "-m", "pactmesh"]
     net = ["--relay", RELAY, "--ledger", LEDGER]
     rpc = f"http://127.0.0.1:{BASE + 3}"
     if chain == "localnet":
         if not LOCALNET_BIN.exists():
-            say("demo", "building cripito-localnet (Rust escrow program + RPC emulator)...", "b")
-            subprocess.run(["cargo", "build", "-q", "--features", "localnet", "--bin", "cripito-localnet"],
+            say("demo", "building pactmesh-localnet (Rust escrow program + RPC emulator)...", "b")
+            subprocess.run(["cargo", "build", "-q", "--features", "localnet", "--bin", "pactmesh-localnet"],
                            cwd=ROOT / "contracts" / "escrow", check=True)
         net += ["--chain", "solana", "--rpc", rpc, "--program-id", LOCALNET_PROGRAM]
     procs: list[subprocess.Popen] = []
@@ -80,7 +80,7 @@ def run_demo(keep: bool = False, engine: str = "simulated-llm", chain: str = "si
             procs.append(subprocess.Popen([str(LOCALNET_BIN), "--port", str(BASE + 3), "--program-id", LOCALNET_PROGRAM],
                                           stdout=f, stderr=subprocess.STDOUT))
             time.sleep(0.5)
-            say("chain", "cripito-localnet: the Rust escrow program's processor behind a Solana JSON-RPC emulator "
+            say("chain", "pactmesh-localnet: the Rust escrow program's processor behind a Solana JSON-RPC emulator "
                          "(real program logic, NOT Devnet; amounts in lamports)", "y")
         else:
             spawn("ledger", ["ledger", "--port", str(BASE + 2), "--db", str(home / "ledger.sqlite")])
@@ -99,32 +99,43 @@ def run_demo(keep: bool = False, engine: str = "simulated-llm", chain: str = "si
         H = {"authorization": f"Bearer {token}"}
         time.sleep(1.0)  # let suppliers publish signed adverts
         unit = "lamports" if chain == "localnet" else "CRPT-TEST"
-        say("buyer", f"task: stats report on synthetic dataset, budget 100 {unit} (private, never sent)")
+        say("cripto", f"buyer agent task: stats report on synthetic dataset, budget 100 {unit} (private, never sent)")
         tid = call("POST", API + "/tasks", {"budget": 100, "column": "latency_ms", "quote_window_seconds": 4},
                    {**H, "idempotency-key": "demo-task-1"})["task_id"]
-        seen_tl, last_state, t0 = 0, None, time.time()
+        # Narrate from the buyer's signed event log, which has the true order of what happened.
+        cursor, n_quote, n_decision, last_state, t0 = 0, 0, 0, None, time.time()
         while time.time() - t0 < 120:
             t = call("GET", f"{API}/tasks/{tid}", headers=H)
-            if t["state"] != last_state:
-                say("state", f"{last_state or '-'} -> {C['b']}{t['state']}{C['x']}", "d")
-                last_state = t["state"]
-                if t["state"] == "NEGOTIATING":
-                    for q in t["quotes"]:
-                        say("quote", f"{q['supplier']}: {q['price']} in {q['delivery_seconds']}s  "
-                                     f"{C['d']}text: \"{q['description']}\"{C['x']}")
-            for e in t["timeline"][seen_tl:]:
-                m, p = e["model"], e["policy"]
-                opt = next((o for o in e["options"] if o["quote_id"] == m["quote_id"]), None)
-                target = f" {opt['supplier']} @ {opt['price']}" if opt else ""
-                cp = f" -> {m['counter_price']}" if m["counter_price"] else ""
-                say("model", f"{m['model_id']} recommends {m['action']}{target}{cp}", "y")
-                if m.get("generated_rationale"):
-                    say("model", f"{C['d']}generated text (not evidence): {m['generated_rationale']}{C['x']}", "y")
-                if p:
-                    col = "g" if p["allowed"] else "r"
-                    say("policy", f"{'ALLOW' if p['allowed'] else 'BLOCK'} {p['code']} (rule {p['rule']})", col)
-                say("exec", e["executed"], "c")
-            seen_tl = len(t["timeline"])
+            events = t["events"]
+            while cursor < len(events):
+                ev = events[cursor]
+                if ev["type"] == "QUOTE_RECEIVED":
+                    if n_quote >= len(t["quotes"]):
+                        break
+                    q = t["quotes"][n_quote]
+                    n_quote += 1
+                    say("quote", f"{q['supplier']} (round {q['round']}): {q['price']} in {q['delivery_seconds']}s  "
+                                 f"{C['d']}text: \"{q['description']}\"{C['x']}")
+                elif ev["type"] == "DECISION":
+                    if n_decision >= len(t["timeline"]):
+                        break  # the decision's outcome is not recorded yet; wait for the next poll
+                    e = t["timeline"][n_decision]
+                    n_decision += 1
+                    m, p = e["model"], e["policy"]
+                    opt = next((o for o in e["options"] if o["quote_id"] == m["quote_id"]), None)
+                    target = f" {opt['supplier']} @ {opt['price']}" if opt else ""
+                    cp = f" -> {m['counter_price']}" if m["counter_price"] else ""
+                    say("model", f"{m['model_id']} recommends {m['action']}{target}{cp}", "y")
+                    if m.get("generated_rationale"):
+                        say("model", f"{C['d']}generated text (not evidence): {m['generated_rationale']}{C['x']}", "y")
+                    if p:
+                        col = "g" if p["allowed"] else "r"
+                        say("policy", f"{'ALLOW' if p['allowed'] else 'BLOCK'} {p['code']} (rule {p['rule']})", col)
+                    say("exec", e["executed"], "c")
+                elif ev["type"] in ("STATE", "TASK_CREATED") and ev["new_state"]:
+                    say("state", f"{last_state or '-'} -> {C['b']}{ev['new_state']}{C['x']}", "d")
+                    last_state = ev["new_state"]
+                cursor += 1
             if t["state"] in ("SETTLED", "CANCELLED", "EXPIRED", "DISPUTED") and (t["receipt"] or t["state"] != "SETTLED"):
                 break
             time.sleep(0.4)
@@ -134,7 +145,7 @@ def run_demo(keep: bool = False, engine: str = "simulated-llm", chain: str = "si
         r = t["receipt"]
         say("verify", f"report verified by {r['verification']['verifier']['name']} {r['verification']['verifier']['version']}: "
                       f"{'PASS' if r['verification']['ok'] else 'FAIL'}", "g" if r["verification"]["ok"] else "r")
-        label = "SIMULATED" if r["settlement"]["simulated"] else ("cripito-localnet" if chain == "localnet" else "on-chain")
+        label = "SIMULATED" if r["settlement"]["simulated"] else ("pactmesh-localnet" if chain == "localnet" else "on-chain")
         say("settle", f"escrow {r['settlement']['escrow_state']} on {r['settlement']['network']} ({label}) "
                       f"release tx {r['settlement']['release_tx'][:16]}…", "g")
         pkg = call("GET", f"{API}/negotiations/{tid}/evidence", headers=H)

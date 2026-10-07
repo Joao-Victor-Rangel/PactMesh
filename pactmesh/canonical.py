@@ -1,6 +1,6 @@
 """Deterministic JSON serialization (RFC 8785 subset).
 
-Cripito never puts floating point numbers in signed objects: money is an
+PactMesh never puts floating point numbers in signed objects: money is an
 integer string in minimal units and statistics are fixed-precision decimal
 strings. Floats are therefore rejected instead of being canonicalized.
 """

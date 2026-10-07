@@ -7,9 +7,9 @@
 use std::sync::atomic::{AtomicI64, Ordering};
 use std::sync::{Mutex, Once};
 
-use cripito_escrow::instruction::EscrowInstruction;
-use cripito_escrow::processor::{escrow_address, process};
-use cripito_escrow::state::{Escrow, State, LEN};
+use pactmesh_escrow::instruction::EscrowInstruction;
+use pactmesh_escrow::processor::{escrow_address, process};
+use pactmesh_escrow::state::{Escrow, State, LEN};
 use solana_program::{
     account_info::AccountInfo, clock::Clock, entrypoint::ProgramResult, instruction::Instruction,
     program_error::ProgramError, program_stubs, pubkey::Pubkey, rent::Rent, system_program,
@@ -32,7 +32,7 @@ impl program_stubs::SyscallStubs for Stubs {
         let to = find(&ix.accounts[1].pubkey);
         // Every account the system program debits must have signed (directly or via PDA seeds).
         let pda_signed = seeds.iter().any(|s| {
-            Pubkey::create_program_address(s, &cripito_program_id()).map(|p| p == *to.key).unwrap_or(false)
+            Pubkey::create_program_address(s, &pactmesh_program_id()).map(|p| p == *to.key).unwrap_or(false)
         });
         assert!(from.is_signer, "funding account must sign");
         let lamports = u64::from_le_bytes(ix.data[4..12].try_into().unwrap());
@@ -74,7 +74,7 @@ impl program_stubs::SyscallStubs for Stubs {
     }
 }
 
-fn cripito_program_id() -> Pubkey {
+fn pactmesh_program_id() -> Pubkey {
     Pubkey::new_from_array([7u8; 32])
 }
 
@@ -108,7 +108,7 @@ fn env(seed: u8) -> Env {
     INIT.call_once(|| {
         program_stubs::set_syscall_stubs(Box::new(Stubs));
     });
-    let pid = cripito_program_id();
+    let pid = pactmesh_program_id();
     let hash = [seed; 32];
     let (pda, _) = escrow_address(&pid, &hash);
     Env {

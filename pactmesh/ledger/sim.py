@@ -26,7 +26,7 @@ from ..crypto import verify_sig
 from ..httpbase import App, HttpError, Request
 from ..util import now
 
-NETWORK = "cripito-sim-devnet"
+NETWORK = "pactmesh-sim-devnet"
 TEST_MINT = "CRPT-TEST"
 FEE_MINT = "SIM-SOL"
 FEE = 5000

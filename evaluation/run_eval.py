@@ -32,18 +32,18 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from cripito.crypto import Identity, random_id  # noqa: E402
-from cripito.decision import ReferenceEngine, SimulatedLLMEngine  # noqa: E402
-from cripito.policy import PolicyEngine  # noqa: E402
-from cripito.protocol import build_advert, build_message, terms_hash  # noqa: E402
-from cripito.store import Store  # noqa: E402
-from cripito.util import iso, now  # noqa: E402
+from pactmesh.crypto import Identity, random_id  # noqa: E402
+from pactmesh.decision import ReferenceEngine, SimulatedLLMEngine  # noqa: E402
+from pactmesh.policy import PolicyEngine  # noqa: E402
+from pactmesh.protocol import build_advert, build_message, terms_hash  # noqa: E402
+from pactmesh.store import Store  # noqa: E402
+from pactmesh.util import iso, now  # noqa: E402
 
 SEED = 20261007
 FAMILIES = ["normal", "boundary", "injection", "expired", "wrong_asset", "forged_signature", "slow"]
 SPLIT = {"normal": "train", "boundary": "validation", "injection": "test", "expired": "train",
          "wrong_asset": "validation", "forged_signature": "test", "slow": "train"}
-VERIFIER = {"name": "cripito.stats", "version": "1.0"}
+VERIFIER = {"name": "pactmesh.stats", "version": "1.0"}
 
 
 def make_scenario(rnd: random.Random, family: str) -> dict:
@@ -75,9 +75,9 @@ def make_scenario(rnd: random.Random, family: str) -> dict:
 def run_one(engine, sc: dict, tmp: Path) -> dict:
     store = Store(tmp / f"{random_id(6)}.sqlite")
     me = Identity.generate()
-    policy = PolicyEngine(store, me, {**__import__("cripito.policy", fromlist=["x"]).DEFAULT_POLICY,
+    policy = PolicyEngine(store, me, {**__import__("pactmesh.policy", fromlist=["x"]).DEFAULT_POLICY,
                                       "budget_total": str(sc["budget"]), "max_per_task": str(sc["budget"])})
-    task = {"task_id": random_id(), "verifier": VERIFIER, "network": "cripito-sim-devnet", "asset": "CRPT-TEST",
+    task = {"task_id": random_id(), "verifier": VERIFIER, "network": "pactmesh-sim-devnet", "asset": "CRPT-TEST",
             "budget": str(sc["budget"]), "dataset": {"sha256": "ab" * 32},
             "requirements": {"max_delivery_seconds": 120}}
     neg = {"id": task["task_id"], "state": "NEGOTIATING", "data": {"task": task}}
@@ -85,10 +85,10 @@ def run_one(engine, sc: dict, tmp: Path) -> dict:
     for q in sc["quotes"]:
         sup = Identity.generate()
         adv = build_advert(sup, route=random_id(), name="s", service="stats-report", verifier=VERIFIER,
-                           networks=[{"network": "cripito-sim-devnet", "asset": "CRPT-TEST"}], payee="p" * 64,
+                           networks=[{"network": "pactmesh-sim-devnet", "asset": "CRPT-TEST"}], payee="p" * 64,
                            ttl=600, description="")
         terms = {"task_id": task["task_id"], "service": "stats-report", "verifier": VERIFIER, "price": str(q["price"]),
-                 "asset": q["asset"], "network": "cripito-sim-devnet", "delivery_seconds": q["delivery"],
+                 "asset": q["asset"], "network": "pactmesh-sim-devnet", "delivery_seconds": q["delivery"],
                  "valid_until": iso(now() + (120 if q["valid"] else -10)), "payee": "p" * 64,
                  "supplier_key_id": sup.key_id, "dataset_sha256": "ab" * 32}
         signer = Identity.generate() if q["forged"] else sup

@@ -1,6 +1,6 @@
-"""End to end on cripito-localnet: Python agents + the real Rust escrow processor.
+"""End to end on pactmesh-localnet: Python agents + the real Rust escrow processor.
 
-Build first:  cargo build --manifest-path contracts/escrow/Cargo.toml --features localnet --bin cripito-localnet
+Build first:  cargo build --manifest-path contracts/escrow/Cargo.toml --features localnet --bin pactmesh-localnet
 (skipped automatically when the binary is missing).
 """
 
@@ -11,19 +11,19 @@ from pathlib import Path
 
 import pytest
 
-from cripito.audit import verify_package
-from cripito.buyer import Buyer
-from cripito.decision import make_engine
-from cripito.ledger.solana import SolanaEscrowClient, b58encode
-from cripito.policy import DEFAULT_POLICY
-from cripito.supplier import Supplier
+from pactmesh.audit import verify_package
+from pactmesh.buyer import Buyer
+from pactmesh.decision import make_engine
+from pactmesh.ledger.solana import SolanaEscrowClient, b58encode
+from pactmesh.policy import DEFAULT_POLICY
+from pactmesh.supplier import Supplier
 
 ROOT = Path(__file__).resolve().parents[1]
-BIN = ROOT / "contracts" / "escrow" / "target" / "debug" / "cripito-localnet"
+BIN = ROOT / "contracts" / "escrow" / "target" / "debug" / "pactmesh-localnet"
 PROGRAM_ID = b58encode(bytes([0x5C]) * 32)
 POLICY = {**DEFAULT_POLICY, "allowed_settlement": [{"network": "solana-devnet", "asset": "SOL"}]}
 
-pytestmark = pytest.mark.skipif(not BIN.exists(), reason="cripito-localnet not built")
+pytestmark = pytest.mark.skipif(not BIN.exists(), reason="pactmesh-localnet not built")
 
 
 @pytest.fixture
@@ -103,7 +103,7 @@ def test_bad_delivery_disputed_on_chain(net, dataset, rpc):
 
 
 def test_program_rejects_double_release_and_wrong_authority(net, rpc):
-    from cripito.ledger import Wallet
+    from pactmesh.ledger import Wallet
 
     payer = SolanaEscrowClient(rpc, PROGRAM_ID, Wallet.load_or_create(net.tmp / "p.json"))
     payee = SolanaEscrowClient(rpc, PROGRAM_ID, Wallet.load_or_create(net.tmp / "q.json"))

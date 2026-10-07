@@ -13,7 +13,7 @@ ws://127.0.0.1:1977). Message format follows nym's
 
 Design: the relay is a mixnet *service*. Agents reach it with anonymous
 sends carrying reply SURBs, so the relay learns neither their IP nor their
-Nym address; it answers through the SURBs. The Cripito protocol (outer
+Nym address; it answers through the SURBs. The PactMesh protocol (outer
 envelopes, routes, adverts, blobs) is unchanged.
 
 What this does NOT give: protection if both ends are observed by a global
@@ -39,8 +39,8 @@ from ..crypto import random_id
 from ..httpbase import HttpError
 from .ws import WebSocketClient, WsError
 
-RPC_VERSION = "cripito-relay-rpc/1"
-log = logging.getLogger("cripito.nym")
+RPC_VERSION = "pactmesh-relay-rpc/1"
+log = logging.getLogger("pactmesh.nym")
 
 
 class TransportUnavailable(RuntimeError):

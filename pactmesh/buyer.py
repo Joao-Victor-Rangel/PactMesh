@@ -607,7 +607,7 @@ class Buyer(Agent):
         rel = self.store.get_effect(neg["id"], "RELEASE_PAYMENT") or {}
         esc = self.ledger.get_escrow(d["escrow_id"]) or {}
         receipt = {
-            "type": "CRIPITO_RECEIPT", "protocol_version": PROTOCOL_VERSION, "task_id": d["task"]["task_id"],
+            "type": "PACTMESH_RECEIPT", "protocol_version": PROTOCOL_VERSION, "task_id": d["task"]["task_id"],
             "status": status, "agreement": d["agreement"], "agreement_hash": d["agreement_hash"],
             "signatures": d["agreement_signatures"],
             "artifacts": {"dataset_sha256": d["task"]["dataset"]["sha256"],

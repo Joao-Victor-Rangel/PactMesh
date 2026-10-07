@@ -1,4 +1,4 @@
-"""Cripito protocol cripito/0.1: inner message format, closed type
+"""PactMesh protocol pactmesh/0.1: inner message format, closed type
 enumeration and per-type payload schemas.
 
 Every inner message is canonical JSON signed with Ed25519 over the object
@@ -15,7 +15,7 @@ from .canonical import canonical, hash_obj
 from .crypto import random_id, verify_obj
 from .util import iso, now, parse_iso
 
-PROTOCOL_VERSION = "cripito/0.1"
+PROTOCOL_VERSION = "pactmesh/0.1"
 CLOCK_SKEW = 60  # seconds tolerated for created_at in the future
 
 MESSAGE_TYPES = (
@@ -309,7 +309,7 @@ def terms_hash(terms: dict) -> str:
 
 
 def agreement_hash(agreement: dict) -> str:
-    return hash_obj({"domain": "cripito/agreement/v1", "agreement": agreement})
+    return hash_obj({"domain": "pactmesh/agreement/v1", "agreement": agreement})
 
 
 def message_hash(msg: dict) -> str:

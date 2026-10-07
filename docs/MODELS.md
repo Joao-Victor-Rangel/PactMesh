@@ -22,9 +22,9 @@ policy is.
 
 ```bash
 ollama pull llama3.2            # or any model you want to evaluate
-python -m cripito eval --engine openai-compat --model-url http://127.0.0.1:11434/v1 \
+python -m pactmesh eval --engine openai-compat --model-url http://127.0.0.1:11434/v1 \
     --model-name llama3.2 --model-revision <digest from `ollama show`>
-python -m cripito buyer --engine openai-compat+fallback --model-url http://127.0.0.1:11434/v1 --model-name llama3.2
+python -m pactmesh buyer --engine openai-compat+fallback --model-url http://127.0.0.1:11434/v1 --model-name llama3.2
 ```
 
 `eval` runs the same 300 seeded scenarios for the reference rules, the gullible test double and your

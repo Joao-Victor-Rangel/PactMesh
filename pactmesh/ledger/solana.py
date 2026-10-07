@@ -10,7 +10,7 @@ Amounts on Solana are lamports (the asset is ``SOL`` on ``solana-devnet``).
 Status: transaction/PDA encoding is unit-tested offline and cross-checked
 against the Rust program's own derivation (contracts/escrow/fixtures.json).
 It has NOT been exercised against a live Devnet from the build environment
-(the RPC was unreachable there). Test it with ``python -m cripito solana-anchor``
+(the RPC was unreachable there). Test it with ``python -m pactmesh solana-anchor``
 and the Devnet guide in docs/SOLANA.md before relying on it.
 """
 
@@ -31,7 +31,7 @@ from . import LEVELS, LedgerError
 DEVNET_RPC = "https://api.devnet.solana.com"
 MEMO_PROGRAM = "MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr"
 SYSTEM_PROGRAM = "11111111111111111111111111111111"
-ESCROW_SEED = b"cripito-escrow"
+ESCROW_SEED = b"pactmesh-escrow"
 NETWORK = "solana-devnet"
 ASSET = "SOL"
 ESCROW_LEN = 115
@@ -128,7 +128,7 @@ def build_tx(key: SigningKey, instructions: list[tuple[bytes, list[tuple[bytes, 
 
 
 def memo_text(batch_id: str, root: str, version: str) -> str:
-    return f"cripito:anchor:v1:{version}:{batch_id}:{root}"
+    return f"pactmesh:anchor:v1:{version}:{batch_id}:{root}"
 
 
 def build_memo_tx(key: SigningKey, memo: str, recent_blockhash: str) -> bytes:
@@ -147,7 +147,7 @@ def escrow_ix_data(tag: int, *, agreement_hash: str = "", payee: bytes = b"", am
 
 def parse_escrow(data: bytes) -> dict:
     if len(data) < ESCROW_LEN or data[0] != 1:
-        raise ValueError("not a cripito escrow account")
+        raise ValueError("not a pactmesh escrow account")
     return {"state": STATES[data[1]], "bump": data[2], "payer": b58encode(data[3:35]),
             "payee": b58encode(data[35:67]), "amount": str(int.from_bytes(data[67:75], "little")),
             "agreement_hash": data[75:107].hex(), "deadline": int.from_bytes(data[107:115], "little", signed=True),
@@ -284,7 +284,7 @@ class SolanaEscrowClient:
         if not t or (t.get("meta") or {}).get("err"):
             return None
         for line in t["meta"].get("logMessages") or []:
-            m = re.search(r"cripito:anchor:v1:([^:]+):([0-9a-f]{32}):([0-9a-f]{64})", line)
+            m = re.search(r"pactmesh:anchor:v1:([^:]+):([0-9a-f]{32}):([0-9a-f]{64})", line)
             if m and m.group(2) == batch_id:
                 return {"batch_id": batch_id, "version": m.group(1), "root": m.group(3), "slot": t["slot"], "tx": tx}
         return None

@@ -1,4 +1,4 @@
-"""Agent runtime shared by buyer and supplier.
+"""Cripto: the PactMesh agent runtime, shared by the buyer and supplier roles.
 
 * persisted outbox with bounded retransmission (exponential backoff + jitter)
 * persisted inbox with unique message_id (duplicate detection)
@@ -24,7 +24,7 @@ from .transport import TransportUnavailable, backoff
 from .util import now, parse_iso
 
 MAX_RETRANSMISSIONS = 3
-log = logging.getLogger("cripito")
+log = logging.getLogger("pactmesh")
 
 
 class Retry(Exception):

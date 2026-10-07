@@ -1,4 +1,4 @@
-//! cripito-localnet: a tiny host-side JSON-RPC emulator that executes the
+//! pactmesh-localnet: a tiny host-side JSON-RPC emulator that executes the
 //! *same* escrow processor as the on-chain program, so the Python client and
 //! the full agent flow can be tested end to end without a Solana validator.
 //!
@@ -234,7 +234,7 @@ impl Chain {
             } else if pid == self.program_id {
                 *PROGRAM.lock().unwrap() = Some(pid);
                 let sub: Vec<AccountInfo> = accs.iter().map(|&i| infos[i].clone()).collect();
-                cripito_escrow::processor::process(&pid, &sub, data)
+                pactmesh_escrow::processor::process(&pid, &sub, data)
             } else {
                 Err(ProgramError::IncorrectProgramId)
             };

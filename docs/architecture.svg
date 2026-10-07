@@ -18,12 +18,12 @@
     </style>
   </defs>
   <rect width="1200" height="760" fill="#f8fafc"/>
-  <text x="40" y="44" font-size="24" font-weight="700" fill="#0f172a">Cripito — private, policy-gated, verifiable agent negotiation</text>
+  <text x="40" y="44" font-size="24" font-weight="700" fill="#0f172a">PactMesh — private, policy-gated, verifiable agent negotiation</text>
   <text x="40" y="70" class="s">The model recommends · the policy decides · the runtime executes. Every arrow between processes carries only encrypted envelopes.</text>
 
   <!-- Buyer process -->
   <rect x="40" y="100" width="560" height="350" rx="14" fill="#f1f5f9" stroke="#94a3b8" stroke-dasharray="6 5"/>
-  <text x="60" y="126" class="h">BUYER PROCESS · own SQLite vault + keys</text>
+  <text x="60" y="126" class="h">CRIPTO AGENT · BUYER ROLE · own SQLite vault + keys</text>
 
   <rect x="60" y="145" width="240" height="70" rx="10" class="box"/>
   <text x="76" y="173" class="t">Dashboard + local API</text>
@@ -50,7 +50,7 @@
 
   <rect x="330" y="355" width="250" height="78" rx="10" class="box"/>
   <text x="346" y="383" class="t">Verifier + evidence</text>
-  <text x="346" y="405" class="s">cripito.stats 1.0 · signed event chain</text>
+  <text x="346" y="405" class="s">pactmesh.stats 1.0 · signed event chain</text>
   <text x="346" y="423" class="s">commitments → Merkle batch</text>
 
   <rect x="690" y="100" width="480" height="76" rx="10" class="box"/>
@@ -81,11 +81,11 @@
 
   <!-- Suppliers -->
   <rect x="970" y="250" width="200" height="86" rx="12" class="box"/>
-  <text x="986" y="278" class="t">Supplier alpha</text>
+  <text x="986" y="278" class="t">Cripto · supplier alpha</text>
   <text x="986" y="300" class="s">own process, vault, keys</text>
   <text x="986" y="319" class="s">signed quotes · delivers report</text>
   <rect x="970" y="370" width="200" height="86" rx="12" class="box"/>
-  <text x="986" y="398" class="t">Supplier beta</text>
+  <text x="986" y="398" class="t">Cripto · supplier beta</text>
   <text x="986" y="420" class="s">prompt-injected quote text</text>
   <text x="986" y="439" class="s">(untrusted data)</text>
   <path class="line" d="M920 330 H968" marker-end="url(#a)" marker-start="url(#a)"/>
@@ -104,7 +104,7 @@
   <text x="426" y="690" class="s">auditor checks inclusion, not content</text>
   <rect x="760" y="622" width="390" height="80" rx="10" class="warn"/>
   <text x="776" y="650" class="t">Backends</text>
-  <text x="776" y="672" class="s">SIMULATED ledger (default demo) · cripito-localnet</text>
+  <text x="776" y="672" class="s">SIMULATED ledger (default demo) · pactmesh-localnet</text>
   <text x="776" y="690" class="s">(Rust program on host) · Solana Devnet (free test SOL)</text>
   <path class="line" d="M180 433 V620" marker-end="url(#a)"/>
   <text x="188" y="530" class="s">fund · release · refund</text>

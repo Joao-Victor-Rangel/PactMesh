@@ -1,4 +1,4 @@
-# Cripito architecture, protocol and threat model
+# PactMesh architecture, protocol and threat model
 
 ## Trust boundaries
 
@@ -46,7 +46,7 @@ Limits: 64 KiB control messages, 3 counter rounds, 3 retransmissions with expone
 ## Evidence
 
 `commitment = SHA256(lp(domain) || lp(r32) || lp(canonical(event)))`, with `lp` a 4-byte length prefix.
-Merkle `cripito-merkle/1`: leaf `SHA256(0x00||c)`, node `SHA256(0x01||l||r)`, insertion order, unpaired
+Merkle `pactmesh-merkle/1`: leaf `SHA256(0x00||c)`, node `SHA256(0x01||l||r)`, insertion order, unpaired
 node promoted. Roots are anchored on the ledger (simulated, or Solana Devnet memo). The evidence package
 discloses only one negotiation's events with their randomness and inclusion proofs.
 

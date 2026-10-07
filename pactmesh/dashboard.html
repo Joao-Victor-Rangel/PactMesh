@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cripito Dashboard</title>
+<title>PactMesh Dashboard</title>
 <style>
 :root{--bg:#f6f7f9;--panel:#fff;--ink:#14171c;--muted:#5d6673;--line:#e1e4e9;--accent:#3b5bdb;
 --ok:#1f8a4c;--okbg:#e6f4ec;--bad:#c92a2a;--badbg:#fdecec;--warn:#9a6700;--warnbg:#fff4d6;--chip:#eef1f5}
@@ -32,7 +32,7 @@ table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:7px 8px;
 </head>
 <body>
 <header>
-  <h1>Cripito</h1>
+  <h1>PactMesh</h1><span class="chip">agent: Cripto</span>
   <span class="chip warn" id="transport">transport: …</span>
   <span class="chip warn" id="ledger">settlement: …</span>
   <span class="chip" id="engine">engine: …</span>
@@ -59,9 +59,9 @@ table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:7px 8px;
 </main>
 <script>
 const FLOW=["CREATED","QUOTING","NEGOTIATING","AGREED","FUNDING_PENDING","FUNDED","DELIVERED","VERIFIED","SETTLEMENT_PENDING","SETTLED"];
-let token=(new URLSearchParams(location.hash.slice(1))).get("token")||sessionStorage.getItem("cripito.token")||"";
+let token=(new URLSearchParams(location.hash.slice(1))).get("token")||sessionStorage.getItem("pactmesh.token")||"";
 let selected=null,lastPkg=null;
-function saveToken(){token=document.getElementById("token").value.trim();try{sessionStorage.setItem("cripito.token",token)}catch(e){};refresh()}
+function saveToken(){token=document.getElementById("token").value.trim();try{sessionStorage.setItem("pactmesh.token",token)}catch(e){};refresh()}
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 async function api(path,opts={}){const h={"authorization":"Bearer "+token,"content-type":"application/json"};
  if(opts.method==="POST")h["idempotency-key"]=crypto.randomUUID();

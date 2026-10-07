@@ -1,8 +1,8 @@
 """Knowing a mailbox's public deposit route must not let anyone read or delete its messages."""
 
-from cripito.crypto import Identity, seal
-from cripito.httpbase import HttpError, call
-from cripito.util import now
+from pactmesh.crypto import Identity, seal
+from pactmesh.httpbase import HttpError, call
+from pactmesh.util import now
 
 
 def test_route_holder_cannot_read_or_delete(net):
@@ -28,7 +28,7 @@ def test_route_holder_cannot_read_or_delete(net):
 
 
 def test_mailbox_route_is_derived_from_secret(net):
-    from cripito.crypto import mailbox_route
+    from pactmesh.crypto import mailbox_route
 
     s = net.supplier("alpha", price=80, min_price=80)
     secret = s.mailboxes()[0]

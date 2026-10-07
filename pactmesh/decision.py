@@ -54,7 +54,7 @@ def _fmt(x: float) -> str:
 
 
 class ReferenceEngine:
-    model_id = "cripito-reference-rules"
+    model_id = "pactmesh-reference-rules"
     model_revision = "1"
 
     def __init__(self, w_price: float = 0.7, w_time: float = 0.3, target_percent: int = 80):

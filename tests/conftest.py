@@ -7,15 +7,15 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "examples"))
 
-from cripito import util  # noqa: E402
-from cripito.buyer import Buyer  # noqa: E402
-from cripito.decision import make_engine  # noqa: E402
-from cripito.httpbase import run_in_thread  # noqa: E402
-from cripito.ledger import SimLedgerClient  # noqa: E402
-from cripito.ledger.sim import SimLedger  # noqa: E402
-from cripito.supplier import Supplier  # noqa: E402
-from cripito.transport import DirectTransport  # noqa: E402
-from cripito.transport.relay import Relay  # noqa: E402
+from pactmesh import util  # noqa: E402
+from pactmesh.buyer import Buyer  # noqa: E402
+from pactmesh.decision import make_engine  # noqa: E402
+from pactmesh.httpbase import run_in_thread  # noqa: E402
+from pactmesh.ledger import SimLedgerClient  # noqa: E402
+from pactmesh.ledger.sim import SimLedger  # noqa: E402
+from pactmesh.supplier import Supplier  # noqa: E402
+from pactmesh.transport import DirectTransport  # noqa: E402
+from pactmesh.transport.relay import Relay  # noqa: E402
 from make_dataset import make  # noqa: E402
 
 

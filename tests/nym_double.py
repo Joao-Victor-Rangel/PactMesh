@@ -14,7 +14,7 @@ import socket
 import threading
 import time
 
-from cripito.transport.ws import OP_TEXT, WsError, recv_message, send_frame, server_handshake
+from pactmesh.transport.ws import OP_TEXT, WsError, recv_message, send_frame, server_handshake
 
 
 class MockMixnet:

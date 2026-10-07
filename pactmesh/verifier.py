@@ -1,4 +1,4 @@
-"""Deterministic verifier ``cripito.stats`` version ``1.0``.
+"""Deterministic verifier ``pactmesh.stats`` version ``1.0``.
 
 Fixed rules (agreed before contracting):
 
@@ -24,7 +24,7 @@ from decimal import ROUND_HALF_EVEN, Decimal, InvalidOperation, getcontext
 
 from .canonical import hash_obj, sha256_hex
 
-NAME = "cripito.stats"
+NAME = "pactmesh.stats"
 VERSION = "1.0"
 VERIFIER = {"name": NAME, "version": VERSION}
 PLACES = Decimal("0.000001")

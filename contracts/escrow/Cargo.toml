@@ -1,9 +1,9 @@
 [package]
-name = "cripito-escrow"
+name = "pactmesh-escrow"
 version = "0.1.0"
 edition = "2021"
 license = "MIT"
-description = "Cripito test escrow: native SOL held by a PDA keyed by the agreement hash"
+description = "PactMesh test escrow: native SOL held by a PDA keyed by the agreement hash"
 
 [lib]
 crate-type = ["cdylib", "lib"]
@@ -20,7 +20,7 @@ base64 = { version = "0.22", optional = true }
 ed25519-dalek = { version = "2", optional = true }
 
 [[bin]]
-name = "cripito-localnet"
+name = "pactmesh-localnet"
 path = "src/bin/localnet.rs"
 required-features = ["localnet"]
 

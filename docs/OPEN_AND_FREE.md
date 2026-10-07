@@ -1,11 +1,11 @@
 # Open source and zero cost ("0800")
 
-Everything needed to build, test and demo Cripito is open source and free to use. Nothing requires a
+Everything needed to build, test and demo PactMesh is open source and free to use. Nothing requires a
 paid API, a paid account, real money, or hosting: the demo runs on one laptop.
 
 | Component | License | Cost | Verified how |
 |---|---|---|---|
-| Cripito (protocol, runtime, escrow program, dashboard, tests) | MIT | free | `LICENSE` |
+| PactMesh (protocol, runtime, escrow program, dashboard, tests) | MIT | free | `LICENSE` |
 | Python dependencies (PyNaCl, cffi, pycparser; pytest for tests) | Apache-2.0 / MIT-0 / BSD / MIT | free | `scripts/license_inventory.py` |
 | Rust crates of the escrow program and localnet (199) | MIT / Apache-2.0 / BSD family | free | same script, `docs/LICENSES.md` |
 | Solana Devnet + faucet | network test tokens with no value | free | Devnet SOL comes from the faucet |
@@ -22,7 +22,7 @@ paid API, a paid account, real money, or hosting: the demo runs on one laptop.
   allow-list (no copyleft, no proprietary, no unknown). CI runs it on every push.
 - The decision engine defaults to deterministic rules and only talks to models **you run locally**.
   The `openai-compat` engine works with any compatible server; no paid API is needed or configured.
-- Settlement runs on the simulated ledger, `cripito-localnet` or Solana **Devnet**. Mainnet is not used.
+- Settlement runs on the simulated ledger, `pactmesh-localnet` or Solana **Devnet**. Mainnet is not used.
 - No dataset leaves the test environment: the demo uses a seeded synthetic dataset.
 
 ## What would cost money (not used)

@@ -3,7 +3,7 @@
 commitment = SHA256( lp(domain) || lp(randomness32) || lp(canonical_event) )
 where lp(x) = uint32_be(len(x)) || x, so concatenation is unambiguous.
 
-Merkle tree (version ``cripito-merkle/1``):
+Merkle tree (version ``pactmesh-merkle/1``):
   leaf  = SHA256(0x00 || commitment)
   node  = SHA256(0x01 || left || right)
   leaves keep insertion order; an unpaired node is promoted unchanged to
@@ -18,8 +18,8 @@ import struct
 
 from .canonical import canonical
 
-COMMIT_DOMAIN = b"cripito/evidence-commitment/v1"
-MERKLE_VERSION = "cripito-merkle/1"
+COMMIT_DOMAIN = b"pactmesh/evidence-commitment/v1"
+MERKLE_VERSION = "pactmesh-merkle/1"
 
 
 def _lp(b: bytes) -> bytes:

@@ -5,12 +5,12 @@ import threading
 
 import pytest
 
-from cripito.buyer import Buyer
-from cripito.decision import make_engine
-from cripito.ledger import SimLedgerClient
-from cripito.supplier import Supplier
-from cripito.transport import MixnetTransport, TransportUnavailable
-from cripito.transport.nym import NymClient, RelayNymGateway
+from pactmesh.buyer import Buyer
+from pactmesh.decision import make_engine
+from pactmesh.ledger import SimLedgerClient
+from pactmesh.supplier import Supplier
+from pactmesh.transport import MixnetTransport, TransportUnavailable
+from pactmesh.transport.nym import NymClient, RelayNymGateway
 from nym_double import MockMixnet
 
 

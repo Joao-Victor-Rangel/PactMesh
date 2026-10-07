@@ -30,7 +30,7 @@ from nacl.signing import SigningKey, VerifyKey
 
 from .canonical import canonical
 
-TRANSPORT_VERSION = "cripito-transport/0.1"
+TRANSPORT_VERSION = "pactmesh-transport/0.1"
 SIZE_CLASSES = (1024, 4096, 16384, 65536)
 MAX_CONTROL_MESSAGE = SIZE_CLASSES[-1]
 ARTIFACT_CHUNK = 16384
@@ -54,7 +54,7 @@ def mailbox_route(secret_hex: str) -> str:
     let anyone read or delete the mailbox's messages."""
     import hashlib
 
-    return hashlib.sha256(b"cripito/mailbox/v1" + bytes.fromhex(secret_hex)).hexdigest()[:32]
+    return hashlib.sha256(b"pactmesh/mailbox/v1" + bytes.fromhex(secret_hex)).hexdigest()[:32]
 
 
 def random_id(nbytes: int = 16) -> str:

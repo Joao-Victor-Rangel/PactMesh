@@ -5,19 +5,19 @@ import threading
 
 import pytest
 
-from cripito import util
-from cripito.audit import verify_package
-from cripito.buyer import Buyer
-from cripito.canonical import CanonicalError, canonical
-from cripito.crypto import Identity, decrypt_artifact, encrypt_artifact, open_envelope, seal, EnvelopeError
-from cripito.decision import Decision, make_engine
-from cripito.evidence import commitment, inclusion_proof, merkle_root, verify_inclusion
-from cripito.ledger import SimLedgerClient, Wallet
-from cripito.policy import PolicyEngine
-from cripito.protocol import ProtocolError, build_message, validate_message
-from cripito.store import Store
-from cripito.transport import MixnetTransport, TransportUnavailable
-from cripito.verifier import compute_report, verify_report
+from pactmesh import util
+from pactmesh.audit import verify_package
+from pactmesh.buyer import Buyer
+from pactmesh.canonical import CanonicalError, canonical
+from pactmesh.crypto import Identity, decrypt_artifact, encrypt_artifact, open_envelope, seal, EnvelopeError
+from pactmesh.decision import Decision, make_engine
+from pactmesh.evidence import commitment, inclusion_proof, merkle_root, verify_inclusion
+from pactmesh.ledger import SimLedgerClient, Wallet
+from pactmesh.policy import PolicyEngine
+from pactmesh.protocol import ProtocolError, build_message, validate_message
+from pactmesh.store import Store
+from pactmesh.transport import MixnetTransport, TransportUnavailable
+from pactmesh.verifier import compute_report, verify_report
 
 TERMINAL = ("SETTLED", "CANCELLED", "EXPIRED", "DISPUTED")
 
@@ -54,7 +54,7 @@ def test_unknown_version_and_fields_rejected():
     ident = Identity.generate()
     m = build_message(ident, type="ACK", session_id="a" * 32, sequence=0, payload={"ack_message_id": "b" * 32})
     with pytest.raises(ProtocolError):
-        validate_message({**m, "protocol_version": "cripito/9.9"})
+        validate_message({**m, "protocol_version": "pactmesh/9.9"})
     with pytest.raises(ProtocolError):
         validate_message({**m, "extra": 1})
 
@@ -189,7 +189,7 @@ def test_wrong_asset_blocked(net, dataset):
     qrec = next(iter(neg["data"]["quotes"].values()))
     msg = qrec["msg"]
     terms = {**msg["payload"]["terms"], "asset": "CRPT-TEST "}  # look-alike mint
-    from cripito.protocol import terms_hash
+    from pactmesh.protocol import terms_hash
     payload = {**msg["payload"], "terms": terms, "terms_hash": terms_hash(terms)}
     forged = s.identity.sign_obj({**{k: v for k, v in msg.items() if k != "signature"}, "payload": payload})
     adv = neg["data"]["adverts"][s.identity.key_id]

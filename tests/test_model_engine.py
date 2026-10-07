@@ -6,8 +6,8 @@ from pathlib import Path
 
 import pytest
 
-from cripito.decision import FallbackEngine, OpenAICompatEngine, ReferenceEngine, make_engine
-from cripito.httpbase import App, run_in_thread
+from pactmesh.decision import FallbackEngine, OpenAICompatEngine, ReferenceEngine, make_engine
+from pactmesh.httpbase import App, run_in_thread
 
 ROOT = Path(__file__).resolve().parents[1]
 

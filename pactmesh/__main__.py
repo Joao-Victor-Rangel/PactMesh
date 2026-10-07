@@ -1,13 +1,13 @@
 """Command line: run each participant as an independent process.
 
-    python -m cripito relay    --port 8701
-    python -m cripito ledger   --port 8702
-    python -m cripito supplier --name alpha --price 90 --min-price 78
-    python -m cripito buyer    --api-port 8700
-    python -m cripito demo                 # orchestrates all of the above
-    python -m cripito verify evidence.json
-    python -m cripito eval                 # synthetic evaluation suite
-    python -m cripito solana-anchor .cripito-demo/evidence.json --keypair devnet.json
+    python -m pactmesh relay    --port 8701
+    python -m pactmesh ledger   --port 8702
+    python -m pactmesh supplier --name alpha --price 90 --min-price 78
+    python -m pactmesh buyer    --api-port 8700
+    python -m pactmesh demo                 # orchestrates all of the above
+    python -m pactmesh verify evidence.json
+    python -m pactmesh eval                 # synthetic evaluation suite
+    python -m pactmesh solana-anchor .pactmesh-demo/evidence.json --keypair devnet.json
 """
 
 from __future__ import annotations
@@ -36,7 +36,7 @@ def _transport(args):
         if args.transport == "mixnet":
             t.fetch_adverts()  # prove the mixnet path works before doing anything
     except TransportUnavailable as e:
-        sys.exit(f"[cripito] private mode requested but unavailable (no fallback to direct): {e}")
+        sys.exit(f"[pactmesh] private mode requested but unavailable (no fallback to direct): {e}")
     return t
 
 
@@ -73,12 +73,12 @@ def cmd_ledger(args):
 
 
 def _ledger(args):
-    """Settlement backend: the SIMULATED ledger or Solana (Devnet or cripito-localnet)."""
+    """Settlement backend: the SIMULATED ledger or Solana (Devnet or pactmesh-localnet)."""
     if getattr(args, "chain", "sim") == "solana":
         from .ledger.solana import DEVNET_RPC, SolanaEscrowClient
 
         if not args.program_id:
-            sys.exit("[cripito] --program-id is required with --chain solana (see docs/SOLANA.md)")
+            sys.exit("[pactmesh] --program-id is required with --chain solana (see docs/SOLANA.md)")
         return SolanaEscrowClient(args.rpc or DEVNET_RPC, args.program_id)
     from .ledger import SimLedgerClient
 
@@ -107,12 +107,12 @@ def _ensure_funds(agent):
 def cmd_supplier(args):
     from .supplier import Supplier
 
-    s = Supplier(Path(args.home or f".cripito/{args.name}"), args.name, _transport(args), _ledger(args),
+    s = Supplier(Path(args.home or f".pactmesh/{args.name}"), args.name, _transport(args), _ledger(args),
                  price=args.price, min_price=args.min_price, delivery_seconds=args.delivery,
                  description=args.description, behavior=args.behavior)
     _use_keypair(s, args)
     _ensure_funds(s)
-    print(f"[{args.name}] supplier key {s.identity.key_id[:16]}… price {args.price} (min {args.min_price})", flush=True)
+    print(f"[cripto:{args.name}] supplier key {s.identity.key_id[:16]}… price {args.price} (min {args.min_price})", flush=True)
     s.run()
 
 
@@ -126,7 +126,7 @@ def cmd_buyer(args):
               engine=_engine(args), policy=policy)
     _use_keypair(b, args)
     _ensure_funds(b)
-    print(f"[buyer] settlement {b.ledger.network} ({'SIMULATED' if b.ledger.simulated else 'on-chain'}), "
+    print(f"[cripto:buyer] settlement {b.ledger.network} ({'SIMULATED' if b.ledger.simulated else 'on-chain'}), "
           f"payer {b.ledger.address}", flush=True)
     token_file = home / "admin_token"
     if not token_file.exists():
@@ -137,7 +137,7 @@ def cmd_buyer(args):
     dataset = Path(args.dataset).read_bytes() if args.dataset else None
     srv = build_api(b, token, dataset).serve(args.host, args.api_port)
     run_in_thread(srv)
-    print(f"[buyer] dashboard http://{args.host}:{args.api_port}/#token={token}", flush=True)
+    print(f"[cripto:buyer] dashboard http://{args.host}:{args.api_port}/#token={token}", flush=True)
     b.run()
 
 
@@ -155,7 +155,7 @@ def _engine(args):
     from .decision import make_engine
 
     return make_engine(args.engine, args.model_url, args.model_name, args.model_revision,
-                       os.environ.get("CRIPITO_MODEL_API_KEY"))
+                       os.environ.get("PACTMESH_MODEL_API_KEY"))
 
 
 def model_args(p, default="reference"):
@@ -214,12 +214,12 @@ def cmd_solana_keygen(args):
 
 
 def cmd_mcp(args):
-    from .mcp import CripitoMCP
+    from .mcp import PactMeshMCP
 
-    token = Path(args.token_file).read_text().strip() if args.token_file else os.environ.get("CRIPITO_TOKEN", "")
+    token = Path(args.token_file).read_text().strip() if args.token_file else os.environ.get("PACTMESH_TOKEN", "")
     if not token:
-        sys.exit("[mcp] provide --token-file or CRIPITO_TOKEN")
-    CripitoMCP(args.api, token).serve_stdio()
+        sys.exit("[mcp] provide --token-file or PACTMESH_TOKEN")
+    PactMeshMCP(args.api, token).serve_stdio()
 
 
 def cmd_bench(args):
@@ -238,13 +238,13 @@ def cmd_demo(args):
 
 def main(argv=None):
     logging.basicConfig(level=logging.WARNING, format="%(levelname)s %(name)s: %(message)s")
-    ap = argparse.ArgumentParser(prog="cripito")
+    ap = argparse.ArgumentParser(prog="pactmesh")
     sub = ap.add_subparsers(dest="cmd", required=True)
 
     def chain(p):
         p.add_argument("--chain", choices=["sim", "solana"], default="sim")
-        p.add_argument("--rpc", help="Solana RPC URL (default Devnet; use cripito-localnet for offline runs)")
-        p.add_argument("--program-id", help="deployed cripito-escrow program id")
+        p.add_argument("--rpc", help="Solana RPC URL (default Devnet; use pactmesh-localnet for offline runs)")
+        p.add_argument("--program-id", help="deployed pactmesh-escrow program id")
 
     def net(p):
         p.add_argument("--relay", action="append", default=None, help="relay URL (repeat for mirrors)")
@@ -260,13 +260,13 @@ def main(argv=None):
     p.add_argument("--nym-client", help="also serve this relay over the Nym mixnet via a local nym-client")
     p.set_defaults(fn=cmd_relay)
     p = sub.add_parser("ledger"); p.add_argument("--host", default="127.0.0.1"); p.add_argument("--port", type=int, default=8702)
-    p.add_argument("--db", default=".cripito/ledger.sqlite"); p.set_defaults(fn=cmd_ledger)
+    p.add_argument("--db", default=".pactmesh/ledger.sqlite"); p.set_defaults(fn=cmd_ledger)
     p = sub.add_parser("supplier"); net(p); p.add_argument("--name", required=True); p.add_argument("--home")
     p.add_argument("--price", type=int, required=True); p.add_argument("--min-price", type=int, required=True)
     p.add_argument("--delivery", type=int, default=60); p.add_argument("--description", default="")
     p.add_argument("--behavior", choices=["honest", "bad_format", "wrong_values", "silent"], default="honest")
     p.set_defaults(fn=cmd_supplier)
-    p = sub.add_parser("buyer"); net(p); p.add_argument("--name", default="buyer"); p.add_argument("--home", default=".cripito/buyer")
+    p = sub.add_parser("buyer"); net(p); p.add_argument("--name", default="cripto"); p.add_argument("--home", default=".pactmesh/buyer")
     p.add_argument("--host", default="127.0.0.1"); p.add_argument("--api-port", type=int, default=8700)
     model_args(p); p.add_argument("--policy", help="policy JSON file")
     p.add_argument("--dataset", default=str(ROOT / "examples" / "dataset.csv")); p.set_defaults(fn=cmd_buyer)
@@ -274,7 +274,7 @@ def main(argv=None):
     p = sub.add_parser("eval", help="compare engines on 300 synthetic scenarios (add yours with --engine)")
     p.add_argument("--out", default=str(ROOT / "evaluation" / "results.json")); model_args(p); p.set_defaults(fn=cmd_eval)
     p = sub.add_parser("mcp", help="MCP server (stdio) exposing a running buyer to any MCP-capable AI agent")
-    p.add_argument("--api", default="http://127.0.0.1:8700"); p.add_argument("--token-file", default=".cripito/buyer/admin_token")
+    p.add_argument("--api", default="http://127.0.0.1:8700"); p.add_argument("--token-file", default=".pactmesh/buyer/admin_token")
     p.set_defaults(fn=cmd_mcp)
     p = sub.add_parser("bench", help="measure latency per stage and cost per contract")
     p.add_argument("--n", type=int, default=10); p.add_argument("--chain", choices=["sim", "localnet"], default="sim")
@@ -288,7 +288,7 @@ def main(argv=None):
     p = sub.add_parser("demo"); p.add_argument("--keep", action="store_true", help="keep processes running for the dashboard")
     p.add_argument("--engine", choices=["reference", "simulated-llm"], default="simulated-llm")
     p.add_argument("--chain", choices=["sim", "localnet"], default="sim",
-                   help="sim: SIMULATED ledger; localnet: Rust escrow program via cripito-localnet"); p.set_defaults(fn=cmd_demo)
+                   help="sim: SIMULATED ledger; localnet: Rust escrow program via pactmesh-localnet"); p.set_defaults(fn=cmd_demo)
     args = ap.parse_args(argv)
     if hasattr(args, "relay") and not args.relay:
         args.relay = ["http://127.0.0.1:8701"]

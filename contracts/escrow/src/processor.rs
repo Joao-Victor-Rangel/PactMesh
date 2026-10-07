@@ -95,7 +95,7 @@ pub fn process(program_id: &Pubkey, accounts: &[AccountInfo], data: &[u8]) -> Pr
                 deadline,
             };
             store(escrow, &e)?;
-            msg!("cripito-escrow: CREATED");
+            msg!("pactmesh-escrow: CREATED");
         }
         EscrowInstruction::Fund { amount } => {
             let sys = next_account_info(it)?;
@@ -109,7 +109,7 @@ pub fn process(program_id: &Pubkey, accounts: &[AccountInfo], data: &[u8]) -> Pr
             }
             e.state = st;
             store(escrow, &e)?;
-            msg!("cripito-escrow: FUNDED");
+            msg!("pactmesh-escrow: FUNDED");
         }
         EscrowInstruction::Release => {
             let payee = next_account_info(it)?;
@@ -120,7 +120,7 @@ pub fn process(program_id: &Pubkey, accounts: &[AccountInfo], data: &[u8]) -> Pr
             }
             e.state = st;
             store(escrow, &e)?;
-            msg!("cripito-escrow: RELEASED");
+            msg!("pactmesh-escrow: RELEASED");
         }
         EscrowInstruction::Refund => {
             let mut e = load(program_id, escrow)?;
@@ -131,14 +131,14 @@ pub fn process(program_id: &Pubkey, accounts: &[AccountInfo], data: &[u8]) -> Pr
             }
             e.state = st;
             store(escrow, &e)?;
-            msg!("cripito-escrow: REFUNDED");
+            msg!("pactmesh-escrow: REFUNDED");
         }
         EscrowInstruction::Dispute => {
             let mut e = load(program_id, escrow)?;
             let (st, _) = apply(&e, &signer.key.to_bytes(), Action::Dispute)?;
             e.state = st;
             store(escrow, &e)?;
-            msg!("cripito-escrow: DISPUTED");
+            msg!("pactmesh-escrow: DISPUTED");
         }
     }
     Ok(())

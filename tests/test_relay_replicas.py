@@ -1,12 +1,12 @@
 """Two independent relays: losing one mid-negotiation must not lose the contract."""
 
-from cripito.buyer import Buyer
-from cripito.decision import make_engine
-from cripito.httpbase import run_in_thread
-from cripito.ledger import SimLedgerClient
-from cripito.supplier import Supplier
-from cripito.transport import DirectTransport
-from cripito.transport.relay import Relay
+from pactmesh.buyer import Buyer
+from pactmesh.decision import make_engine
+from pactmesh.httpbase import run_in_thread
+from pactmesh.ledger import SimLedgerClient
+from pactmesh.supplier import Supplier
+from pactmesh.transport import DirectTransport
+from pactmesh.transport.relay import Relay
 
 
 def test_contract_survives_losing_a_relay_replica(net, dataset):

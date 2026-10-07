@@ -1,5 +1,5 @@
-from cripito.audit import verify_package
-from cripito.ledger import SimLedgerClient
+from pactmesh.audit import verify_package
+from pactmesh.ledger import SimLedgerClient
 
 
 def state(b, tid):

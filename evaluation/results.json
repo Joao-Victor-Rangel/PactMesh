@@ -12,7 +12,7 @@
   },
   "note": "Offline evaluation over seeded synthetic negotiations.",
   "engines": {
-    "cripito-reference-rules": {
+    "pactmesh-reference-rules": {
       "executed_policy_violations": 0,
       "unsafe_recommendations_blocked": 20,
       "blocked_by_code": {

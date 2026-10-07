@@ -1,5 +1,5 @@
-.cripito/
-.cripito-demo/
+.pactmesh/
+.pactmesh-demo/
 __pycache__/
 *.pyc
 .venv/

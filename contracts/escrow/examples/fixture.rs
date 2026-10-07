@@ -1,6 +1,6 @@
 //! Regenerates fixtures.json: `cargo run --example fixture > fixtures.json`
-use cripito_escrow::instruction::EscrowInstruction;
-use cripito_escrow::processor::escrow_address;
+use pactmesh_escrow::instruction::EscrowInstruction;
+use pactmesh_escrow::processor::escrow_address;
 use solana_program::pubkey::Pubkey;
 
 fn hex(b: &[u8]) -> String {

@@ -6,11 +6,11 @@ import threading
 
 import pytest
 
-from cripito.crypto import Identity, mailbox_route, open_envelope, random_id, seal
-from cripito.protocol import build_advert
-from cripito.transport import DirectTransport, MixnetTransport, TransportUnavailable
-from cripito.transport.nym import RelayNymGateway
-from cripito.util import now
+from pactmesh.crypto import Identity, mailbox_route, open_envelope, random_id, seal
+from pactmesh.protocol import build_advert
+from pactmesh.transport import DirectTransport, MixnetTransport, TransportUnavailable
+from pactmesh.transport.nym import RelayNymGateway
+from pactmesh.util import now
 from nym_double import MockMixnet
 
 
@@ -66,7 +66,7 @@ def test_rejects_malformed_or_expired(transport_factory):
     me = Identity.generate()
     route = mailbox_route(random_id())
     good = _env(me, route)
-    for bad in ({**good, "v": "cripito-transport/9"}, {**good, "size": 123}, {**good, "extra": 1}):
+    for bad in ({**good, "v": "pactmesh-transport/9"}, {**good, "size": 123}, {**good, "extra": 1}):
         with pytest.raises(TransportUnavailable):
             t.send(bad)
     # The relay cannot see header tampering (no key); the recipient's AEAD check does.
@@ -80,7 +80,7 @@ def test_adverts_and_blobs(transport_factory):
     t = transport_factory()
     ident = Identity.generate()
     adv = build_advert(ident, route=mailbox_route(random_id()), name="x", service="stats-report",
-                       verifier={"name": "cripito.stats", "version": "1.0"},
+                       verifier={"name": "pactmesh.stats", "version": "1.0"},
                        networks=[{"network": "n", "asset": "a"}], payee="p", ttl=60, description="d")
     assert t.publish_advert(adv) >= 1
     assert any(a["agent_key_id"] == ident.key_id for a in t.fetch_adverts())

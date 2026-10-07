@@ -1,6 +1,6 @@
 //! Escrow account layout and the pure state machine (no Solana runtime needed).
 
-pub const SEED: &[u8] = b"cripito-escrow";
+pub const SEED: &[u8] = b"pactmesh-escrow";
 pub const VERSION: u8 = 1;
 /// version u8 | state u8 | bump u8 | payer 32 | payee 32 | amount u64 LE | agreement_hash 32 | deadline i64 LE
 pub const LEN: usize = 1 + 1 + 1 + 32 + 32 + 8 + 32 + 8;
