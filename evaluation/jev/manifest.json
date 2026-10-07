@@ -1,0 +1,56 @@
+{
+  "generator": "pactmesh-jev-bench/1",
+  "seed": 20261007,
+  "format": {
+    "version": "pactmesh-jev/1",
+    "choice_prompt": "{context}\nOptions:\n{options}\nAnswer: I choose to",
+    "choice_continuation": " {option}",
+    "binary_prompt": "{context}\nQuestion: {question}\nAnswer (yes or no):",
+    "binary_continuations": [
+      " yes",
+      " no"
+    ],
+    "option_logit": "mean token log-probability of the continuation (length-normalized)",
+    "binary_logit": "log P(' yes') - log P(' no')",
+    "ece_bins": "10 equal-width bins over top-label confidence",
+    "calibration": "single temperature per task type, grid search minimizing NLL on the validation split only"
+  },
+  "splits": {
+    "train": {
+      "file": "train.jsonl",
+      "sha256": "7a34ba0220fde7fe177cb893c56b57ced2082d0584dc638e63280f255ca6caa8",
+      "items": 894,
+      "by_type": {
+        "choice": 148,
+        "score": 74,
+        "binary": 672
+      },
+      "template": 0
+    },
+    "validation": {
+      "file": "validation.jsonl",
+      "sha256": "f32cd0208d8cb9bf515d90fc1597d0c15c75e92a9a4d969e55e22339e9159828",
+      "items": 683,
+      "by_type": {
+        "choice": 114,
+        "score": 65,
+        "binary": 504
+      },
+      "template": 1
+    },
+    "test": {
+      "file": "test.jsonl",
+      "sha256": "e95befff862c25fefc79dc358d00a74680ab9c2f2866ddb5600c0c5c808faeb4",
+      "items": 683,
+      "by_type": {
+        "choice": 115,
+        "binary": 504,
+        "score": 64
+      },
+      "template": 2
+    }
+  },
+  "split_rule": "by template (train=0, validation=1, test=2); every family in every split",
+  "label_provenance": "generator ground truth: price/budget, delivery, exact asset string, signature and validity flags, injected flag; choice gold = reference rules applied only to quotes that are actually safe",
+  "test_frozen": true
+}

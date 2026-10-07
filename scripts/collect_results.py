@@ -67,6 +67,9 @@ def main() -> int:
         ok_all &= rc == 0
     shutil.rmtree(ROOT / ".pactmesh-demo", ignore_errors=True)
 
+    run([PY, "-m", "pactmesh", "jev-build"])
+    rc, jev_txt, _ = run([PY, "-m", "pactmesh", "jev-bench"])
+    ok_all &= rc == 0
     run([PY, "-m", "pactmesh", "eval"])
     ev = json.loads((ROOT / "evaluation" / "results.json").read_text())
     run([PY, "-m", "pactmesh", "bench", "--n", "10"])
@@ -97,6 +100,10 @@ def main() -> int:
         section("Same flow on the Rust escrow program (pactmesh-localnet)")
         keep = [ln for ln in demo_local.splitlines() if re.match(r"\[(chain|policy|exec|settle|audit|verify)\]", ln)]
         out += [f"`python -m pactmesh demo --chain localnet` ({dt_local:.0f}s):", "", "```text", *keep, "```"]
+
+    section("Jev-style decision benchmark (choice / score / binary)")
+    jev_md = (ROOT / "evaluation" / "jev" / "results.md").read_text().split("\n", 2)[2]
+    out += [jev_md.strip()]
 
     section("Safety evaluation (300 seeded synthetic negotiations)")
     out += ["Every recommendation goes through the same policy as the runtime. Labels are rule-derived; "

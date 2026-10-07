@@ -242,6 +242,75 @@ class OpenAICompatEngine:
         return validate_output(out, options, d)
 
 
+class JevEngine:
+    """Cripto's runtime decision in Jev style: one ``/jev/choice`` call over the
+    closed list of actions the policy grid allows, rendered exactly like the
+    benchmark (template 0). Temperature and abstention threshold come from the
+    benchmark's validation split."""
+
+    def __init__(self, base_url: str, temperature: float = 1.0, abstain_below: float = 0.0, timeout: float = 120.0):
+        self.base = base_url.rstrip("/").removesuffix("/decide")
+        self.temperature, self.abstain_below, self.timeout = temperature, abstain_below, timeout
+        self.model_id, self.model_revision = "jev:unknown", "unpinned"
+
+    def _post(self, path: str, body: dict | None = None) -> dict:
+        req = urllib.request.Request(self.base + path, data=json.dumps(body).encode() if body is not None else None,
+                                     headers={"content-type": "application/json"},
+                                     method="POST" if body is not None else "GET")
+        with urllib.request.urlopen(req, timeout=self.timeout) as r:
+            return json.loads(r.read())
+
+    def decide(self, state: dict, options: list[dict]) -> Decision:
+        from .jev import option_text, render_context, softmax
+
+        t0 = time.perf_counter()
+        d = Decision("ABSTAIN", model_id=self.model_id, model_revision=self.model_revision)
+        quotes = [{"name": o["supplier"], "price": o["price"], "asset": o.get("asset", "CRPT-TEST"),
+                   "delivery": o["delivery_seconds"], "desc": o.get("description", ""), "valid": True, "forged": False}
+                  for o in options]
+        ctx = render_context(int(state["budget"]), state["round"], quotes,
+                             max_delivery=state["max_delivery_seconds"])
+        keys, texts = [], []
+        for o in options:
+            keys.append(("ACCEPT", o["quote_id"], None))
+            texts.append(option_text("ACCEPT", o["supplier"], int(o["price"])))
+            if state["round"] < state["max_rounds"] and not o.get("final"):
+                for p in o["counter_prices"]:
+                    keys.append(("COUNTEROFFER", o["quote_id"], p))
+                    texts.append(option_text("COUNTEROFFER", o["supplier"], p))
+        keys.append(("REJECT", None, None))
+        texts.append(option_text("REJECT"))
+        try:
+            if self.model_id == "jev:unknown":
+                h = self._post("/health")
+                self.model_id, self.model_revision = f"jev:{h.get('model_id')}"[:120], str(h.get("revision"))[:64]
+                d.model_id, d.model_revision = self.model_id, self.model_revision
+            out = self._post("/jev/choice", {"context": ctx, "options": texts})
+            probs = softmax(out["logits"], self.temperature)
+        except (urllib.error.URLError, OSError, ValueError, KeyError, TypeError):
+            d.status = "unavailable"
+            d.latency_ms = int((time.perf_counter() - t0) * 1000)
+            return d
+        d.latency_ms = int((time.perf_counter() - t0) * 1000)
+        if len(probs) != len(keys):
+            d.status = "invalid_output"
+            return d
+        best = max(range(len(keys)), key=lambda i: probs[i])
+        kind, qid, price = keys[best]
+        per_quote: dict[str, float] = {}
+        for (k, q, _), p in zip(keys, probs):
+            if q:
+                per_quote[q] = per_quote.get(q, 0.0) + p
+        d.scores = {k: _fmt(v) for k, v in per_quote.items()}
+        d.generated_rationale = f"jev choice: {texts[best]} (p={probs[best]:.2f})"
+        d.status = "valid"
+        if probs[best] < self.abstain_below:
+            d.generated_rationale = f"confidence {probs[best]:.2f} below {self.abstain_below}: abstain"
+            return d
+        d.action, d.quote_id, d.counter_price = kind, qid, price
+        return d
+
+
 class FallbackEngine:
     """Primary engine with a *declared* deterministic fallback."""
 
@@ -260,16 +329,23 @@ class FallbackEngine:
         return d
 
 
-ENGINES = ("reference", "simulated-llm", "http", "http+fallback", "openai-compat", "openai-compat+fallback")
+ENGINES = ("reference", "simulated-llm", "jev", "jev+fallback", "http", "http+fallback", "openai-compat",
+           "openai-compat+fallback")
 
 
 def make_engine(name: str, model_url: str | None = None, model_name: str | None = None,
-                model_revision: str = "unpinned", api_key: str | None = None):
+                model_revision: str = "unpinned", api_key: str | None = None, temperature: float = 1.0,
+                abstain_below: float = 0.0):
     if name == "reference":
         return ReferenceEngine()
     if name == "simulated-llm":
         return SimulatedLLMEngine()
     base, fallback = name.removesuffix("+fallback"), name.endswith("+fallback")
+    if base == "jev":
+        if not model_url:
+            raise ValueError("--model-url is required for the jev engine (model server base URL)")
+        eng = JevEngine(model_url, temperature, abstain_below)
+        return FallbackEngine(eng, ReferenceEngine()) if fallback else eng
     if base in ("http", "openai-compat"):
         if not model_url:
             raise ValueError(f"--model-url is required for the {base} engine")

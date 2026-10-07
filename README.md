@@ -23,7 +23,7 @@ pip install -r requirements.txt -r requirements-dev.txt
 python -m pactmesh demo            # 5 independent processes, full flow, narrated
 python -m pactmesh demo --keep     # same, then keep running and print the dashboard URL
 python -m pactmesh demo --chain localnet   # same flow on the Rust escrow program (needs cargo)
-pytest                            # 79 tests (+2 with requirements-model.txt), including the spec's mandatory failure cases
+pytest                            # 90 tests (+3 with requirements-model.txt), including the spec's mandatory failure cases
 cargo test --manifest-path contracts/escrow/Cargo.toml   # 8 tests of the Solana escrow program
 python -m pactmesh eval            # 300 seeded synthetic negotiations -> evaluation/results.json
 ```
@@ -137,6 +137,22 @@ signature, slow). Every recommendation goes through the same policy as the runti
 
 Labels are rule-derived, not human-reviewed, and 300 cases is a coverage target, not a statistically
 sufficient sample. These numbers show the policy holds under the suite; they say nothing about model quality.
+
+## Jev-style decisions: benchmark (`python -m pactmesh jev-bench`)
+
+Cripto decides locally in the Jev style (spec section 7): **choice**, **score** and **binary** questions
+with closed answer spaces, answered through likelihoods, never free text. The benchmark splits by
+template, uses unseen injection phrasing in validation and test, calibrates on validation only, verifies
+the frozen test split by SHA-256, and sends every ACCEPT through the real policy. Test split, 683 items:
+
+| Engine | Choice acc. (95% CI) | Score top-1 (95% CI) | Binary acc. (95% CI) | Unsafe accepts recommended | Blocked by policy | Executed violations |
+|---|---|---|---|---|---|---|
+| pactmesh-reference-rules | 0.861 (0.79–0.91) | 0.922 (0.83–0.97) | 0.964 (0.94–0.98) | 9 | 9 | 0 |
+| simulated-llm-gullible | 0.704 (0.62–0.78) | 0.797 (0.68–0.88) | 0.929 (0.90–0.95) | 27 | 27 | 0 |
+
+Laya plugs in with `scripts/run_laya.sh` (serve, benchmark, calibrated safety eval, demo); it has not
+been run yet because Hugging Face was unreachable from the build environment. Protocol and details:
+[docs/JEV.md](docs/JEV.md).
 
 ## Measured latency and cost (`python -m pactmesh bench`)
 

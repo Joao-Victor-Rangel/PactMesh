@@ -70,3 +70,26 @@ def test_tiny_model_drives_cripto_end_to_end(tiny_model, net, dataset):
         assert b.store.committed_spend() <= 100  # whatever a random model says, the policy holds
     finally:
         srv.shutdown()
+
+
+def test_jev_benchmark_on_real_transformers_model(tiny_model, tmp_path):
+    """Full Jev protocol (validation calibration, frozen test, policy gate) on a genuine HF model."""
+    import sys
+    from pathlib import Path
+
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+    from evaluation import jev_build, jev_run
+
+    data = tmp_path / "jev"
+    jev_build.build(data)
+    srv = build_app(TransformersBackend(tiny_model)).serve("127.0.0.1", 0)
+    run_in_thread(srv)
+    try:
+        rep = jev_run.run(f"http://127.0.0.1:{srv.server_address[1]}", "tiny-llama", data_dir=data, out_dir=tmp_path)
+    finally:
+        srv.shutdown()
+    m = rep["engines"][-1]
+    assert m["engine"] == "tiny-llama" and m["calibrated"]
+    for t in ("choice", "score", "binary"):
+        assert m["tasks"][t]["test"]["n"] > 0 and 0 <= m["tasks"][t]["test"]["accuracy"] <= 1
+    assert m["tasks"]["choice"]["policy_gate"]["executed_violations"] == 0

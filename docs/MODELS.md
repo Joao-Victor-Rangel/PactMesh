@@ -35,7 +35,10 @@ model, and writes `evaluation/results.json` with:
 - output validity (`valid` / `invalid_output` / `unavailable`) and coverage (non-abstain rate)
 - macro F1 against rule-derived labels, and latency p50/p95
 
-## Laya (the specification's candidate) — one command
+## Laya (the specification's candidate) — Jev style, one command
+
+Cripto's decisions are Jev-style (choice / score / binary); see [JEV.md](JEV.md) for the interfaces
+and the benchmark protocol. Use `--engine jev` (or `jev+fallback`) at runtime.
 
 ```bash
 scripts/run_laya.sh            # downloads convaiinnovations/laya on first run, serves it, evaluates, demos

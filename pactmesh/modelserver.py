@@ -144,6 +144,9 @@ class TransformersBackend:
         self.revision = revision or getattr(self.model.config, "_commit_hash", None) or "unpinned"
 
     def score(self, prompt: str, continuations: list[str]) -> list[float]:  # pragma: no cover - needs weights
+        return [total for total, _n in self.score_detailed(prompt, continuations)]
+
+    def score_detailed(self, prompt: str, continuations: list[str]) -> list[tuple[float, int]]:
         torch = self.torch
         prompt_ids = self.tok(prompt, return_tensors="pt").input_ids[0]
         scores = []
@@ -158,16 +161,74 @@ class TransformersBackend:
                 logp = torch.log_softmax(logits, dim=-1)
                 start = len(prompt_ids) - 1
                 tgt = ids[0, len(prompt_ids):]
-                scores.append(float(logp[start:start + len(tgt)].gather(1, tgt.unsqueeze(1)).sum()))
+                scores.append((float(logp[start:start + len(tgt)].gather(1, tgt.unsqueeze(1)).sum()), len(tgt)))
         return scores
 
 
+class HashBackend:
+    """Deterministic pseudo-model for tests: log-probs derived from a hash of
+    (prompt, continuation). Not a model; exercises the serving path only."""
+
+    model_id, revision = "hash-backend", "test"
+
+    def score_detailed(self, prompt: str, continuations: list[str]) -> list[tuple[float, int]]:
+        import hashlib
+
+        out = []
+        for c in continuations:
+            h = int.from_bytes(hashlib.sha256((prompt + "\x00" + c).encode()).digest()[:4], "big")
+            n = max(1, len(c.split()))
+            out.append((-n * (1 + h / 2**32 * 3), n))
+        return out
+
+    def score(self, prompt: str, continuations: list[str]) -> list[float]:
+        return [t for t, _ in self.score_detailed(prompt, continuations)]
+
+
+def _detailed(backend, prompt: str, conts: list[str]) -> list[tuple[float, int]]:
+    if hasattr(backend, "score_detailed"):
+        return backend.score_detailed(prompt, conts)
+    return [(s, 1) for s in backend.score(prompt, conts)]
+
+
 def build_app(backend: Backend, abstain_below: float = 0.0) -> App:
+    from .jev import FORMAT, binary_prompt, choice_prompt, softmax
+
     app = App()
+
+    def _options(body: dict) -> tuple[str, list[str]]:
+        ctx, opts = body.get("context"), body.get("options")
+        if not isinstance(ctx, str) or not isinstance(opts, list) or not opts or not all(isinstance(o, str) for o in opts):
+            raise HttpError(400, "BAD_REQUEST")
+        return ctx, opts
+
+    @app.route("POST", "/jev/choice")
+    def jev_choice(req: Request):
+        ctx, opts = _options(req.json() or {})
+        t0 = time.perf_counter()
+        det = _detailed(backend, choice_prompt(ctx, opts), [FORMAT["choice_continuation"].format(option=o) for o in opts])
+        logits = [total / n for total, n in det]
+        return {"logits": logits, "probs": softmax(logits), "format": FORMAT["version"],
+                "inference_ms": int((time.perf_counter() - t0) * 1000)}
+
+    @app.route("POST", "/jev/score")
+    def jev_score(req: Request):
+        return jev_choice(req)  # same likelihoods; the client reads them as scores
+
+    @app.route("POST", "/jev/binary")
+    def jev_binary(req: Request):
+        body = req.json() or {}
+        ctx, q = body.get("context"), body.get("question")
+        if not isinstance(ctx, str) or not isinstance(q, str):
+            raise HttpError(400, "BAD_REQUEST")
+        t0 = time.perf_counter()
+        (ly, _), (ln, _) = _detailed(backend, binary_prompt(ctx, q), FORMAT["binary_continuations"])
+        return {"logit": ly - ln, "format": FORMAT["version"], "inference_ms": int((time.perf_counter() - t0) * 1000)}
 
     @app.route("GET", "/health")
     def health(req):
-        return {"ok": True, "model_id": backend.model_id, "revision": backend.revision, "mode": "choice-scoring"}
+        return {"ok": True, "model_id": backend.model_id, "revision": backend.revision, "mode": "choice-scoring",
+                "jev": FORMAT["version"]}
 
     @app.route("POST", "/decide")
     def dec(req: Request):

@@ -296,7 +296,7 @@ class Buyer(Agent):
                 continue
             if parse_iso(terms["valid_until"]) < now():
                 continue
-            out.append({"quote_id": qid, "supplier": s["name"], "price": terms["price"],
+            out.append({"quote_id": qid, "supplier": s["name"], "price": terms["price"], "asset": terms["asset"],
                         "delivery_seconds": terms["delivery_seconds"], "description": q["description"],
                         "counter_prices": self.policy.counter_prices(int(terms["price"])),
                         "final": q["round"] >= int(self.policy.config["max_counter_rounds"])})
