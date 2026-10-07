@@ -156,6 +156,6 @@ Settled: SIMULATED ledger 10/10, Rust escrow via pactmesh-localnet 10/10.
 
 ## Not measured here (needs your machine)
 
-- Solana Devnet deployment and transactions (`docs/SOLANA.md`).
+- Solana Devnet (needs a funded key, so this script does not run it); the recorded Devnet run and its transactions are in the README and `docs/SOLANA.md`.
 - Live Nym mixnet latency and anonymity set (`docs/PRIVATE_MODE.md`).
 - A real local model such as Laya on the 300 scenarios (`docs/MODELS.md`).

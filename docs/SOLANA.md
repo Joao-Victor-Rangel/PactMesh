@@ -10,8 +10,18 @@ Two Solana pieces live in this repository:
 
 **Done:** `cargo build-sbf` (Agave 4.3.0, 72 KB program), `solana program deploy` to a local
 `solana-test-validator`, and the full demo on it: escrow create, fund and release plus a Memo anchor, all as
-real transactions, with the evidence package verifying against the chain. **Not yet done:** Devnet, which only
-needs a funded Devnet keypair (steps below).
+real transactions, with the evidence package verifying against the chain. **Devnet (2026-10-07):** program
+`8auSiLoDemLoMNCxLdPCTwKVZE22Lk7tbqEgmThC8NPU` deployed and the same demo run there, all transactions finalized:
+
+| What | Link (Solana Devnet) |
+|---|---|
+| Escrow program `8auSiLoD…` | [8auSiLoDemLoMNCxLdPCTwKVZE22Lk7tbqEgmThC8NPU](https://explorer.solana.com/address/8auSiLoDemLoMNCxLdPCTwKVZE22Lk7tbqEgmThC8NPU?cluster=devnet) |
+| Escrow account of the demo agreement | [BKJw9dqFekLi6pxg…](https://explorer.solana.com/address/BKJw9dqFekLi6pxgTnZYPXUbZ2KvheWEdfFfdqJ7xipg?cluster=devnet) |
+| Fund (buyer deposits the agreed 78 lamports) | [4yHM3SdZTtu7erXv…](https://explorer.solana.com/tx/4yHM3SdZTtu7erXvDXW3RBncX3D4LNhMZpokDCv2JnGBJAVvKSsU47yQPhAHD8wVV86WHgJPZ3LV3waXSECvdu65?cluster=devnet) |
+| Release (verified report, paid to the agreed payee) | [4jffxjAbC2ruaDLT…](https://explorer.solana.com/tx/4jffxjAbC2ruaDLTbxegLvBUi9vs3iEyuyHJVLEoWuJfHCapFt9eYRNywssBTqs1M4mjDHHsjhCxWrs4wdnSaWEn?cluster=devnet) |
+| Evidence anchor (Merkle root `4e8d31c7…` in a Memo) | [3Q426JB8reu7B9sg…](https://explorer.solana.com/tx/3Q426JB8reu7B9sg6XrKhGrnq1aYzxaGiuwgzLoCQKNyShg3c7KqjgHTfBq4f9HhXzmWeeS4axxnrzQuuL8tz3eX?cluster=devnet) |
+
+The program is still upgradeable (authority `AQAyt4…`, a Devnet-only key) and has not been audited.
 
 ## Program summary
 

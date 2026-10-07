@@ -39,8 +39,8 @@ link of an escrow release and of an evidence anchor.
 
 | Say | Do not say |
 |---|---|
-| "escrow program in Rust, tested on host and run end to end through `pactmesh-localnet`" | "deployed on Solana" (until you actually deploy it) |
-| "Devnet program `<id>`, release tx `<link>`" (after you deploy) | "mainnet", "real payments" |
+| "escrow program in Rust, deployed on Solana Devnet (`8auSiLo…`); the full demo ran there, release tx in the README" | "mainnet", "real payments", "audited" |
+| "Devnet SOL, no real value; the program is upgradeable and not audited" | "inviolable", "can't be hacked" |
 | "private mode via Nym, tested with a nym-client double" | "anonymous" or "untraceable" |
 | "direct mode is encrypted, not anonymous" | "private by default" |
 | "the AI is pluggable; with the gullible test model the policy blocked 63/63 unsafe recommendations in our suite" | "our AI is safe" or "Laya beats X" (unless you measured it) |
@@ -59,7 +59,7 @@ the browser. Record terminal plus browser.
 | 1:15–1:40 | Counteroffer to alpha at 76 → requote 78 → ACCEPT | "It counters alpha from a bounded price grid, so the model can't invent numbers. Alpha comes back at 78. Both sign the same agreement hash." |
 | 1:40–2:10 | FUNDING → FUNDED → DELIVERED → VERIFIED → SETTLED; dashboard receipt | "The buyer funds the escrow. The supplier checks it is funded before working, receives the dataset as an encrypted blob, and delivers the report. A deterministic verifier checks it and only then is payment released." |
 | 2:10–2:35 | Dashboard: "Verify evidence" → VALID; "Tamper & verify" → TAMPERING DETECTED | "The receipt carries signatures and a Merkle root anchored on chain. Change one number and verification fails." |
-| 2:35–2:55 | `docs/OPEN_AND_FREE.md` or README status table | "What's real: an escrow program in Rust, a Nym mixnet transport, pluggable local models. What's next: Devnet deployment and live mixnet runs. Settlement stays public, and we say so." |
+| 2:35–2:55 | `docs/OPEN_AND_FREE.md` or README status table | "What's real: an escrow program in Rust running on Solana Devnet, a Nym mixnet transport, pluggable local models. What's next: an audit, live mixnet runs and a real local model. Settlement stays public, and we say so." |
 | 2:55–3:00 | Repo URL | "PactMesh: open source, MIT, free to run." |
 
 ### Narração em português (se preferir gravar em PT-BR)

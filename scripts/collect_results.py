@@ -131,7 +131,8 @@ def main() -> int:
     out += ["", "Settled: " + ", ".join(f"{label} {b['settled']}/{b['contracts']}" for label, b in loaded) + "."]
 
     section("Not measured here (needs your machine)")
-    out += ["- Solana Devnet deployment and transactions (`docs/SOLANA.md`).",
+    out += ["- Solana Devnet (needs a funded key, so this script does not run it); the recorded Devnet run and its "
+            "transactions are in the README and `docs/SOLANA.md`.",
             "- Live Nym mixnet latency and anonymity set (`docs/PRIVATE_MODE.md`).",
             "- A real local model such as Laya on the 300 scenarios (`docs/MODELS.md`)."]
 

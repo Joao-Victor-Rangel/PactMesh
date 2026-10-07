@@ -15,6 +15,20 @@ Built for the Colosseum Crypto World's Fair (category: Developer Infrastructure;
 **Results:** every number below comes from [docs/RESULTS.md](docs/RESULTS.md), regenerated from scratch by
 `python scripts/collect_results.py` (tests, both demos, the safety evaluation and the benchmark).
 
+**Live on Solana Devnet** (2026-10-07): the full narrated demo ran against the deployed escrow program, all
+transactions finalized, and the evidence package verified against the chain. Devnet SOL has no value.
+
+| What | Link (Solana Devnet) |
+|---|---|
+| Escrow program `8auSiLoD…` | [8auSiLoDemLoMNCxLdPCTwKVZE22Lk7tbqEgmThC8NPU](https://explorer.solana.com/address/8auSiLoDemLoMNCxLdPCTwKVZE22Lk7tbqEgmThC8NPU?cluster=devnet) |
+| Escrow account of the demo agreement | [BKJw9dqFekLi6pxg…](https://explorer.solana.com/address/BKJw9dqFekLi6pxgTnZYPXUbZ2KvheWEdfFfdqJ7xipg?cluster=devnet) |
+| Fund (buyer deposits the agreed 78 lamports) | [4yHM3SdZTtu7erXv…](https://explorer.solana.com/tx/4yHM3SdZTtu7erXvDXW3RBncX3D4LNhMZpokDCv2JnGBJAVvKSsU47yQPhAHD8wVV86WHgJPZ3LV3waXSECvdu65?cluster=devnet) |
+| Release (verified report, paid to the agreed payee) | [4jffxjAbC2ruaDLT…](https://explorer.solana.com/tx/4jffxjAbC2ruaDLTbxegLvBUi9vs3iEyuyHJVLEoWuJfHCapFt9eYRNywssBTqs1M4mjDHHsjhCxWrs4wdnSaWEn?cluster=devnet) |
+| Evidence anchor (Merkle root `4e8d31c7…` in a Memo) | [3Q426JB8reu7B9sg…](https://explorer.solana.com/tx/3Q426JB8reu7B9sg6XrKhGrnq1aYzxaGiuwgzLoCQKNyShg3c7KqjgHTfBq4f9HhXzmWeeS4axxnrzQuuL8tz3eX?cluster=devnet) |
+
+Reproduce: `python -m pactmesh demo --chain solana --program-id 8auSiLoDemLoMNCxLdPCTwKVZE22Lk7tbqEgmThC8NPU --funder devnet.json`
+([docs/SOLANA.md](docs/SOLANA.md)); full transcript of that run: [docs/devnet-run.txt](docs/devnet-run.txt).
+
 ## Quick start (about 1 minute)
 
 Windows (PowerShell): follow [docs/WINDOWS.md](docs/WINDOWS.md), one command at a time.
@@ -52,8 +66,8 @@ payment; the evidence package verifies, a tampered copy fails, and the relay log
 | Verifier `pactmesh.stats 1.0` (count, mean, median, sample stdev, linear percentiles, 6-dp decimal strings) | **Implemented** |
 | Signed hash-chained event log, hiding commitments, Merkle batches with domain separation, inclusion proofs, selective disclosure, auditor verification | **Implemented** |
 | Escrow + anchoring, default demo | **SIMULATED** local ledger process (signed txs, fees, slot expiry, confirmation levels, escrow state machine). It is *not* a blockchain and is labelled as such everywhere |
-| Solana escrow program (`contracts/escrow`, native Rust) | **Implemented, compiled to SBF and deployed to a local `solana-test-validator`**, where the full agent flow (create, fund, release, Memo anchor) ran end to end; 8 host tests with stubbed syscalls. **Not yet deployed to Devnet**: see [docs/SOLANA.md](docs/SOLANA.md) |
-| Solana client (escrow + Memo anchoring), `--chain solana` | PDA and instruction bytes cross-checked with Rust; works against `pactmesh-localnet` and a real validator (`demo --chain solana --rpc http://127.0.0.1:8899`); **not yet run against Devnet** |
+| Solana escrow program (`contracts/escrow`, native Rust) | **Deployed on Solana Devnet** (`8auSiLo…`, links above) and on a local `solana-test-validator`; the full agent flow (create, fund, release, Memo anchor) ran end to end on both; 8 host tests with stubbed syscalls. Upgradeable and **not audited** |
+| Solana client (escrow + Memo anchoring), `--chain solana` | PDA and instruction bytes cross-checked with Rust; works against `pactmesh-localnet`, a local validator and **Solana Devnet** (`demo --chain solana`) |
 | Private transport (Nym mixnet): relay as a mixnet service, anonymous sends + reply SURBs, explicit failure with no downgrade | **Implemented**, tested against a `nym-client` test double built from Nym's message format; **not yet run on the live Nym network** (see [docs/PRIVATE_MODE.md](docs/PRIVATE_MODE.md)) |
 | Admin API + dashboard (localhost, bearer token, idempotency keys) | **Implemented** |
 | MCP server for external AI agents (stdio, stdlib only) | **Implemented**, tested over stdio end to end |
@@ -196,10 +210,10 @@ optimization with an evidence trade-off.
 PactMesh é uma infraestrutura aberta para agentes de IA negociarem serviços com comunicação cifrada, política
 determinística de gastos e evidências verificáveis. `python -m pactmesh demo` executa o fluxo completo em cinco
 processos: descoberta por anúncios assinados, proposta maliciosa bloqueada pela política, contraproposta,
-acordo assinado, escrow (ledger **simulado** ou o programa Rust de escrow via `--chain localnet`), entrega
-cifrada, verificação, liberação, recibo e detecção de adulteração. O escrow para Solana, o transporte pela
-mixnet Nym e o motor para modelos locais estão implementados e testados localmente. O deploy na Devnet, a
-rede Nym real e a avaliação do Laya ainda precisam ser executados (ver `docs/`).
+acordo assinado, escrow (ledger **simulado**, o programa Rust via `--chain localnet` ou a Solana de verdade
+via `--chain solana`), entrega cifrada, verificação, liberação, recibo e detecção de adulteração. O programa
+de escrow está **publicado na Solana Devnet** e o demo completo rodou lá, com as transações finalizadas (links
+acima). A rede Nym real e a avaliação do Laya ainda precisam ser executadas (ver `docs/`).
 
 ## Open source and free
 
