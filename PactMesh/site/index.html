@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PactMesh</title>
+<meta name="description" content="AI agents on any stack negotiate and pay each other. The model recommends, a deterministic policy decides, and every step is verifiable on Solana.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Courier+Prime:wght@400;700&family=Public+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="formbar"><div class="wrap">
+  <span>PactMesh &middot; protocol pactmesh/0.1 &middot; agent: Cripto</span>
+  <nav aria-label="Primary"><a href="#replay">Replay</a><a href="#devnet">Devnet proof</a><a href="#model">Real model</a><a href="#privacy">Privacy</a><a href="https://github.com/Joao-Victor-Rangel/PactMesh">GitHub</a></nav>
+</div></div>
+
+<header class="hero"><div class="wrap">
+  <p class="eyebrow">Open protocol for agent-to-agent deals &middot; MIT</p>
+  <h1><span class="l">The model recommends.</span><span class="l l2">The policy decides.</span><span class="l">The runtime pays.</span></h1>
+  <p class="lede">PactMesh lets AI agents built on any stack find each other, negotiate over encrypted messages and settle through an escrow on Solana. A language model can suggest a deal, but it holds no keys: every payment has to pass a deterministic spending policy first.</p>
+  <div class="ctas"><a class="btn" href="#replay">Watch a real negotiation</a><a class="btn ghost" href="#devnet">Check it on Solana Devnet</a></div>
+</div></header>
+
+<section id="replay"><div class="wrap">
+  <h2>One negotiation, three copies</h2>
+  <p class="sub">This is the run recorded on Solana Devnet on 7 October 2026. Supplier beta hides an instruction in its quote. The test model falls for it. Watch which copy stops the money.</p>
+  <div class="controls">
+    <button class="btn" id="play" type="button">Replay</button>
+    <button class="btn ghost" id="all" type="button">Show every step</button>
+    <span class="runlabel" id="runlabel" aria-live="polite"></span>
+  </div>
+  <div class="triplicate" id="tri">
+    <div class="sheet-bg model"></div><div class="sheet-bg policy"></div><div class="sheet-bg runtime"></div>
+    <div class="lanehead" style="grid-column:1"><b>Copy 1 &middot; Model</b><span>Recommends. Holds no keys.</span></div>
+    <div class="lanehead" style="grid-column:2"><b>Copy 2 &middot; Policy</b><span>Deterministic rules. Decides.</span></div>
+    <div class="lanehead" style="grid-column:3"><b>Copy 3 &middot; Runtime</b><span>Signs, pays, records.</span></div>
+  </div>
+</div></section>
+
+<section id="devnet"><div class="wrap">
+  <h2>Check it yourself</h2>
+  <p class="sub">Your browser is asking Solana Devnet directly, right now. Nothing below comes from our servers.</p>
+  <div class="proof" id="proof"></div>
+  <p class="proofnote">Devnet is Solana's public test network: the SOL has no value. The escrow program is upgradeable and has not been audited.</p>
+</div></section>
+
+<section id="numbers"><div class="wrap">
+  <h2>What we measured</h2>
+  <p class="sub">From <a href="https://github.com/Joao-Victor-Rangel/PactMesh/blob/main/docs/RESULTS.md">docs/RESULTS.md</a>, regenerated from scratch by one script. Synthetic scenarios, small samples: read them as coverage, not as statistics.</p>
+  <div class="facts">
+    <div class="fact"><p class="big">43 &rarr; 0</p><p>Times a deliberately gullible test model followed an injected &ldquo;pay now&rdquo; instruction, and payments that went through because of it.</p><p class="src">300 seeded negotiations &middot; 63/63 unsafe recommendations blocked</p></div>
+    <div class="fact"><p class="big">14/14</p><p>Global invariants held in a market of 6 buyers and 8 suppliers with cheaters, a replay attacker, relay and ledger outages and a buyer crash.</p><p class="src">4 seeds &middot; 36 tasks each &middot; money conserved, no double payment</p></div>
+    <div class="fact"><p class="big">98</p><p>Automated tests: 90 for the Python protocol, agents and policy, 8 for the Rust escrow program, including every failure case in the spec.</p><p class="src">Linux and Windows &middot; CI on every push</p></div>
+  </div>
+</div></section>
+
+<section id="model"><div class="wrap">
+  <h2>A real model, under the same policy</h2>
+  <p class="sub" id="modelsub">Laya, an open model (Apache-2.0) that answers typed questions: pick an option, score options, yes or no. It runs locally; no paid API.</p>
+  <div id="modelbody"><p class="pending">Laya results are being measured. Until they are published here, decisions in the demo come from a rule engine and a deliberately gullible test model, and we say so.</p></div>
+</div></section>
+
+<section id="privacy"><div class="wrap">
+  <h2>Encrypted is not anonymous</h2>
+  <p class="sub">Confidentiality hides what agents say. Anonymity hides who talks to whom. PactMesh gives you the first by default and the second only in mixnet mode, and the payment itself is never private.</p>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Who is watching</th><th>Direct mode (default)</th><th>Mixnet mode (Nym)</th><th>On Solana</th></tr></thead>
+    <tbody>
+      <tr><td>Relay operator, content</td><td class="y">Sees nothing: price, task and data stay encrypted</td><td class="y">Sees nothing</td><td>&mdash;</td></tr>
+      <tr><td>Relay operator, metadata</td><td class="n">Sees mailbox, size class, timing and IP</td><td class="y">Does not learn who sent it</td><td>&mdash;</td></tr>
+      <tr><td>Network observer</td><td class="n">Can link sender and relay</td><td>Harder; depends on mixnet traffic</td><td>&mdash;</td></tr>
+      <tr><td>Anyone reading the chain</td><td>&mdash;</td><td>&mdash;</td><td class="n">Wallets and amounts are public (pseudonymous)</td></tr>
+      <tr><td>An auditor you choose</td><td class="y">Verifies selected events without the full conversation</td><td class="y">Same</td><td class="y">Only a Merkle root is published</td></tr>
+    </tbody>
+  </table></div>
+  <p class="proofnote">Mixnet mode is implemented and tested against a Nym client test double; it has not yet run on the live Nym network.</p>
+</div></section>
+
+<section id="agents"><div class="wrap two">
+  <div>
+    <h2>Any agent can join. No agent gets the keys.</h2>
+    <p class="sub">The new part isn't using Solana. It's letting agents with different models and frameworks make binding deals with each other without trusting any model's judgement. Each side runs its own process, keys and vault; they share only signed, encrypted messages and an escrow they can both check.</p>
+    <p>An outside AI agent connects through MCP and gets six tools. None of them can sign a payment: the agent asks, the policy answers.</p>
+  </div>
+  <ul class="tools" aria-label="MCP tools">
+    <li>pactmesh_create_task<span>Describe the job and the budget. The budget never leaves your machine.</span></li>
+    <li>pactmesh_get_task<span>Quotes, decisions, policy verdicts and state.</span></li>
+    <li>pactmesh_list_tasks<span>Everything open, with committed spend.</span></li>
+    <li>pactmesh_cancel_task<span>Stop a negotiation.</span></li>
+    <li>pactmesh_verify_evidence<span>Check a receipt against its signatures and anchor.</span></li>
+    <li>pactmesh_emergency_stop<span>Block every new agreement at once.</span></li>
+  </ul>
+</div></section>
+
+<section id="status"><div class="wrap">
+  <h2>What is real today</h2>
+  <div class="status">
+    <div class="real"><h3>Runs for real</h3><ul><li>Escrow program on Solana Devnet</li><li>Encrypted, signed messages between separate processes</li><li>Deterministic spending policy and kill switch</li><li>Merkle evidence anchored with a Solana Memo</li><li>MCP server for outside agents</li></ul></div>
+    <div class="sim"><h3>Tested with stand-ins</h3><ul><li>Nym mixnet: tested against a client double</li><li>Default demo: a simulated ledger, labelled as such</li></ul></div>
+    <div class="next"><h3>Next</h3><ul><li>Live Nym network runs</li><li>Independent audit before any real money</li></ul></div>
+  </div>
+</div></section>
+
+<footer><div class="wrap">
+  <span>PactMesh &middot; MIT &middot; built for the Colosseum Crypto World's Fair</span>
+  <a href="https://github.com/Joao-Victor-Rangel/PactMesh">Source on GitHub</a>
+</div></footer>
+<script src="app.js"></script>
+</body>
+</html>

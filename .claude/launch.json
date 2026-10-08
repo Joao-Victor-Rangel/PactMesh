@@ -1,0 +1,1 @@
+{"version":"0.0.1","configurations":[{"name":"site","runtimeExecutable":"C:\\Users\\Joao Victor\\Documents\\Capitiria\\PactMesh\\PactMesh\\.venv\\Scripts\\python.exe","runtimeArgs":["-m","http.server","4173","--directory","C:\\Users\\Joao Victor\\Documents\\Capitiria\\PactMesh\\PactMesh\\site","--bind","127.0.0.1"],"port":4173}]}
